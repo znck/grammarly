@@ -1,0 +1,78 @@
+{
+  "name": "grammarly",
+  "publisher": "znck",
+  "displayName": "Grammarly",
+  "description": "Grammarly grammar checking for Visual Studio Code.",
+  "version": "0.0.3",
+  "icon": "assets/logo.png",
+  "engines": {
+    "vscode": "^1.39.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/znck/grammarly"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:plaintext",
+    "onLanguage:markdown"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Grammarly",
+      "properties": {
+        "grammarly.enabled": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Enable grammar checks."
+        },
+        "grammarly.auth.grauth": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Your own personal AuthTokens can be found by inspecting the Firefox extension and looking at the Cookies tab."
+        },
+        "grammarly.auth.csrf-token": {
+          "scope": "resource",
+          "type": "string",
+          "description": "Your own personal AuthTokens can be found by inspecting the Firefox extension and looking at the Cookies tab."
+        }
+      }
+    }
+  },
+  "license": "MIT",
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run test-compile",
+    "test-compile": "tsc -p ./",
+    "compile": "webpack --mode production",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/lodash.throttle": "^4.1.6",
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^10.12.21",
+    "@types/turndown": "^5.0.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@stewartmcgown/grammarly-api": "^1.1.2",
+    "bufferutil": "^4.0.1",
+    "lodash.throttle": "^4.1.1",
+    "turndown": "^5.0.3",
+    "utf-8-validate": "^5.0.2",
+    "vscode-languageclient": "^5.2.1",
+    "vscode-languageserver": "^5.2.1"
+  }
+}

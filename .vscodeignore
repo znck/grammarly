@@ -1,0 +1,15 @@
+.vscode/**
+.vscode-test/**
+out/test/**
+src/**
+.gitignore
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/tslint.json
+**/*.map
+**/*.ts
+# node_modules/**
+# !node_modules/consola
+# !node_modules/jsdom
+# !node_modules/parse5
+# !node_modules/vscode-languageserver
