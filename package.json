@@ -46,7 +46,7 @@
   "license": "MIT",
   "main": "./out/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run test-compile",
     "test-compile": "tsc -p ./",
     "compile": "webpack --mode production",
     "watch": "tsc -watch -p ./",
