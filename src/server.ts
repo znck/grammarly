@@ -69,7 +69,6 @@ connection.onInitialized(() => {
 })
 
 interface GrammarlySettings {
-  enabled: boolean
   username: string | undefined
   password: string | undefined
   auth?: {
@@ -79,7 +78,6 @@ interface GrammarlySettings {
 }
 
 const DEFAULT_SETTINGS: GrammarlySettings = {
-  enabled: true,
   username: undefined,
   password: undefined,
 }
@@ -143,8 +141,6 @@ async function getGrammarlyAnalysisUsing(
 
 async function getGrammarlyAnalysis(document: TextDocument, onFreshAnalysis?: (result: GrammarlyResult) => void) {
   const settings = await getDocumentSettings(document.uri)
-  if (!settings.enabled) return
-
   const grammarly = getGrammarlyClient(document.uri, settings)
 
   return await getGrammarlyAnalysisUsing(grammarly, document.uri, document.getText(), onFreshAnalysis)

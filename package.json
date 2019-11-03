@@ -24,12 +24,6 @@
       "type": "object",
       "title": "Grammarly",
       "properties": {
-        "grammarly.enabled": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": true,
-          "description": "Enable grammar checks."
-        },
         "grammarly.auth.grauth": {
           "scope": "resource",
           "type": "string",
