@@ -20,7 +20,6 @@ Copy `csrf-token` and `grauth` cookies and set extension settings.
 
 This extension contributes the following settings:
 
-- `grammarly.enable`: enable/disable this extension
 - `grammarly.auth.grauth`: `grauth` cookie value
 - `grammarly.auth.csrf-token`: `csrf-token` cookie value
 
