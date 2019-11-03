@@ -82,10 +82,6 @@ const DEFAULT_SETTINGS: GrammarlySettings = {
   enabled: true,
   username: undefined,
   password: undefined,
-  auth: {
-    grauth: 'AABHG0UWFU9gU6UCh9hw7SDZMwbe2E6SvhXwvL517Fti2VAdMhtOZMhN9M-BLPUd2YapdG_osROoD12Y',
-    'csrf-token': 'AABHGyevwE3WpsBygh6sah2SaGLmwm7K4LVKQA',
-  },
 }
 
 const globalSettings = { ...DEFAULT_SETTINGS }
@@ -116,13 +112,18 @@ async function getGrammarlyAnalysisUsing(
 
     cache.set(id, { content, analysis, isDone: false, queue: [] })
 
-    return analysis.then(result => {
-      cache.set(id, { ...cache.get(id)!, isDone: true })
+    return analysis
+      .then(result => {
+        cache.set(id, { ...cache.get(id)!, isDone: true })
 
-      if (onFreshAnalysis) onFreshAnalysis(result)
+        if (onFreshAnalysis) onFreshAnalysis(result)
 
-      return result
-    })
+        return result
+      })
+      .catch(e => {
+        if (e.error === 'not_authorized')
+          return getGrammarlyAnalysisUsing(new Grammarly(), id, content, onFreshAnalysis)
+      })
   }
   if (cache.has(id)) {
     const prev = cache.get(id)!
@@ -269,7 +270,7 @@ function getGrammarlyClient(id: string, settings: GrammarlySettings) {
   if (!grammarlyClients.has(id)) {
     grammarlyClients.set(
       id,
-      settings.auth
+      settings.auth && settings.auth.grauth && settings.auth["csrf-token"]
         ? new Grammarly({ auth: settings.auth })
         : settings.username && settings.password
         ? new Grammarly(settings)
