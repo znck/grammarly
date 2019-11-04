@@ -52,7 +52,6 @@ export default [
       'zlib',
       // Not Required
       'bufferutil',
-      'supports-color',
     ],
   },
 ]
