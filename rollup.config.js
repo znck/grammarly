@@ -50,8 +50,6 @@ export default [
       'events',
       'url',
       'zlib',
-      // Not Required
-      'bufferutil',
     ],
   },
 ]

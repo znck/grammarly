@@ -71,6 +71,7 @@
     "vscode": "^1.1.28"
   },
   "dependencies": {
+    "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "node-fetch": "^2.6.0",
     "supports-color": "^7.1.0",
