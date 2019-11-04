@@ -8,8 +8,4 @@ vsc-extension-quickstart.md
 **/tslint.json
 **/*.map
 **/*.ts
-# node_modules/**
-# !node_modules/consola
-# !node_modules/jsdom
-# !node_modules/parse5
-# !node_modules/vscode-languageserver
+node_modules/**

@@ -17,56 +17,67 @@
   ],
   "activationEvents": [
     "onLanguage:plaintext",
-    "onLanguage:markdown"
+    "onLanguage:markdown",
+    "onCommand:grammarly.check"
   ],
   "contributes": {
     "configuration": {
       "type": "object",
       "title": "Grammarly",
       "properties": {
-        "grammarly.auth.grauth": {
+        "grammarly.username": {
           "scope": "resource",
-          "type": "string",
-          "description": "Your own personal AuthTokens can be found by inspecting the Firefox extension and looking at the Cookies tab."
+          "type": "string"
         },
-        "grammarly.auth.csrf-token": {
+        "grammarly.password": {
           "scope": "resource",
-          "type": "string",
-          "description": "Your own personal AuthTokens can be found by inspecting the Firefox extension and looking at the Cookies tab."
+          "type": "string"
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "grammarly.check",
+        "title": "Check grammar errors",
+        "category": "Grammarly",
+        "enablement": "editorLangId == markdown || editorLangId == plaintext"
+      }
+    ]
   },
   "license": "MIT",
   "main": "./out/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run test-compile",
+    "vscode:prepublish": "npm run compile",
     "test-compile": "tsc -p ./",
-    "compile": "webpack --mode production",
+    "compile": "rollup -c",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "@types/lodash.throttle": "^4.1.6",
+    "@types/debug": "^4.1.5",
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
+    "@types/node-fetch": "^2.5.3",
     "@types/turndown": "^5.0.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "ts-loader": "^6.2.1",
-    "tslint": "^5.12.1",
+    "@types/ws": "^6.0.3",
+    "rollup": "^1.26.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-typescript2": "^0.24.3",
+    "tslib": "^1.10.0",
     "typescript": "^3.3.1",
-    "vscode": "^1.1.28",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "vscode": "^1.1.28"
   },
   "dependencies": {
-    "@stewartmcgown/grammarly-api": "^1.1.2",
-    "bufferutil": "^4.0.1",
-    "lodash.throttle": "^4.1.1",
+    "debug": "^4.1.1",
+    "node-fetch": "^2.6.0",
     "turndown": "^5.0.3",
     "utf-8-validate": "^5.0.2",
-    "vscode-languageclient": "^5.2.1",
-    "vscode-languageserver": "^5.2.1"
+    "vscode-languageclient": "6.0.0-next.1",
+    "vscode-languageserver": "6.0.0-next.1",
+    "vscode-languageserver-protocol": "^3.14.1",
+    "ws": "^7.2.0"
   }
 }

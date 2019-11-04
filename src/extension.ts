@@ -44,10 +44,18 @@ export async function activate(context: vscode.ExtensionContext) {
   client = new LanguageClient('grammarly', 'Grammarly', serverOptions, clientOptions)
 
   client.start()
+
   console.log('Welcome to "Grammarly" extension.')
-  vscode.commands.registerCommand('grammarly.resolve', (id, uri) => {
-    if (client) client.sendNotification('grammarly.resolve', [id, uri])
-  })
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('grammarly.check', () => {
+      const activeEditor = vscode.window.activeTextEditor
+      if (!activeEditor) return
+      if (client) {
+        client.sendNotification('grammarly.check', [activeEditor.document.uri])
+      }
+    })
+  )
 }
 
 export async function deactivate() {
