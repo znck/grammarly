@@ -1,5 +1,6 @@
 import createLogger from 'debug'
-import TurndownService from 'turndown'
+// @ts-ignore
+import toMarkdown from 'html-to-md'
 import {
   CodeAction,
   createConnection,
@@ -18,8 +19,6 @@ import { AuthParams } from './socket'
 process.env.DEBUG = 'grammarly:*'
 
 const debug = createLogger('grammarly:server')
-
-const turndown = new TurndownService()
 const connection = createConnection(ProposedFeatures.all)
 const documents = new TextDocuments(2 /* TextDocumentSyncKind.Incremental */)
 
@@ -228,7 +227,7 @@ connection.onHover(
         kind: 'markdown',
         value:
           alert.explanation || alert.details || alert.examples
-            ? turndown.turndown(`${alert.explanation || ''} ${alert.details || ''} ${alert.examples || ''}`)
+            ? toMarkdown(`${alert.explanation || ''} ${alert.details || ''} ${alert.examples || ''}`)
             : '',
       },
     }
