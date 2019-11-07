@@ -290,7 +290,7 @@ function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
     range: getRangeInDocument(document, alert.begin, alert.end),
   }
 
-  console.log({
+  debug({
     id: alert.id,
     kind: diagnostic.severity,
     title: diagnostic.message,

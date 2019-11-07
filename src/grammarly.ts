@@ -5,7 +5,7 @@ import { TextDocument } from 'vscode-languageclient'
 import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
 
-const debug = console.log // createLogger('grammarly:host')
+const debug = createLogger('grammarly:host')
 
 export namespace Grammarly {
   export enum Action {
@@ -321,10 +321,11 @@ export namespace Grammarly {
       super()
       
       this.on(Action.ERROR, error => {
-        console.error(error)
+        console.error('Grammarly connection terminated due to error:', error)
         this._status = 'inactive'
         if (this.intervalHandle) clearInterval(this.intervalHandle)
         this.queue.length = 0
+        this.socket!.close()
         this.refresh()
       })
 
