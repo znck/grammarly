@@ -1,0 +1,24 @@
+name: Publish to VS Code Marketplace
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - name: Install Dependencies
+        run: npm install
+      - name: GitHub Action for vsce
+        uses: lannonbr/vsce-action@1.0.1
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+        with:
+          args: publish -p $VSCE_TOKEN
