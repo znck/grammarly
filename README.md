@@ -8,7 +8,7 @@ Unofficial Grammarly extension.
 
 - Issue highlighting with hover description.
 - Replacement and synonym suggestions.
-- Checks plaintext and markdown.
+- Checks plaintext, markdown, and asciidoc.
 
 ## Extension Settings
 

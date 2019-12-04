@@ -43,6 +43,14 @@ export async function activate(context: vscode.ExtensionContext) {
         scheme: 'untitled',
         language: 'latex',
       },
+      {
+        scheme: 'file',
+        language: 'asciidoc',
+      },
+      {
+        scheme: 'untitled',
+        language: 'asciidoc',
+      },
     ],
     synchronize: {
       configurationSection: 'grammarly',
