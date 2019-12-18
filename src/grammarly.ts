@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 import { TextDocument } from 'vscode-languageclient'
 import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
-import { getConfigurationFor, ExtensionConfiguration } from './configuration'
+import { GrammarlySettings } from './server'
 
 const debug = createLogger('grammarly:host')
 
@@ -297,7 +297,7 @@ export namespace Grammarly {
     return response.action === kind
   }
 
-  export function getDefaultDocumentContext(config: ExtensionConfiguration): DocumentContext {
+  export function getDefaultDocumentContext(config: GrammarlySettings): DocumentContext {
     // TODO: Should use configuration here.
     return {
       audience: DocumentAudience.KNOWLEDGEABLE,
@@ -319,9 +319,13 @@ export namespace Grammarly {
     private _status: 'active' | 'inactive' | 'broken' = 'inactive'
     private intervalHandle: null | NodeJS.Timeout = null
 
-    constructor(private document: TextDocument, private authParams?: AuthParams) {
+    constructor(
+      private readonly document: TextDocument,
+      private readonly settings: GrammarlySettings,
+      private readonly authParams?: AuthParams
+    ) {
       super()
-      
+
       this.on(Action.ERROR, error => {
         console.error('Grammarly connection terminated due to error:', error)
         this._status = 'inactive'
@@ -343,7 +347,7 @@ export namespace Grammarly {
       this.cookie = connection.cookie
 
       this.socket!.onmessage = event => this.onResponse(JSON.parse(event.data.toString()))
-      
+
       this.sendStartMessage()
       this.insert(0, this.document.getText())
       this.set('gnar_containerId', this.cookie!.gnar_containerId)
@@ -351,7 +355,10 @@ export namespace Grammarly {
 
     refresh() {
       debug({ type: 'INIT', documentId: this.document.uri })
-      connect(this.authParams, this.cookie).then(connection => this.handleConnection(connection))
+      connect(
+        this.authParams,
+        this.cookie
+      ).then(connection => this.handleConnection(connection))
     }
 
     dispose() {
@@ -408,7 +415,7 @@ export namespace Grammarly {
         ],
         clientVersion: '1.5.43-2114+master',
         dialect: Dialect.AMERICAN,
-        documentContext: getDefaultDocumentContext(getConfigurationFor(this.document.uri)),
+        documentContext: getDefaultDocumentContext(this.settings),
         docid: Buffer.from(this.document.uri).toString('base64'),
       }
 

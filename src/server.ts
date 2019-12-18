@@ -57,14 +57,16 @@ connection.onInitialized(() => {
   debug('Server Ready.')
 })
 
-interface GrammarlySettings {
+export interface GrammarlySettings {
   username: string | undefined
   password: string | undefined
+  dialect: Grammarly.Dialect
 }
 
 const DEFAULT_SETTINGS: GrammarlySettings = {
   username: undefined,
   password: undefined,
+  dialect: Grammarly.Dialect.AMERICAN,
 }
 
 const globalSettings = { ...DEFAULT_SETTINGS }
@@ -92,7 +94,7 @@ async function getGrammarlyDocument(document: TextDocument) {
   if (!grammarlyDocuments.has(document.uri)) {
     const settings = globalSettings
     const params: AuthParams = (settings.password && settings.username ? settings : undefined) as AuthParams
-    const host = new Grammarly.DocumentHost(document, params)
+    const host = new Grammarly.DocumentHost(document, await getDocumentSettings(document.uri), params)
     const instance: GrammarlyDocumentMeta = {
       alerts: {},
       synonyms: {},

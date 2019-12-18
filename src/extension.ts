@@ -19,7 +19,10 @@ export async function activate(context: vscode.ExtensionContext) {
   }
   const languages = ['plaintext', 'markdown', 'latex', 'restructuredtext', 'git-commit', 'git-rebase']
   const clientOptions: LanguageClientOptions = {
-    documentSelector: languages.map(language => ({ language })),
+    documentSelector: [
+      ...languages.map(language => ({ scheme: 'file', language })),
+      ...languages.map(language => ({ scheme: 'untitled', language })),
+    ],
     synchronize: {
       configurationSection: 'grammarly',
     },
