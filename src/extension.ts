@@ -17,33 +17,9 @@ export async function activate(context: vscode.ExtensionContext) {
       },
     },
   }
+  const languages = ['plaintext', 'markdown', 'latex', 'restructuredtext']
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [
-      {
-        scheme: 'file',
-        language: 'plaintext',
-      },
-      {
-        scheme: 'untitled',
-        language: 'plaintext',
-      },
-      {
-        scheme: 'file',
-        language: 'markdown',
-      },
-      {
-        scheme: 'untitled',
-        language: 'markdown',
-      },
-      {
-        scheme: 'file',
-        language: 'latex',
-      },
-      {
-        scheme: 'untitled',
-        language: 'latex',
-      },
-    ],
+    documentSelector: languages.map(language => ({ language })),
     synchronize: {
       configurationSection: 'grammarly',
     },
