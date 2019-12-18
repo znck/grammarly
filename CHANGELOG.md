@@ -1,3 +1,9 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.2.1](https://github.com/znck/grammarly/compare/v0.2.0...v0.2.1) (2019-12-18)
+
 # [0.2.0](https://github.com/znck/grammarly/compare/v0.1.6...v0.2.0) (2019-12-18)
 
 
@@ -75,6 +81,3 @@
 ### Features
 
 * Use grammarly operational transform with vs code incremental document sync ([9d4dd88](https://github.com/znck/grammarly/commit/9d4dd8825ac5d4e8422a1236b1cdd3909bbac049))
-
-
-
