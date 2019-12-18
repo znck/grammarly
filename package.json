@@ -26,12 +26,23 @@
       "title": "Grammarly",
       "properties": {
         "grammarly.username": {
+          "description": "A username for grammarly.com (optional).",
           "scope": "resource",
           "type": "string"
         },
         "grammarly.password": {
+          "description": "A password for grammarly.com (optional).",
           "scope": "resource",
           "type": "string"
+        },
+        "grammarly.dialect": {
+          "description": "The default dialect of English language.",
+          "scope": "resource",
+          "enum": [
+            "american",
+            "british"
+          ],
+          "default": "american"
         }
       }
     },
