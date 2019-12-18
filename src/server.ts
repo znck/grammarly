@@ -43,9 +43,6 @@ connection.onInitialize(
     return {
       capabilities: {
         textDocumentSync: 2 /* TextDocumentSyncKind.Incremental */,
-        completionProvider: {
-          resolveProvider: true,
-        },
         codeActionProvider: true,
         hoverProvider: true,
       },
