@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 import { TextDocument } from 'vscode-languageclient'
 import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
+import { getConfigurationFor, ExtensionConfiguration } from './configuration'
 
 const debug = createLogger('grammarly:host')
 
@@ -296,10 +297,11 @@ export namespace Grammarly {
     return response.action === kind
   }
 
-  export function getDefaultDocumentContext(): DocumentContext {
+  export function getDefaultDocumentContext(config: ExtensionConfiguration): DocumentContext {
+    // TODO: Should use configuration here.
     return {
       audience: DocumentAudience.KNOWLEDGEABLE,
-      dialect: Dialect.AMERICAN,
+      dialect: config.dialect,
       domain: DocumentDomain.GENERAL,
       emotion: WritingTone.MILD,
       emotions: [],
@@ -406,7 +408,7 @@ export namespace Grammarly {
         ],
         clientVersion: '1.5.43-2114+master',
         dialect: Dialect.AMERICAN,
-        documentContext: getDefaultDocumentContext(),
+        documentContext: getDefaultDocumentContext(getConfigurationFor(this.document.uri)),
         docid: Buffer.from(this.document.uri).toString('base64'),
       }
 
