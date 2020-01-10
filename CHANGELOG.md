@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.4"></a>
+## [0.3.4](https://github.com/znck/grammarly/compare/v0.3.3...v0.3.4) (2020-01-10)
+
+
+### Bug Fixes
+
+* include word in add to dictionary message ([2971a83](https://github.com/znck/grammarly/commit/2971a83))
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://github.com/znck/grammarly/compare/v0.3.2...v0.3.3) (2020-01-10)
 
