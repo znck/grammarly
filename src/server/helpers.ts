@@ -44,11 +44,11 @@ export function createGrammarlySynonymFix(
 
 export function createAddToDictionaryFix(document: TextDocument, alert: Grammarly.Alert, target: string): CodeAction {
   return {
-    title: `Add to ${target} dictionary`,
+    title: `Add: "${alert.text}" to ${target} dictionary`,
     kind: 'quickfix',
     command: {
       command: 'grammarly.addWord',
-      title: 'Save',
+      title: `Grammarly: save to ${target} dictionary`,
       arguments: [target, document.uri, alert.id, alert.text],
     },
   }

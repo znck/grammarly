@@ -142,7 +142,7 @@ connection.onCodeAction(
     const actions: CodeAction[] = []
 
     const folders = await connection.workspace.getWorkspaceFolders()
-    const isWorkspace = !!folders && !!folders.length
+    const isWorkspace = !!folders && folders.length > 1
 
     debug('Request code action', {
       textDocument,
