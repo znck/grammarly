@@ -1,3 +1,17 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/znck/grammarly/compare/v0.2.1...v0.3.0) (2020-01-10)
+
+
+### Features
+
+* Save words to local or grammarly dictionary ([a41f077](https://github.com/znck/grammarly/commit/a41f077)), closes [#3](https://github.com/znck/grammarly/issues/3)
+
+
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
