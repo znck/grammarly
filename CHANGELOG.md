@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/znck/grammarly/compare/v0.3.5...v0.4.0) (2020-01-10)
+
+
+### Features
+
+* Ignore/dismiss Grammarly alerts ([541ccc3](https://github.com/znck/grammarly/commit/541ccc3))
+
+
+
 <a name="0.3.5"></a>
 ## [0.3.5](https://github.com/znck/grammarly/compare/v0.3.4...v0.3.5) (2020-01-10)
 
