@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/znck/grammarly/compare/v0.3.1...v0.3.2) (2020-01-10)
+
+
+### Bug Fixes
+
+* Missing import in server ([06160bd](https://github.com/znck/grammarly/commit/06160bd))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/znck/grammarly/compare/v0.3.0...v0.3.1) (2020-01-10)
 
