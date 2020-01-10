@@ -54,7 +54,13 @@
         }
       }
     },
-    "commands": []
+    "commands": [
+      {
+        "command": "grammarly.check",
+        "title": "Check grammar errors",
+        "category": "Grammarly"
+      }
+    ]
   },
   "license": "MIT",
   "main": "./out/extension.js",

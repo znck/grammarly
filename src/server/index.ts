@@ -23,6 +23,7 @@ import {
   isSpellingAlert,
   createDiagnostic,
   getRangeInDocument,
+  createIgnoreFix,
 } from './helpers'
 
 process.env.DEBUG = 'grammarly:*'
@@ -159,6 +160,8 @@ connection.onCodeAction(
 
           alert.replacements.map(replacement => actions.push(createGrammarlyFix(alert, replacement, document)))
 
+          actions.push(createIgnoreFix(document, alert))
+
           if (isSpellingAlert(alert)) {
             actions.push(createAddToDictionaryFix(document, alert, 'user'))
             actions.push(createAddToDictionaryFix(document, alert, 'folder'))
@@ -240,6 +243,9 @@ connection.onNotification(async (event, ...args: any[]) => {
       case 'command:grammarly.addWord':
         await executeAddWordCommand(args[0], args[1], args[2])
         break
+      case 'command:grammarly.ignoreIssue':
+        await executeIgnoreIssueCommand(args[0], args[1])
+        break
     }
   }
 })
@@ -249,10 +255,19 @@ async function executeAddWordCommand(target: string, documentURI: string, code: 
   if (document) {
     const grammarly = await getGrammarlyDocument(document)
     if (target === 'grammarly') {
-      await grammarly.document.addToDictionary(code)
+      grammarly.document.addToDictionary(code)
     } else {
-      await grammarly.document.dismissAlert(code)
+      grammarly.document.dismissAlert(code)
     }
+  }
+}
+
+async function executeIgnoreIssueCommand(documentURI: string, code: number) {
+  const document = documents.get(documentURI)
+  if (document) {
+    const grammarly = await getGrammarlyDocument(document)
+
+    grammarly.document.dismissAlert(code)
   }
 }
 

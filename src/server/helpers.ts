@@ -7,6 +7,7 @@ export function createGrammarlyFix(alert: Grammarly.Alert, replacement: string, 
     title: `${alert.todo} -> ${replacement}`.replace(/^[a-z]/, m => m.toLocaleUpperCase()),
     kind: 'quickfix' /* CodeActionKind.QuickFix */,
     diagnostics: [createDiagnostic(alert, document)],
+    isPreferred: true,
     edit: {
       changes: {
         [document.uri]: [
@@ -50,6 +51,18 @@ export function createAddToDictionaryFix(document: TextDocument, alert: Grammarl
       command: 'grammarly.addWord',
       title: `Grammarly: save to ${target} dictionary`,
       arguments: [target, document.uri, alert.id, alert.text],
+    },
+  }
+}
+
+export function createIgnoreFix(document: TextDocument, alert: Grammarly.Alert): CodeAction {
+  return {
+    title: `Grammarly: ignore issue`,
+    kind: 'quickfix',
+    command: {
+      command: 'grammarly.ignoreIssue',
+      title: `Grammarly: ignore`,
+      arguments: [document.uri, alert.id],
     },
   }
 }

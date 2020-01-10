@@ -42,7 +42,12 @@ export async function activate(context: vscode.ExtensionContext) {
       const activeEditor = vscode.window.activeTextEditor
       if (!activeEditor) return
       if (client) {
-        client.sendNotification('command:grammarly.check', [activeEditor.document.uri])
+        client.sendNotification('command:grammarly.check', [activeEditor.document.uri.toString()])
+      }
+    }),
+    vscode.commands.registerCommand('grammarly.ignoreIssue', (...args) => {
+      if (client) {
+        client.sendNotification('command:grammarly.ignoreIssue', args)
       }
     }),
 
