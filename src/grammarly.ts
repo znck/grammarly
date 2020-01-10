@@ -6,6 +6,8 @@ import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
 import { GrammarlySettings } from './GrammarlySettings'
 
+process.env.DEBUG = 'grammarly:*'
+
 const debug = createLogger('grammarly:host')
 
 export namespace Grammarly {
@@ -40,6 +42,10 @@ export namespace Grammarly {
 
   export interface Message {
     action: Action
+  }
+
+  export interface IMessage<T> {
+    action: T
   }
 
   export interface Response extends Message {
@@ -315,6 +321,7 @@ export namespace Grammarly {
     [Action.START]: StartResponse
     [Action.OPERATION_TRANSFORM]: OperationTransformResponse
     [Action.SYNONYMS]: SynonymsResponse
+    [Action.FEEDBACK]: Response
   }
 
   function isResponseType(response: Response, kind: keyof ResponseTypes): response is ResponseTypes[typeof kind] {
@@ -351,6 +358,8 @@ export namespace Grammarly {
       super()
 
       this.on(Action.ERROR, error => {
+        if (error.error === 'cannot_find_synonym') return
+
         console.error('Grammarly connection terminated due to error:', error)
         this._status = 'inactive'
         if (this.intervalHandle) clearInterval(this.intervalHandle)
@@ -481,9 +490,7 @@ export namespace Grammarly {
         token: word,
       }
 
-      this.send(message)
-
-      return new Promise(() => {})
+      return this.sendAndWaitForResponse(message)
     }
 
     addToDictionary(alertId: number) {
@@ -524,6 +531,23 @@ export namespace Grammarly {
       }
 
       this.send(option)
+    }
+
+    private async sendAndWaitForResponse<T extends Action>(message: IMessage<T>): Promise<ResponseTypes[T]> {
+      const id = this.send(message)
+
+      return new Promise<any>((resolve, reject) => {
+        const handler = (response: Response) => {
+          if (response.id === id) {
+            this.off(message.action, handler)
+            this.off(Action.ERROR, handler)
+
+            response.action === Action.ERROR ? reject(response) : resolve(response)
+          }
+        }
+        this.on(message.action as any, handler)
+        this.on(Action.ERROR, handler)
+      })
     }
 
     private send(message: Message): number {

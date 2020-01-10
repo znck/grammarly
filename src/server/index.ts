@@ -171,17 +171,25 @@ connection.onCodeAction(
     const word = document.getText(range)
 
     if (word) {
-      await Promise.race([
-        grammarly.document.synonyms(document.offsetAt(range.start), word),
-        new Promise(resolve => setTimeout(resolve, 5000)), // TODO: Maybe use a config.
-      ])
+      try {
+        debug('Find synonyms for the word: ' + word)
+        /* Try to find synonyms within 2 seconds. */
+        const result = await Promise.race([
+          grammarly.document.synonyms(document.offsetAt(range.start), word),
+          new Promise(resolve => setTimeout(resolve, 2000)),
+        ])
 
-      if (word in grammarly.synonyms) {
-        grammarly.synonyms[word].forEach(meaning => {
-          meaning.synonyms.forEach(replacement => {
-            actions.push(createGrammarlySynonymFix(word, replacement, document, range))
+        debug('Found synonyms', result)
+
+        if (word in grammarly.synonyms) {
+          grammarly.synonyms[word].forEach(meaning => {
+            meaning.synonyms.forEach(replacement => {
+              actions.push(createGrammarlySynonymFix(word, replacement, document, range))
+            })
           })
-        })
+        }
+      } catch (error) {
+        debug('Error in finding synonyms', error)
       }
     }
 
