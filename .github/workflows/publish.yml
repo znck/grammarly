@@ -2,6 +2,8 @@ name: Publish to VS Code Marketplace
 
 on:
   push:
+    branches-ignore:
+      - '*'
     tags:
       - v*
 
