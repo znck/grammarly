@@ -17,8 +17,15 @@ This extension contributes to the following settings:
 - `grammarly.username`: Grammarly username
 - `grammarly.password`: Grammarly password
 - `grammarly.dialect`: The dialect of English language (default `american`, available options are `american` and `british`)
+- `grammarly.userWords`: User words to add to dictionary.
 
 ## Release Notes
+
+### Version 0.3.0
+
+Save words to local or grammarly dictionary.
+
+![](./assets/screenshot2.png)
 
 ### Version 0.1.0
 

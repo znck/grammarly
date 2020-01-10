@@ -25,7 +25,7 @@ export default [
     ],
   },
   {
-    input: 'src/server.ts',
+    input: 'src/server/index.ts',
     output: {
       format: 'cjs',
       file: 'out/server.js',

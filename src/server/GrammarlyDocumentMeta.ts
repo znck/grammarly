@@ -4,3 +4,9 @@ export interface GrammarlyDocumentMeta {
   synonyms: Record<string, Grammarly.TokenMeaning[]>
   document: Grammarly.DocumentHost
 }
+
+export const env = {
+  hasConfigurationCapability: false,
+  hasWorkspaceFolderCapability: false,
+  hasDiagnosticRelatedInformationCapability: false,
+}

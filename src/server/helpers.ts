@@ -1,6 +1,6 @@
-import { CodeAction, TextDocument, Range } from 'vscode-languageserver'
+import { CodeAction, Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver'
 import { Grammarly } from '../grammarly'
-import { createDiagnostic, getRangeInDocument } from './index'
+import { env } from './GrammarlyDocumentMeta'
 
 export function createGrammarlyFix(alert: Grammarly.Alert, replacement: string, document: TextDocument): CodeAction {
   return {
@@ -67,4 +67,55 @@ export function capturePromiseErrors<T extends Function>(fn: T, fallback?: unkno
       return fallback
     }
   }) as any
+}
+
+export function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
+  const diagnostic: Diagnostic = {
+    severity: getAlertSeverity(alert),
+    message: (alert.title || alert.categoryHuman!).replace(/<\/?[^>]+(>|$)/g, ''),
+    source: 'Grammarly',
+    code: alert.id,
+    range: getRangeInDocument(document, alert.begin, alert.end),
+  }
+
+  if (env.hasDiagnosticRelatedInformationCapability) {
+    if (shouldIncludeAdditionalInformation(alert)) {
+      diagnostic.relatedInformation = [
+        {
+          location: {
+            uri: document.uri,
+            range: getRangeInDocument(document, alert.highlightBegin, alert.highlightEnd),
+          },
+          message: alert.highlightText!,
+        },
+      ]
+    }
+  }
+
+  return diagnostic
+}
+
+export function shouldIncludeAdditionalInformation(alert: Grammarly.Alert): boolean {
+  return !!(alert.highlightText && alert.highlightText.length <= 60)
+}
+
+export function getAlertSeverity(alert: Grammarly.Alert): DiagnosticSeverity {
+  switch (alert.category) {
+    case 'WordChoice':
+    case 'PassiveVoice':
+    case 'Readability':
+      return 3 /* DiagnosticSeverity.Information */
+    case 'Clarity':
+    case 'Dialects':
+      return 2 /* DiagnosticSeverity.Warning */
+    default:
+      return 1 /* DiagnosticSeverity.Error */
+  }
+}
+
+export function getRangeInDocument(document: TextDocument, start: number, end: number): Range {
+  return {
+    start: document.positionAt(start),
+    end: document.positionAt(end),
+  }
 }

@@ -4,7 +4,6 @@ import toMarkdown from 'html-to-md'
 import {
   CodeAction,
   createConnection,
-  Diagnostic,
   Hover,
   InitializeResult,
   ProposedFeatures,
@@ -12,17 +11,17 @@ import {
   TextDocument,
   TextDocuments,
 } from 'vscode-languageserver'
-import { DiagnosticSeverity } from 'vscode-languageserver-protocol'
 import { Grammarly } from '../grammarly'
+import { DEFAULT_SETTINGS, GrammarlySettings } from '../GrammarlySettings'
 import { AuthParams } from '../socket'
-import { GrammarlySettings, DEFAULT_SETTINGS } from '../GrammarlySettings'
-import { GrammarlyDocumentMeta } from './GrammarlyDocumentMeta'
+import { env, GrammarlyDocumentMeta } from './GrammarlyDocumentMeta'
 import {
+  capturePromiseErrors,
+  createAddToDictionaryFix,
   createGrammarlyFix,
   createGrammarlySynonymFix,
-  capturePromiseErrors,
   isSpellingAlert,
-  createAddToDictionaryFix,
+  createDiagnostic,
 } from './helpers'
 
 process.env.DEBUG = 'grammarly:*'
@@ -31,19 +30,15 @@ const debug = createLogger('grammarly:server')
 const connection = createConnection(ProposedFeatures.all)
 const documents = new TextDocuments(2 /* TextDocumentSyncKind.Incremental */)
 
-let hasConfigurationCapability: boolean = false
-let hasWorkspaceFolderCapability: boolean = false
-let hasDiagnosticRelatedInformationCapability: boolean = false
-
 connection.onInitialize(
   (params): InitializeResult => {
     const capabilities = params.capabilities
 
     // Does the client support the `workspace/configuration` request?
     // If not, we will fall back using global settings.
-    hasConfigurationCapability = !!(capabilities.workspace && capabilities.workspace.configuration)
-    hasWorkspaceFolderCapability = !!(capabilities.workspace && capabilities.workspace.workspaceFolders)
-    hasDiagnosticRelatedInformationCapability = !!(
+    env.hasConfigurationCapability = !!(capabilities.workspace && capabilities.workspace.configuration)
+    env.hasWorkspaceFolderCapability = !!(capabilities.workspace && capabilities.workspace.workspaceFolders)
+    env.hasDiagnosticRelatedInformationCapability = !!(
       capabilities.textDocument &&
       capabilities.textDocument.publishDiagnostics &&
       capabilities.textDocument.publishDiagnostics.relatedInformation
@@ -66,7 +61,7 @@ const additionalWords: string[] = []
 connection.onInitialized(async () => {
   debug('Server Ready.')
 
-  if (hasConfigurationCapability) {
+  if (env.hasConfigurationCapability) {
     const items = await connection.workspace.getConfiguration('cSpell.userWords')
 
     if (items) {
@@ -76,7 +71,7 @@ connection.onInitialized(async () => {
 })
 
 connection.onDidChangeConfiguration(change => {
-  if (hasConfigurationCapability) {
+  if (env.hasConfigurationCapability) {
     documentSettings.clear()
   } else {
     Object.assign(globalSettings, change.settings.grammarly)
@@ -263,7 +258,7 @@ async function executeCheckCommand(documentURI: TextDocument['uri']) {
 }
 
 async function getDocumentSettings(resource: string): Promise<GrammarlySettings> {
-  if (!hasConfigurationCapability) {
+  if (!env.hasConfigurationCapability) {
     return globalSettings
   }
 
@@ -295,65 +290,6 @@ documents.onDidClose(e => {
 documents.onDidOpen(e => {
   getGrammarlyDocument(e.document)
 })
-
-export function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
-  const diagnostic: Diagnostic = {
-    severity: getAlertSeverity(alert),
-    message: (alert.title || alert.categoryHuman!).replace(/<\/?[^>]+(>|$)/g, ''),
-    source: 'Grammarly',
-    code: alert.id,
-    range: getRangeInDocument(document, alert.begin, alert.end),
-  }
-
-  debug('create diagnostic', {
-    id: alert.id,
-    kind: diagnostic.severity,
-    title: diagnostic.message,
-    alert,
-    diagnostic,
-  })
-
-  if (hasDiagnosticRelatedInformationCapability) {
-    if (shouldIncludeAdditionalInformation(alert)) {
-      diagnostic.relatedInformation = [
-        {
-          location: {
-            uri: document.uri,
-            range: getRangeInDocument(document, alert.highlightBegin, alert.highlightEnd),
-          },
-          message: alert.highlightText!,
-        },
-      ]
-    }
-  }
-
-  return diagnostic
-}
-
-function shouldIncludeAdditionalInformation(alert: Grammarly.Alert): boolean {
-  return !!(alert.highlightText && alert.highlightText.length <= 60)
-}
-
-function getAlertSeverity(alert: Grammarly.Alert): DiagnosticSeverity {
-  switch (alert.category) {
-    case 'WordChoice':
-    case 'PassiveVoice':
-    case 'Readability':
-      return 3 /* DiagnosticSeverity.Information */
-    case 'Clarity':
-    case 'Dialects':
-      return 2 /* DiagnosticSeverity.Warning */
-    default:
-      return 1 /* DiagnosticSeverity.Error */
-  }
-}
-
-export function getRangeInDocument(document: TextDocument, start: number, end: number): Range {
-  return {
-    start: document.positionAt(start),
-    end: document.positionAt(end),
-  }
-}
 
 let applyTextDocumentChange: Function
 const onDidChangeTextDocument = connection.onDidChangeTextDocument
@@ -407,4 +343,5 @@ onDidChangeTextDocument(e => {
     }
   }
 })
+
 connection.listen()
