@@ -1,9 +1,12 @@
 import * as vscode from 'vscode'
 import { LanguageClient, ServerOptions, TransportKind, LanguageClientOptions } from 'vscode-languageclient'
+import { GrammarlySettings } from './GrammarlySettings'
+import { ConfigurationTarget } from 'vscode'
+import { Uri } from 'vscode'
 
 let client: LanguageClient | null = null
 export async function activate(context: vscode.ExtensionContext) {
-  const module = context.asAbsolutePath('out/server.js')
+  const module = context.asAbsolutePath('out/server/index.js')
   const serverOptions: ServerOptions = {
     run: {
       module,
@@ -39,9 +42,43 @@ export async function activate(context: vscode.ExtensionContext) {
       const activeEditor = vscode.window.activeTextEditor
       if (!activeEditor) return
       if (client) {
-        client.sendNotification('grammarly.check', [activeEditor.document.uri])
+        client.sendNotification('command:grammarly.check', [activeEditor.document.uri])
       }
-    })
+    }),
+
+    vscode.commands.registerCommand(
+      'grammarly.addWord',
+      async (target: string, documentURI: string, code: number, word: string) => {
+        if (client) {
+          if (target === 'user' || target === 'folder' || target === 'workspace') {
+            const config = vscode.workspace.getConfiguration().get<GrammarlySettings>('grammarly')
+
+            const userWords = config ? config.userWords || [] : []
+
+            if (!userWords.includes(word)) {
+              userWords.push(word)
+              userWords.sort()
+
+              if (target === 'user') {
+                await vscode.workspace
+                  .getConfiguration()
+                  .update('grammarly.userWords', userWords, ConfigurationTarget.Global)
+              } else {
+                await vscode.workspace
+                  .getConfiguration(undefined, Uri.parse(documentURI))
+                  .update(
+                    'grammarly.userWords',
+                    userWords,
+                    target === 'folder' ? ConfigurationTarget.WorkspaceFolder : ConfigurationTarget.Workspace
+                  )
+              }
+            }
+          }
+
+          client.sendNotification('command:grammarly.addWord', [target, documentURI, code, word])
+        }
+      }
+    )
   )
 }
 

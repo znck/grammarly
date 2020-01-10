@@ -13,8 +13,17 @@ import {
   TextDocuments,
 } from 'vscode-languageserver'
 import { DiagnosticSeverity } from 'vscode-languageserver-protocol'
-import { Grammarly } from './grammarly'
-import { AuthParams } from './socket'
+import { Grammarly } from '../grammarly'
+import { AuthParams } from '../socket'
+import { GrammarlySettings, DEFAULT_SETTINGS } from '../GrammarlySettings'
+import { GrammarlyDocumentMeta } from './GrammarlyDocumentMeta'
+import {
+  createGrammarlyFix,
+  createGrammarlySynonymFix,
+  capturePromiseErrors,
+  isSpellingAlert,
+  createAddToDictionaryFix,
+} from './helpers'
 
 process.env.DEBUG = 'grammarly:*'
 
@@ -50,24 +59,21 @@ connection.onInitialize(
   }
 )
 
-connection.onInitialized(() => {
-  debug('Server Ready.')
-})
-
-export interface GrammarlySettings {
-  username: string | undefined
-  password: string | undefined
-  dialect: Grammarly.Dialect
-}
-
-const DEFAULT_SETTINGS: GrammarlySettings = {
-  username: undefined,
-  password: undefined,
-  dialect: Grammarly.Dialect.AMERICAN,
-}
-
 const globalSettings = { ...DEFAULT_SETTINGS }
 const documentSettings = new Map<string, Promise<GrammarlySettings>>()
+const additionalWords: string[] = []
+
+connection.onInitialized(async () => {
+  debug('Server Ready.')
+
+  if (hasConfigurationCapability) {
+    const items = await connection.workspace.getConfiguration('cSpell.userWords')
+
+    if (items) {
+      additionalWords.push(...items)
+    }
+  }
+})
 
 connection.onDidChangeConfiguration(change => {
   if (hasConfigurationCapability) {
@@ -80,31 +86,37 @@ connection.onDidChangeConfiguration(change => {
 })
 
 const grammarlyDocuments = new Map<string, GrammarlyDocumentMeta>()
-
-interface GrammarlyDocumentMeta {
-  alerts: Record<number, Grammarly.Alert>
-  synonyms: Record<string, Grammarly.TokenMeaning[]>
-  document: Grammarly.DocumentHost
-}
-
 async function getGrammarlyDocument(document: TextDocument) {
   if (!grammarlyDocuments.has(document.uri)) {
-    const settings = globalSettings
-    const params: AuthParams = (settings.password && settings.username ? settings : undefined) as AuthParams
-    const host = new Grammarly.DocumentHost(document, await getDocumentSettings(document.uri), params)
+    const documentSettings = await getDocumentSettings(document.uri)
+    const params: AuthParams = (globalSettings.password && globalSettings.username
+      ? globalSettings
+      : undefined) as AuthParams
+    const host = new Grammarly.DocumentHost(document, documentSettings, params)
     const instance: GrammarlyDocumentMeta = {
       alerts: {},
       synonyms: {},
       document: host,
     }
+    const words = new Set([...additionalWords, ...globalSettings.userWords, ...documentSettings.userWords])
 
     host
       .on(Grammarly.Action.ALERT, alert => {
-        instance.alerts[alert.id] = alert
+        if (isSpellingAlert(alert)) {
+          const word = alert.text
+
+          if (words.has(word) || words.has(word.toLocaleLowerCase())) {
+            host.dismissAlert(alert.id)
+          } else {
+            instance.alerts[alert.id] = alert
+          }
+        }
       })
       .on(Grammarly.Action.REMOVE, remove => {
-        delete instance.alerts[remove.id]
-        sendDiagnostics(document)
+        if (remove.id in instance.alerts) {
+          delete instance.alerts[remove.id]
+          sendDiagnostics(document)
+        }
       })
       .on(Grammarly.Action.SYNONYMS, result => {
         instance.synonyms[result.token] = result.synonyms.meanings
@@ -133,27 +145,31 @@ connection.onCodeAction(
     const grammarly = await getGrammarlyDocument(document)
     const actions: CodeAction[] = []
 
+    const folders = await connection.workspace.getWorkspaceFolders()
+    const isWorkspace = !!folders && !!folders.length
+
+    debug('Request code action', {
+      textDocument,
+      diagnostics: context.diagnostics,
+    })
+
     context.diagnostics
       .map(({ code }) => grammarly.alerts[code as number])
       .forEach(alert => {
-        if (alert)
-          alert.replacements.map(replacement =>
-            actions.push({
-              title: `${alert.todo} -> ${replacement}`.replace(/^[a-z]/, m => m.toLocaleUpperCase()),
-              kind: 'quickfix' /* CodeActionKind.QuickFix */,
-              diagnostics: [createDiagnostic(alert, document)],
-              edit: {
-                changes: {
-                  [document.uri]: [
-                    {
-                      range: getRangeInDocument(document, alert.begin, alert.end),
-                      newText: replacement,
-                    },
-                  ],
-                },
-              },
-            })
-          )
+        if (alert) {
+          debug('Add code action', {
+            alert,
+          })
+
+          alert.replacements.map(replacement => actions.push(createGrammarlyFix(alert, replacement, document)))
+
+          if (isSpellingAlert(alert)) {
+            actions.push(createAddToDictionaryFix(document, alert, 'user'))
+            actions.push(createAddToDictionaryFix(document, alert, 'folder'))
+            if (isWorkspace) actions.push(createAddToDictionaryFix(document, alert, 'workspace'))
+            actions.push(createAddToDictionaryFix(document, alert, 'grammarly'))
+          }
+        }
       })
 
     const word = document.getText(range)
@@ -161,28 +177,13 @@ connection.onCodeAction(
     if (word) {
       await Promise.race([
         grammarly.document.synonyms(document.offsetAt(range.start), word),
-        new Promise(resolve => setTimeout(resolve, 1000)),
+        new Promise(resolve => setTimeout(resolve, 5000)), // TODO: Maybe use a config.
       ])
 
       if (word in grammarly.synonyms) {
         grammarly.synonyms[word].forEach(meaning => {
           meaning.synonyms.forEach(replacement => {
-            const newText = replacement.derived
-
-            actions.push({
-              title: `${word} -> ${newText}`,
-              kind: 'quickfix' /* CodeActionKind.QuickFix */,
-              edit: {
-                changes: {
-                  [document.uri]: [
-                    {
-                      range,
-                      newText,
-                    },
-                  ],
-                },
-              },
-            })
+            actions.push(createGrammarlySynonymFix(word, replacement, document, range))
           })
         })
       }
@@ -191,17 +192,6 @@ connection.onCodeAction(
     return actions
   })
 )
-
-function capturePromiseErrors<T extends Function>(fn: T, fallback?: unknown): T {
-  return (async (...args: unknown[]) => {
-    try {
-      return await fn(...args)
-    } catch (error) {
-      console.error(error)
-      return fallback
-    }
-  }) as any
-}
 
 connection.onHover(
   capturePromiseErrors(async ({ position, textDocument }) => {
@@ -235,16 +225,42 @@ connection.onHover(
   })
 )
 
-connection.onNotification(async (command, uri) => {
-  const document = documents.get(uri)
+connection.onNotification(async (event, ...args: any[]) => {
+  debug('Notification', { event, args })
 
-  if (!document) return
-  if (command === 'grammarly.check') {
+  if (event.startsWith('command:')) {
+    switch (event) {
+      case 'command:grammarly.check':
+        await executeCheckCommand(args[0])
+        break
+      case 'command:grammarly.addWord':
+        await executeAddWordCommand(args[0], args[1], args[2])
+        break
+    }
+  }
+})
+
+async function executeAddWordCommand(target: string, documentURI: string, code: number) {
+  const document = documents.get(documentURI)
+  if (document) {
+    const grammarly = await getGrammarlyDocument(document)
+    if (target === 'grammarly') {
+      await grammarly.document.addToDictionary(code)
+    } else {
+      await grammarly.document.dismissAlert(code)
+    }
+  }
+}
+
+async function executeCheckCommand(documentURI: TextDocument['uri']) {
+  const document = documents.get(documentURI)
+
+  if (document) {
     const grammarly = await getGrammarlyDocument(document)
 
     grammarly.document.refresh()
   }
-})
+}
 
 async function getDocumentSettings(resource: string): Promise<GrammarlySettings> {
   if (!hasConfigurationCapability) {
@@ -280,7 +296,7 @@ documents.onDidOpen(e => {
   getGrammarlyDocument(e.document)
 })
 
-function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
+export function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
   const diagnostic: Diagnostic = {
     severity: getAlertSeverity(alert),
     message: (alert.title || alert.categoryHuman!).replace(/<\/?[^>]+(>|$)/g, ''),
@@ -289,7 +305,7 @@ function createDiagnostic(alert: Grammarly.Alert, document: TextDocument) {
     range: getRangeInDocument(document, alert.begin, alert.end),
   }
 
-  debug({
+  debug('create diagnostic', {
     id: alert.id,
     kind: diagnostic.severity,
     title: diagnostic.message,
@@ -332,7 +348,7 @@ function getAlertSeverity(alert: Grammarly.Alert): DiagnosticSeverity {
   }
 }
 
-function getRangeInDocument(document: TextDocument, start: number, end: number): Range {
+export function getRangeInDocument(document: TextDocument, start: number, end: number): Range {
   return {
     start: document.positionAt(start),
     end: document.positionAt(end),

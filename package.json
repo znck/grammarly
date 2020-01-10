@@ -43,17 +43,18 @@
             "british"
           ],
           "default": "american"
+        },
+        "grammarly.userWords": {
+          "description": "User words to add to dictionary.",
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
-    "commands": [
-      {
-        "command": "grammarly.check",
-        "title": "Check grammar errors",
-        "category": "Grammarly",
-        "enablement": "editorLangId == markdown || editorLangId == plaintext"
-      }
-    ]
+    "commands": []
   },
   "license": "MIT",
   "main": "./out/extension.js",

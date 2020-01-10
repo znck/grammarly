@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 import { TextDocument } from 'vscode-languageclient'
 import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
-import { GrammarlySettings } from './server'
+import { GrammarlySettings } from './GrammarlySettings'
 
 const debug = createLogger('grammarly:host')
 
@@ -106,6 +106,30 @@ export namespace Grammarly {
     action: Action.SYNONYMS
     begin: number
     token: string
+  }
+
+  export interface AddToDictionaryMessage extends Message {
+    action: Action.FEEDBACK
+    type: 'ADD_TO_DICTIONARY'
+    alertId: string
+  }
+
+  export interface IgnoreMessage extends Message {
+    action: Action.FEEDBACK
+    type: 'IGNORE'
+    alertId: string
+  }
+
+  export interface IncorrectSuggestionMessage extends Message {
+    action: Action.FEEDBACK
+    type: 'WRONG_SUGGESTION'
+    alertId: string
+  }
+
+  export interface OffensiveContentMessage extends Message {
+    action: Action.FEEDBACK
+    type: 'OFFENSIVE_CONTENT'
+    alertId: string
   }
 
   export interface Alert {
@@ -355,10 +379,7 @@ export namespace Grammarly {
 
     refresh() {
       debug({ type: 'INIT', documentId: this.document.uri })
-      connect(
-        this.authParams,
-        this.cookie
-      ).then(connection => this.handleConnection(connection))
+      connect(this.authParams, this.cookie).then(connection => this.handleConnection(connection))
     }
 
     dispose() {
@@ -465,6 +486,26 @@ export namespace Grammarly {
       return new Promise(() => {})
     }
 
+    addToDictionary(alertId: number) {
+      const message: AddToDictionaryMessage = {
+        action: Action.FEEDBACK,
+        type: 'ADD_TO_DICTIONARY',
+        alertId: String(alertId),
+      }
+
+      this.send(message)
+    }
+
+    dismissAlert(alertId: number) {
+      const message: IgnoreMessage = {
+        action: Action.FEEDBACK,
+        type: 'IGNORE',
+        alertId: String(alertId),
+      }
+
+      this.send(message)
+    }
+
     setContext(context: DocumentContext) {
       const message: ContextMessage = {
         action: Action.CONTEXT,
@@ -485,7 +526,7 @@ export namespace Grammarly {
       this.send(option)
     }
 
-    private send(message: Message) {
+    private send(message: Message): number {
       const payload: any = {
         ...message,
       }
@@ -501,6 +542,8 @@ export namespace Grammarly {
         })
         this.socket.send(JSON.stringify(payload))
       } else this.queue.push(payload)
+
+      return payload.id
     }
   }
 }
