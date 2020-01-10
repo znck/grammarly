@@ -2,8 +2,8 @@ name: Publish to VS Code Marketplace
 
 on:
   push:
-    branches: 
-      - master
+    tags:
+      - v*
 
 jobs:
   build:
@@ -21,4 +21,4 @@ jobs:
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
         with:
-          args: publish -p $VSCE_TOKEN patch
+          args: publish -p $VSCE_TOKEN

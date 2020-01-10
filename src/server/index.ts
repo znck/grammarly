@@ -22,6 +22,7 @@ import {
   createGrammarlySynonymFix,
   isSpellingAlert,
   createDiagnostic,
+  getRangeInDocument,
 } from './helpers'
 
 process.env.DEBUG = 'grammarly:*'
