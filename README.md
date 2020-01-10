@@ -16,6 +16,7 @@ This extension contributes to the following settings:
 
 - `grammarly.username`: Grammarly username
 - `grammarly.password`: Grammarly password
+- `grammarly.dialect`: The dialect of English language (default `american`, available options are `american` and `british`)
 
 ## Release Notes
 
