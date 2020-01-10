@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/znck/grammarly/compare/v0.3.0...v0.3.1) (2020-01-10)
+
+
+### Bug Fixes
+
+* Out file should be server/index.js ([c15670a](https://github.com/znck/grammarly/commit/c15670a))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/znck/grammarly/compare/v0.2.1...v0.3.0) (2020-01-10)
 
