@@ -1,8 +1,7 @@
-import { Grammarly } from '@/shared/grammarly'
+import { getGrammarlyClient } from '@/client'
+import { isIgnoredDocument } from '@/client/utils'
 import { commands, window } from 'vscode'
 import { Disposable } from 'vscode-languageclient'
-import { getClient } from '..'
-import { isIgnoredDocument } from '../utils'
 
 export function registerStatsCommand(): Disposable {
   return commands.registerCommand('grammarly.stats', async () => {
@@ -12,32 +11,40 @@ export function registerStatsCommand(): Disposable {
     const { document } = activeTextEditor
     if (isIgnoredDocument(document)) return
 
-    const client = getClient()
+    const client = getGrammarlyClient()
 
     try {
-      const result = await client.sendRequest<Grammarly.StatsResponse>(
-        '$/grammarly/' + Grammarly.Action.STATS,
-        document.uri.toString()
-      )
-
-      console.log('got response...', result)
+      const uri = document.uri.toString()
+      const { performance, content, readability, vocubulary } = await client.getStatistics(uri)
 
       await window.showInformationMessage(
         `
+        Text Score: ${performance.score} out of 100.  
+        This score represents the quality of writing in this document. ${
+          performance.score < 100 ? `You can increase it by addressing Grammarly's suggestions.` : ''
+        } 
+
         Word Count:
         
-        Characters ${result.chars}
-        Words ${result.words}
-        Sentences ${result.sentences}
+        Characters ${content.characters}
+        Words ${content.words}
+        Sentences ${content.sentences}
+        Reading time ${content.readingTime}
+        Speaking time ${content.speakingTime}
 
 
         Readability:
 
-        Word Length ${result.wordLength} (${result.wordLengthIndex}%)
-        Sentence Length ${result.sentenceLength} (${result.sentenceLengthIndex}%)
-        Readability Score ${result.readabilityScore}
+        Word length ${readability.wordLength}
+        Sentence length ${readability.sentenceLength}
+        Readability score ${readability.score}
 
-        ${result.readabilityDescription}
+        ${readability.message}
+
+        Vocabulary:
+
+        Unique words ${vocubulary.uniqueWords}%
+        Rare words ${vocubulary.rareWords}%
         `.replace(/^[ \t]+/gm, ''),
         { modal: true }
       )

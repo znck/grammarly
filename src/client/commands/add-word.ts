@@ -1,36 +1,67 @@
-import { GrammarlySettings } from '@/settings'
-import { ConfigurationTarget } from 'vscode'
-import { Uri } from 'vscode'
-import { getClient } from '@/client'
-import { commands } from 'vscode'
-import { workspace } from 'vscode'
+import { getGrammarlyClient } from '@/client'
+import { commands, ConfigurationTarget, Uri, workspace } from 'vscode'
 import { Disposable } from 'vscode-languageclient'
 
 export function registerAddWordCommand(): Disposable {
   return commands.registerCommand(
     'grammarly.addWord',
-    async (target: string, documentURI: string, code: number, word: string) => {
-      if (target === 'user' || target === 'folder' || target === 'workspace') {
-        const config = workspace.getConfiguration().get<GrammarlySettings>('grammarly')
-        const userWords = config ? config.userWords || [] : []
-        if (!userWords.includes(word)) {
-          userWords.push(word)
-          userWords.sort()
-          if (target === 'user') {
-            await workspace.getConfiguration().update('grammarly.userWords', userWords, ConfigurationTarget.Global)
-          } else {
-            await workspace
-              .getConfiguration(undefined, Uri.parse(documentURI))
-              .update(
-                'grammarly.userWords',
-                userWords,
-                target === 'folder' ? ConfigurationTarget.WorkspaceFolder : ConfigurationTarget.Workspace
-              )
-          }
-        }
+    async (target: 'grammarly' | 'workspace' | 'folder' | 'user', documentURI: string, code: number, word: string) => {
+      const client = getGrammarlyClient()
+
+      switch (target) {
+        case 'folder':
+          await addToFolderDictionary(documentURI, word)
+          break
+
+        case 'workspace':
+          await addToWorkspaceDictionary(documentURI, word)
+          break
+
+        case 'user':
+          await addToUserDictionary(word)
+          break
+
+        case 'grammarly':
+          await client.addToDictionary(documentURI, { dictionary: 'grammarly', alertId: code, word })
+          break
       }
-      const client = getClient()
-      client.sendNotification('command:grammarly.addWord', [target, documentURI, code, word])
+
+      if (target !== 'grammarly') {
+        await client.dismissAlert(documentURI, code)
+      }
     }
   )
+}
+
+async function addToUserDictionary(word: string) {
+  const config = workspace.getConfiguration('grammarly')
+  const words = config.get<string[]>('userWords') || []
+
+  words.sort()
+
+  if (!words.includes(word)) {
+    await config.update('userWords', words, ConfigurationTarget.Global)
+  }
+}
+
+async function addToFolderDictionary(uri: string, word: string) {
+  const config = workspace.getConfiguration('grammarly', Uri.parse(uri))
+  const words = config.get<string[]>('userWords') || []
+
+  words.sort()
+
+  if (!words.includes(word)) {
+    await config.update('userWords', words, ConfigurationTarget.WorkspaceFolder)
+  }
+}
+
+async function addToWorkspaceDictionary(uri: string, word: string) {
+  const config = workspace.getConfiguration('grammarly', Uri.parse(uri))
+  const words = config.get<string[]>('userWords') || []
+
+  words.sort()
+
+  if (!words.includes(word)) {
+    await config.update('userWords', words, ConfigurationTarget.Workspace)
+  }
 }

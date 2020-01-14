@@ -1,4 +1,5 @@
-import { getClient } from '@/client'
+import { getClient, getGrammarlyClient } from '@/client'
+import { onCustomEventFromServer } from '@/shared/events'
 import { Grammarly } from '@/shared/grammarly'
 import {
   ExtensionContext,
@@ -26,52 +27,81 @@ export function registerStatusBar(context: ExtensionContext) {
 
   const client = getClient()
 
-  client.onReady().then(() =>
-    client.onNotification('event:grammarly.finished', (uri: string, result: Grammarly.FinishedResponse) => {
+  client.onReady().then(() => {
+    onCustomEventFromServer(client, Grammarly.Action.FEEDBACK, uri => {
       if (isActiveDocument(uri)) {
-        const status = result.outcomeScores
-        const v = (num: number) => Number.parseInt(`${num * 100}`)
-
-        statusBar.command = 'grammarly.stats'
-        statusBar.text = '$(globe) ' + result.generalScore + ' out of 100'
-        statusBar.tooltip = [
-          `Clarity: ${v(status.Clarity)}`,
-          `Correctness: ${v(status.Correctness)}`,
-          `Engagement: ${v(status.Engagement)}`,
-          `Tone: ${v(status.Tone)}`,
-        ].join('\n')
-        statusBar.show()
+        update(uri)
       }
     })
-  )
+
+    onCustomEventFromServer(client, Grammarly.Action.FINISHED, uri => {
+      if (isActiveDocument(uri)) {
+        update(uri)
+      }
+    })
+  })
 
   onDidOpenDocument(window.activeTextEditor && window.activeTextEditor.document)
+}
+
+function setTooltip(status: {
+  Clarity: number
+  Correctness: number
+  Engagement: number
+  GeneralScore: number
+  Tone: number
+}) {
+  const v = (num: number) => Number.parseInt(`${num * 100}`)
+  statusBar.tooltip = [
+    `Clarity: ${v(status.Clarity)}`,
+    `Correctness: ${v(status.Correctness)}`,
+    `Engagement: ${v(status.Engagement)}`,
+    `Tone: ${v(status.Tone)}`,
+  ].join('\n')
 }
 
 function isActiveDocument(uri: string) {
   return window.activeTextEditor && window.activeTextEditor.document.uri.toString() === uri
 }
 
+async function update(activeDocumentURI: string) {
+  const summary = await getGrammarlyClient().getSummary(activeDocumentURI)
+  statusBar.text = '$(globe) ' + summary.overall + ' out of 100'
+
+  setTooltip(summary.scores)
+  statusBar.show()
+}
+
 let lastDocument: TextDocument
-function onDidOpenDocument(document?: TextDocument) {
+async function onDidOpenDocument(document?: TextDocument) {
   if (document) {
     lastDocument = document
     const isIgnored = isIgnoredDocument(document)
 
     if (!isIgnored) {
-      return statusBar.show()
+      statusBar.command = 'grammarly.stats'
+      statusBar.text = '$(globe) checking...'
+      statusBar.tooltip = 'Grammarly waiting...'
+      statusBar.show()
+
+      return update(document.uri.toString())
     }
   }
 
-  if (
-    lastDocument &&
-    window.visibleTextEditors.some(editor => editor.document.uri.toString() === lastDocument.uri.toString())
-  ) {
+  if (isVisibleDocument(lastDocument)) {
     return
   }
 
   statusBar.command = undefined
   return statusBar.hide()
+}
+
+function isVisibleDocument(document: TextDocument) {
+  return !!document && window.visibleTextEditors.some(editor => areDocumentsEqual(editor.document, document))
+}
+
+function areDocumentsEqual(doc1: TextDocument, doc2: TextDocument): unknown {
+  return doc1.uri.toString() === doc2.uri.toString()
 }
 
 function onDidCloseDocument(document: TextDocument) {

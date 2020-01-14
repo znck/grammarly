@@ -1,6 +1,6 @@
+import { Grammarly } from '@/shared/grammarly'
 import { CodeAction, Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver'
-import { Grammarly } from '../shared/grammarly'
-import { env } from './GrammarlyDocumentMeta'
+import { env } from './documents'
 
 export function createGrammarlyFix(alert: Grammarly.Alert, replacement: string, document: TextDocument): CodeAction {
   return {
@@ -89,6 +89,7 @@ export function createDiagnostic(alert: Grammarly.Alert, document: TextDocument)
     source: 'Grammarly',
     code: alert.id,
     range: getRangeInDocument(document, alert.begin, alert.end),
+    tags: alert.hidden ? [1] : [],
   }
 
   if (env.hasDiagnosticRelatedInformationCapability) {

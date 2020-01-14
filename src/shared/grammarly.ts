@@ -31,6 +31,7 @@ export namespace Grammarly {
     EMOTIONS = 'emotions',
     TEXT_INFO = 'text_info',
     STATS = 'text_stats',
+    PONG = 'pong',
   }
 
   export enum Feature {
@@ -173,6 +174,7 @@ export namespace Grammarly {
     impact: string
 
     sentence_no: number
+    hidden: boolean
   }
 
   export interface AlertResponse extends Alert, Response {
@@ -204,6 +206,16 @@ export namespace Grammarly {
     rev: number
     score: number
     sid: number
+  }
+
+  export interface FeedbackResponse extends Response {
+    scores: {
+      Clarity: number
+      Correctness: number
+      Engagement: number
+      GeneralScore: number
+      Tone: number
+    }
   }
 
   export interface StatsResponse extends Response {
@@ -350,7 +362,7 @@ export namespace Grammarly {
     [Action.START]: StartResponse
     [Action.OPERATION_TRANSFORM]: OperationTransformResponse
     [Action.SYNONYMS]: SynonymsResponse
-    [Action.FEEDBACK]: Response
+    [Action.FEEDBACK]: FeedbackResponse
     [Action.STATS]: StatsResponse
     [ResponseAction.EMOTIONS]: Response
     [ResponseAction.TEXT_INFO]: Response
@@ -471,7 +483,7 @@ export namespace Grammarly {
     }
 
     private onResponse(response: Response) {
-      debug({ type: 'RECV', response })
+      if (response.action !== ResponseAction.PONG) debug('🔻', response)
 
       if (this.status === 'inactive') {
         if (isResponseType(response, Action.START)) {
@@ -490,6 +502,10 @@ export namespace Grammarly {
 
     on<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
       return super.on(event, fn)
+    }
+
+    once<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
+      return super.once(event, fn)
     }
 
     private async sendStartMessage() {
@@ -640,10 +656,7 @@ export namespace Grammarly {
       }
 
       if (this.socket && (this.status === 'active' || message.action === Action.START)) {
-        debug({
-          type: 'SEND',
-          payload,
-        })
+        if (message.action !== Action.PING) debug('🔺', payload)
         this.socket.send(JSON.stringify(payload))
       } else this.queue.push(payload)
 
