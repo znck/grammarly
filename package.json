@@ -27,22 +27,223 @@
       "properties": {
         "grammarly.username": {
           "description": "A username for grammarly.com (optional).",
-          "scope": "resource",
+          "scope": "machine",
           "type": "string"
         },
         "grammarly.password": {
           "description": "A password for grammarly.com (optional).",
-          "scope": "resource",
+          "scope": "machine",
           "type": "string"
         },
+        "grammarly.audience": {
+          "scope": "resource",
+          "enum": [
+            "general",
+            "knowledgeable",
+            "expert"
+          ],
+          "default": "knowledgeable",
+          "enumDescriptions": [
+            "Easy for anyone to read with minimal effort.",
+            "Requires focus to read and understand.",
+            "May require rereading to understand."
+          ]
+        },
         "grammarly.dialect": {
-          "description": "The default dialect of English language.",
           "scope": "resource",
           "enum": [
             "american",
             "british"
           ],
-          "default": "american"
+          "default": "american",
+          "enumDescriptions": [
+            "English (US)",
+            "English (UK)"
+          ]
+        },
+        "grammarly.domain": {
+          "scope": "resource",
+          "enum": [
+            "academic",
+            "business",
+            "general",
+            "technical",
+            "casual",
+            "creative"
+          ],
+          "default": "general",
+          "enumDescriptions": [
+            "Strictly applies all rules and formal writing conventions.",
+            "Applies almost all rules, but allow some informal expressions.",
+            "Applies most rules and conventions with medium strictness.",
+            "Applies almost all rules, plus technical writing conventions.",
+            "Applies most rules, but allow stylistic flexibility.",
+            "Allows some intentional bending of rules and conventions."
+          ]
+        },
+        "grammarly.emotions": {
+          "markdownDescription": "**Experimental.** How do you want to sound?",
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "enum": [
+              "neutral",
+              "confident",
+              "joyful",
+              "optimistic",
+              "respectful",
+              "urgent",
+              "friendly",
+              "analytical"
+            ],
+            "enumDescriptions": [
+              "😐 Neutral",
+              "🤝 Confident",
+              "🙂 Joyful",
+              "✌️ Optimistic",
+              "🤗 Friendly",
+              "⏰ Urgent",
+              "📊 Analytical",
+              "🙌 Respectful"
+            ]
+          },
+          "default": []
+        },
+        "grammarly.goals": {
+          "markdownDescription": "**Experimental.** What are you trying to do?",
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "enum": [
+              "inform",
+              "describe",
+              "convince",
+              "tellStory"
+            ],
+            "enumDescriptions": [
+              "Inform",
+              "Describe",
+              "Convince",
+              "Tell A Story"
+            ]
+          },
+          "default": []
+        },
+        "grammarly.overrides": {
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "files": {
+                "description": "List of files or glob patterns.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "config": {
+                "type": "object",
+                "properties": {
+                  "audience": {
+                    "enum": [
+                      "general",
+                      "knowledgeable",
+                      "expert"
+                    ],
+                    "enumDescriptions": [
+                      "Easy for anyone to read with minimal effort.",
+                      "Requires focus to read and understand.",
+                      "May require rereading to understand."
+                    ]
+                  },
+                  "dialect": {
+                    "enum": [
+                      "american",
+                      "british"
+                    ],
+                    "enumDescriptions": [
+                      "English (US)",
+                      "English (UK)"
+                    ]
+                  },
+                  "domain": {
+                    "enum": [
+                      "academic",
+                      "business",
+                      "general",
+                      "technical",
+                      "casual",
+                      "creative"
+                    ],
+                    "enumDescriptions": [
+                      "Strictly applies all rules and formal writing conventions.",
+                      "Applies almost all rules, but allow some informal expressions.",
+                      "Applies most rules and conventions with medium strictness.",
+                      "Applies almost all rules, plus technical writing conventions.",
+                      "Applies most rules, but allow stylistic flexibility.",
+                      "Allows some intentional bending of rules and conventions."
+                    ]
+                  },
+                  "emotions": {
+                    "markdownDescription": "**Experimental.** How do you want to sound? This helps us build new suggestions and won't affect your feedback today.",
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "neutral",
+                        "confident",
+                        "joyful",
+                        "optimistic",
+                        "respectful",
+                        "urgent",
+                        "friendly",
+                        "analytical"
+                      ],
+                      "enumDescriptions": [
+                        "😐 Neutral",
+                        "🤝 Confident",
+                        "🙂 Joyful",
+                        "✌️ Optimistic",
+                        "🤗 Friendly",
+                        "⏰ Urgent",
+                        "📊 Analytical",
+                        "🙌 Respectful"
+                      ]
+                    }
+                  },
+                  "goals": {
+                    "markdownDescription": "**Experimental.** What are you trying to do? This helps us build new suggestions and won't affect your feedback today.",
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "inform",
+                        "describe",
+                        "convince",
+                        "tellStory"
+                      ],
+                      "enumDescriptions": [
+                        "Inform",
+                        "Describe",
+                        "Convince",
+                        "Tell A Story"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "grammarly.ignore": {
+          "scope": "resource",
+          "description": "Ignored files.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**/*"
+          ]
         },
         "grammarly.userWords": {
           "description": "User words to add to dictionary.",
@@ -68,12 +269,13 @@
     "vscode:prepublish": "npm run compile",
     "test-compile": "tsc -p ./",
     "compile": "rollup -c",
-    "watch": "tsc -watch -p ./",
+    "watch": "rollup -c --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
+    "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.42",
     "@types/node": "^10.12.21",
     "@types/node-fetch": "^2.5.3",
@@ -93,6 +295,7 @@
     "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "html-to-md": "^0.3.2",
+    "minimatch": "^3.0.4",
     "node-fetch": "^2.6.0",
     "supports-color": "^7.1.0",
     "utf-8-validate": "^5.0.2",

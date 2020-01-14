@@ -1,5 +1,5 @@
 import { CodeAction, Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver'
-import { Grammarly } from '../grammarly'
+import { Grammarly } from '../shared/grammarly'
 import { env } from './GrammarlyDocumentMeta'
 
 export function createGrammarlyFix(alert: Grammarly.Alert, replacement: string, document: TextDocument): CodeAction {

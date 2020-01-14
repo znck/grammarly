@@ -4,7 +4,8 @@ import { EventEmitter } from 'events'
 import { TextDocument } from 'vscode-languageclient'
 import { AuthCookie } from './grammarly-auth'
 import createLogger from 'debug'
-import { GrammarlySettings } from './GrammarlySettings'
+import { GrammarlySettings } from '../settings'
+import minimatch from 'minimatch'
 
 process.env.DEBUG = 'grammarly:*'
 
@@ -23,6 +24,13 @@ export namespace Grammarly {
     START = 'start',
     OPERATION_TRANSFORM = 'submit_ot',
     SYNONYMS = 'synonyms',
+    STATS = 'get_text_stats',
+  }
+
+  export enum ResponseAction {
+    EMOTIONS = 'emotions',
+    TEXT_INFO = 'text_info',
+    STATS = 'text_stats',
   }
 
   export enum Feature {
@@ -38,17 +46,17 @@ export namespace Grammarly {
     SET_GOALS_LINK = 'set_goals_link',
     SUPER_ALERTS = 'super_alerts',
     TEXT_INFO = 'text_info',
+    TONE_CARDS = 'tone_cards',
+    VOX_CHECK = 'vox_check',
   }
 
-  export interface Message {
-    action: Action
-  }
+  export interface Message extends IMessage<Action> {}
 
   export interface IMessage<T> {
     action: T
   }
 
-  export interface Response extends Message {
+  export interface Response extends IMessage<Action | ResponseAction> {
     id: number
   }
 
@@ -198,6 +206,27 @@ export namespace Grammarly {
     sid: number
   }
 
+  export interface StatsResponse extends Response {
+    action: ResponseAction.STATS
+    chars: number
+    words: number
+    sentences: number
+    uniqueWords: number
+    uniqueWordsIndex: number
+    rareWords: number
+    rareWordsIndex: number
+    wordLength: number
+    wordLengthIndex: number
+    sentenceLength: number
+    sentenceLengthIndex: number
+    readabilityScore: number
+    readabilityDescription: string
+    emotionScore: {
+      sentiment: string
+      intensity: string
+    }
+  }
+
   export interface TokenMeaning {
     meaning: string
     synonyms: Array<{ base: string; derived: string }>
@@ -322,23 +351,61 @@ export namespace Grammarly {
     [Action.OPERATION_TRANSFORM]: OperationTransformResponse
     [Action.SYNONYMS]: SynonymsResponse
     [Action.FEEDBACK]: Response
+    [Action.STATS]: StatsResponse
+    [ResponseAction.EMOTIONS]: Response
+    [ResponseAction.TEXT_INFO]: Response
+  }
+
+  export interface EmotionsResponse {
+    action: ResponseAction.EMOTIONS
+    hidden: boolean
+    emotinos: Array<{
+      emoji: string
+      name: string
+      confidence: string
+    }>
+  }
+
+  export interface TextInfoResponse extends Response {
+    action: ResponseAction.TEXT_INFO
+    wordsCount: number
+    charsCount: number
+    readabilityScore: number
   }
 
   function isResponseType(response: Response, kind: keyof ResponseTypes): response is ResponseTypes[typeof kind] {
     return response.action === kind
   }
 
-  export function getDefaultDocumentContext(config: GrammarlySettings): DocumentContext {
-    // TODO: Should use configuration here.
-    return {
-      audience: DocumentAudience.KNOWLEDGEABLE,
+  export function getDocumentContext(document: TextDocument, config: GrammarlySettings): DocumentContext {
+    const uri = document.uri
+    const override = config.overrides.find(override =>
+      override.files.some(pattern => uri.endsWith(pattern) || minimatch(uri, pattern))
+    )
+
+    const context = {
+      audience: config.audience,
       dialect: config.dialect,
-      domain: DocumentDomain.GENERAL,
-      emotion: WritingTone.MILD,
-      emotions: [],
-      goals: [],
-      style: WritingStyle.NEUTRAL,
+      domain: config.domain,
+      emotion: config.emotion,
+      emotions: config.emotions,
+      goals: config.goals,
+      style: config.style,
     }
+
+    if (override) {
+      const { config } = override
+
+      if (config.audience) context.audience = config.audience
+      if (config.dialect) context.dialect = config.dialect
+      if (config.domain) context.domain = config.domain
+      if (config.emotion) context.emotion = config.emotion
+      if (config.emotions) context.emotions = config.emotions
+      if (config.goals) context.goals = config.goals
+      if (config.style) context.style = config.style
+    }
+
+    return context
   }
 
   export class DocumentHost extends EventEmitter {
@@ -375,13 +442,14 @@ export namespace Grammarly {
       return this._status
     }
 
-    private handleConnection(connection: Connection) {
+    private async handleConnection(connection: Connection) {
       this.socket = connection.socket
       this.cookie = connection.cookie
 
       this.socket!.onmessage = event => this.onResponse(JSON.parse(event.data.toString()))
+      // this.socket.onerror // TODO: Handle socket errors.
 
-      this.sendStartMessage()
+      await this.sendStartMessage()
       this.insert(0, this.document.getText())
       this.set('gnar_containerId', this.cookie!.gnar_containerId)
     }
@@ -411,7 +479,7 @@ export namespace Grammarly {
           const messages = this.queue.slice()
           this.queue.length = 0
           messages.forEach(message => this.send(message))
-          this.intervalHandle = setInterval(() => this.send({ action: Action.PING }), 10000)
+          this.intervalHandle = setInterval(() => this.send({ action: Action.PING }), 30000)
         } else {
           this._status = 'broken'
         }
@@ -424,7 +492,9 @@ export namespace Grammarly {
       return super.on(event, fn)
     }
 
-    private sendStartMessage() {
+    private async sendStartMessage() {
+      const documentContext = getDocumentContext(this.document, this.settings)
+
       const start: StartMessage = {
         action: Action.START,
         client: 'denali_editor',
@@ -444,8 +514,8 @@ export namespace Grammarly {
           Feature.SET_GOALS_LINK,
         ],
         clientVersion: '1.5.43-2114+master',
-        dialect: Dialect.AMERICAN,
-        documentContext: getDefaultDocumentContext(this.settings),
+        dialect: documentContext.dialect,
+        documentContext: documentContext,
         docid: Buffer.from(this.document.uri).toString('base64'),
       }
 
@@ -503,6 +573,10 @@ export namespace Grammarly {
       this.send(message)
     }
 
+    getTextStats() {
+      return this.sendAndWaitForResponse({ action: Action.STATS }, ResponseAction.STATS)
+    }
+
     dismissAlert(alertId: number) {
       const message: IgnoreMessage = {
         action: Action.FEEDBACK,
@@ -533,11 +607,13 @@ export namespace Grammarly {
       this.send(option)
     }
 
-    private async sendAndWaitForResponse<T extends Action>(message: IMessage<T>): Promise<ResponseTypes[T]> {
-      const id = this.send(message)
-
+    private async sendAndWaitForResponse<T extends Action>(
+      message: IMessage<T>,
+      expecting: string = message.action
+    ): Promise<ResponseTypes[T]> {
       return new Promise<any>((resolve, reject) => {
         const handler = (response: Response) => {
+          debug('Expecting: ' + id + ' Got: ' + response.id)
           if (response.id === id) {
             this.off(message.action, handler)
             this.off(Action.ERROR, handler)
@@ -545,8 +621,12 @@ export namespace Grammarly {
             response.action === Action.ERROR ? reject(response) : resolve(response)
           }
         }
-        this.on(message.action as any, handler)
+
+        debug('Schedule a handler for: ' + message.action)
+        this.on(expecting as any, handler)
         this.on(Action.ERROR, handler)
+
+        const id = this.send(message)
       })
     }
 

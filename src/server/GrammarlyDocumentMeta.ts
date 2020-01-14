@@ -1,4 +1,4 @@
-import { Grammarly } from '../grammarly'
+import { Grammarly } from '../shared/grammarly'
 export interface GrammarlyDocumentMeta {
   alerts: Record<number, Grammarly.Alert>
   synonyms: Record<string, Grammarly.TokenMeaning[]>

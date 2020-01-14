@@ -11,9 +11,9 @@ import {
   TextDocument,
   TextDocuments,
 } from 'vscode-languageserver'
-import { Grammarly } from '../grammarly'
-import { DEFAULT_SETTINGS, GrammarlySettings } from '../GrammarlySettings'
-import { AuthParams } from '../socket'
+import { Grammarly } from '../shared/grammarly'
+import { DEFAULT_SETTINGS, GrammarlySettings } from '../settings'
+import { AuthParams } from '../shared/socket'
 import { env, GrammarlyDocumentMeta } from './GrammarlyDocumentMeta'
 import {
   capturePromiseErrors,
@@ -25,6 +25,7 @@ import {
   getRangeInDocument,
   createIgnoreFix,
 } from './helpers'
+import minimatch from 'minimatch'
 
 process.env.DEBUG = 'grammarly:*'
 
@@ -78,7 +79,6 @@ connection.onDidChangeConfiguration(change => {
   } else {
     Object.assign(globalSettings, change.settings.grammarly)
   }
-
   // TODO: Check all documents again.
 })
 
@@ -86,6 +86,11 @@ const grammarlyDocuments = new Map<string, GrammarlyDocumentMeta>()
 async function getGrammarlyDocument(document: TextDocument) {
   if (!grammarlyDocuments.has(document.uri)) {
     const documentSettings = await getDocumentSettings(document.uri)
+
+    if (documentSettings.ignore.some(pattern => minimatch(document.uri, pattern))) {
+      return
+    }
+
     const params: AuthParams = (globalSettings.password && globalSettings.username
       ? globalSettings
       : undefined) as AuthParams
@@ -118,7 +123,11 @@ async function getGrammarlyDocument(document: TextDocument) {
       .on(Grammarly.Action.SYNONYMS, result => {
         instance.synonyms[result.token] = result.synonyms.meanings
       })
-      .on(Grammarly.Action.FINISHED, () => sendDiagnostics(document))
+      .on(Grammarly.Action.FINISHED, result => {
+        sendDiagnostics(document)
+
+        connection.sendNotification('event:grammarly.finished', [document.uri, result])
+      })
 
     grammarlyDocuments.set(document.uri, instance)
   }
@@ -129,6 +138,8 @@ async function getGrammarlyDocument(document: TextDocument) {
 async function sendDiagnostics(document: TextDocument) {
   const grammarly = await getGrammarlyDocument(document)
 
+  if (!grammarly) return
+
   connection.sendDiagnostics({
     uri: document.uri,
     diagnostics: Object.values(grammarly.alerts).map(alert => createDiagnostic(alert, document)),
@@ -137,9 +148,9 @@ async function sendDiagnostics(document: TextDocument) {
 
 connection.onCodeAction(
   capturePromiseErrors(async ({ range, textDocument, context }) => {
-    const document = documents.get(textDocument.uri)
-    if (!document) return
-    const grammarly = await getGrammarlyDocument(document)
+    const document = documents.get(textDocument.uri)!
+    const grammarly = await getGrammarlyDocumentFor(textDocument.uri)
+    if (!grammarly) return
     const actions: CodeAction[] = []
 
     const folders = await connection.workspace.getWorkspaceFolders()
@@ -202,9 +213,10 @@ connection.onCodeAction(
 
 connection.onHover(
   capturePromiseErrors(async ({ position, textDocument }) => {
-    const document = documents.get(textDocument.uri)
-    if (!document) return
-    const grammarly = await getGrammarlyDocument(document)
+    const document = documents.get(textDocument.uri)!
+    const grammarly = await getGrammarlyDocumentFor(textDocument.uri)
+
+    if (!grammarly) return
 
     const offset = document.offsetAt(position)
     const alerts = Object.values(grammarly.alerts).filter(
@@ -250,14 +262,36 @@ connection.onNotification(async (event, ...args: any[]) => {
   }
 })
 
+connection.onRequest('$/grammarly/' + Grammarly.Action.STATS, async documentURI => {
+  const grammarly = await getGrammarlyDocumentFor(documentURI)
+
+  if (grammarly) {
+    return grammarly.document.getTextStats()
+  }
+
+  throw new Error('No such document.')
+})
+
+async function getGrammarlyDocumentFor(documentURI: string) {
+  const document = documents.get(documentURI)
+
+  if (document) {
+    return getGrammarlyDocument(document)
+  }
+
+  return null
+}
+
 async function executeAddWordCommand(target: string, documentURI: string, code: number) {
   const document = documents.get(documentURI)
   if (document) {
     const grammarly = await getGrammarlyDocument(document)
-    if (target === 'grammarly') {
-      grammarly.document.addToDictionary(code)
-    } else {
-      grammarly.document.dismissAlert(code)
+    if (grammarly) {
+      if (target === 'grammarly') {
+        grammarly.document.addToDictionary(code)
+      } else {
+        grammarly.document.dismissAlert(code)
+      }
     }
   }
 }
@@ -267,7 +301,9 @@ async function executeIgnoreIssueCommand(documentURI: string, code: number) {
   if (document) {
     const grammarly = await getGrammarlyDocument(document)
 
-    grammarly.document.dismissAlert(code)
+    if (grammarly) {
+      grammarly.document.dismissAlert(code)
+    }
   }
 }
 
@@ -277,7 +313,9 @@ async function executeCheckCommand(documentURI: TextDocument['uri']) {
   if (document) {
     const grammarly = await getGrammarlyDocument(document)
 
-    grammarly.document.refresh()
+    if (grammarly) {
+      grammarly.document.refresh()
+    }
   }
 }
 

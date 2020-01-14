@@ -13,7 +13,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "exclude": ["node_modules", ".vscode-test"]
 }

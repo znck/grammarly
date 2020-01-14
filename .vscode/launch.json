@@ -23,7 +23,7 @@
       "env": {
         "DEBUG": "grammarly:*"
       },
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": ["--disable-extensions", "--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "npm: watch"
     },
@@ -32,7 +32,11 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "--extensionTestsPath=${workspaceFolder}/out/test"],
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/out/test"
+      ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
       "preLaunchTask": "npm: watch"
     }

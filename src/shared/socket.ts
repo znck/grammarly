@@ -1,5 +1,5 @@
 import WebSocket from 'ws'
-import { anonymous, authenticate, RawAuthCookie, UA, AuthCookie } from './grammarly-auth'
+import { anonymous, AuthCookie, authenticate, UA } from './grammarly-auth'
 
 export interface AuthParams {
   username: string

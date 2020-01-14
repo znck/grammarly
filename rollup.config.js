@@ -28,7 +28,7 @@ export default [
     input: 'src/server/index.ts',
     output: {
       format: 'cjs',
-      file: 'out/server/index.js',
+      file: 'out/server.js',
       sourcemap: true,
     },
     plugins: [node({ preferBuiltins: true }), cjs(), ts({ tsconfig: 'tsconfig.build.json' })],
