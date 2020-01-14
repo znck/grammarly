@@ -119,10 +119,11 @@ async function createGrammarlyDocument(document: TextDocument) {
     })
     .on(Grammarly.Action.FEEDBACK, result => {
       instance.scores = {
+        ...instance.scores,
         ...result.scores,
       }
 
-      const scores = Object.values(result.scores)
+      const scores = Object.values(instance.scores)
 
       if (scores.every(score => score === 1)) {
         instance.alerts = {}
