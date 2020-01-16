@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/znck/grammarly/compare/v0.5.2...v0.6.0) (2020-01-16)
+
+
+### Features
+
+* Ignore diagnostics in regions of a file (supported languages: markdown) ([3f229c9](https://github.com/znck/grammarly/commit/3f229c9))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/znck/grammarly/compare/v0.5.1...v0.5.2) (2020-01-14)
 
