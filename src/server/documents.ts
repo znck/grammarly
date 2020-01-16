@@ -4,6 +4,8 @@ import { Connection, TextDocument, TextDocuments } from 'vscode-languageserver'
 import { isKnownWord } from './dictionary'
 import { createDiagnostic, isSpellingAlert } from './helpers'
 import { getAuthParams, getDocumentSettings, removeDocumentSetting, isIgnoredDocument } from './settings'
+import memo from 'memoize-one'
+import { parsers } from './parsers'
 
 export interface GrammarlyDocument {
   alerts: Record<number, Grammarly.Alert>
@@ -12,12 +14,6 @@ export interface GrammarlyDocument {
   generalScore: number
   scores: Grammarly.FinishedResponse['outcomeScores']
   findSynonyms(offsetStart: number, word: string): Promise<Grammarly.TokenMeaning[]>
-}
-
-export const env = {
-  hasConfigurationCapability: false,
-  hasWorkspaceFolderCapability: false,
-  hasDiagnosticRelatedInformationCapability: false,
 }
 
 export const documents = new TextDocuments(2 /* TextDocumentSyncKind.Incremental */)
@@ -93,6 +89,27 @@ async function createGrammarlyDocument(document: TextDocument) {
       word in instance.synonyms ? instance.synonyms[word] : (await host.synonyms(offsetStart, word)).synonyms.meanings,
   }
 
+  function getIgnoredNodeTypes(language: string) {
+    const ignoreDiagnosticsIn = settings.diagnostics[`[${language}]`] || { ignore: [] }
+
+    return ignoreDiagnosticsIn.ignore
+  }
+
+  const createASTNodeFinder = memo((language: string, content: string) => {
+    const parser = parsers[language]
+
+    if (parser) return parser.parse(content)
+
+    return () => []
+  })
+
+  function isInIgnoredRegion(alert: Grammarly.Alert) {
+    const find = createASTNodeFinder(document.languageId, document.getText())
+    const nodeTypes = new Set(find([alert.begin, alert.end]))
+
+    return nodeTypes.size > 0 && getIgnoredNodeTypes(document.languageId).some(nodeType => nodeTypes.has(nodeType))
+  }
+
   host
     .on(Grammarly.Action.ALERT, async alert => {
       instance.alerts[alert.id] = alert
@@ -102,6 +119,10 @@ async function createGrammarlyDocument(document: TextDocument) {
         if (await isKnownWord(word)) {
           host.dismissAlert(alert.id)
         }
+      }
+
+      if (isInIgnoredRegion(alert)) {
+        host.dismissAlert(alert.id)
       }
 
       if (alert.hidden) {

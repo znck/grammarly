@@ -2,6 +2,7 @@
 import node from 'rollup-plugin-node-resolve'
 import cjs from 'rollup-plugin-commonjs'
 import ts from 'rollup-plugin-typescript'
+import json from '@rollup/plugin-json'
 
 /** @type {import('rollup').RollupOptions[]} */
 export default [
@@ -16,12 +17,21 @@ export default [
     external: [
       'vscode',
       // BuiltIns
-      'fs',
       'child_process',
-      'path',
+      'crypto',
+      'events',
+      'fs',
+      'http',
+      'https',
       'net',
       'os',
-      'crypto',
+      'path',
+      'stream',
+      'tls',
+      'tty',
+      'url',
+      'util',
+      'zlib',
     ],
   },
   {
@@ -31,24 +41,24 @@ export default [
       file: 'out/server.js',
       sourcemap: true,
     },
-    plugins: [node({ preferBuiltins: true }), cjs(), ts({ tsconfig: 'tsconfig.build.json' })],
+    plugins: [node({ preferBuiltins: true }), cjs(), ts({ tsconfig: 'tsconfig.build.json' }), json()],
     external: [
       // BuiltIns
-      'fs',
-      'path',
       'child_process',
-      'util',
-      'tty',
-      'stream',
-      'https',
-      'http',
-      'zli',
-      'tls',
-      'net',
       'crypto',
-      'os',
       'events',
+      'fs',
+      'http',
+      'https',
+      'net',
+      'os',
+      'path',
+      'stream',
+      'tls',
+      'tty',
       'url',
+      'util',
+      'zli',
       'zlib',
     ],
   },

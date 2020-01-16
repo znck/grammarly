@@ -252,6 +252,29 @@
           "items": {
             "type": "string"
           }
+        },
+        "grammarly.diagnostics": {
+          "type": "object",
+          "properties": {
+            "[markdown]": {
+              "type": "object",
+              "properties": {
+                "ignore": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "[markdown]": {
+              "ignore": [
+                "code"
+              ]
+            }
+          }
         }
       }
     },
@@ -292,11 +315,15 @@
     "vscode": "^1.1.28"
   },
   "dependencies": {
+    "@flatten-js/interval-tree": "^1.0.10",
+    "@rollup/plugin-json": "^4.0.1",
     "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "html-to-md": "^0.3.2",
+    "memoize-one": "^5.1.1",
     "minimatch": "^3.0.4",
     "node-fetch": "^2.6.0",
+    "remark": "^11.0.2",
     "supports-color": "^7.1.0",
     "utf-8-validate": "^5.0.2",
     "vscode-languageclient": "6.0.0-next.1",

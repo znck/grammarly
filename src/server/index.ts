@@ -1,6 +1,7 @@
 import createLogger from 'debug'
 import { createConnection, InitializeResult, ProposedFeatures } from 'vscode-languageserver'
-import { env, setDocumentsConnection } from './documents'
+import { setDocumentsConnection } from './documents'
+import { env } from './env'
 import { capturePromiseErrors as voidOnError } from './helpers'
 import { onCodeAction, onHover, setProviderConnection } from './providers'
 import { onDidChangeConfiguration, setSettingsConnection } from './settings'

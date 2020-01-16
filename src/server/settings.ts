@@ -2,7 +2,7 @@ import { DEFAULT_SETTINGS, GrammarlySettings } from '@/settings'
 import { AuthParams } from '@/shared/socket'
 import minimatch from 'minimatch'
 import { Connection, DidChangeConfigurationParams } from 'vscode-languageserver'
-import { env } from './documents'
+import { env } from './env'
 
 const globalSettings = { ...DEFAULT_SETTINGS }
 const documentSettings = new Map<string, Promise<GrammarlySettings>>()

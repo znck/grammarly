@@ -8,6 +8,12 @@ export interface GrammarlySettings {
   /** Extension Config */
   ignore: string[]
   userWords: string[]
+  diagnostics: Record<
+    string,
+    {
+      ignore: string[]
+    }
+  >
 
   /** Grammarly Config */
   audience: Grammarly.DocumentAudience
@@ -33,6 +39,11 @@ export const DEFAULT_SETTINGS: GrammarlySettings = {
   /** Extension Config */
   ignore: [],
   userWords: [],
+  diagnostics: {
+    '[markdown]': {
+      ignore: ['code'],
+    },
+  },
 
   /** Grammarly Config */
   audience: Grammarly.DocumentAudience.KNOWLEDGEABLE,

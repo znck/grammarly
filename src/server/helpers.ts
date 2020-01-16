@@ -1,6 +1,6 @@
 import { Grammarly } from '@/shared/grammarly'
 import { CodeAction, Diagnostic, DiagnosticSeverity, Range, TextDocument } from 'vscode-languageserver'
-import { env } from './documents'
+import { env } from './env'
 
 export function createGrammarlyFix(alert: Grammarly.Alert, replacement: string, document: TextDocument): CodeAction {
   return {
