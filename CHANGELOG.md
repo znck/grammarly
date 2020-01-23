@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/znck/grammarly/compare/v0.6.0...v0.6.1) (2020-01-23)
+
+
+### Bug Fixes
+
+* display add to grammarly dictionary only when user is logged in ([d1880ed](https://github.com/znck/grammarly/commit/d1880ed)), closes [#22](https://github.com/znck/grammarly/issues/22)
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/znck/grammarly/compare/v0.5.2...v0.6.0) (2020-01-16)
 
