@@ -45,7 +45,7 @@ export function createGrammarlySynonymFix(
 
 export function createAddToDictionaryFix(document: TextDocument, alert: Grammarly.Alert, target: string): CodeAction {
   return {
-    title: `Add: "${alert.text}" to ${target} dictionary`,
+    title: `Grammarly: add "${alert.text}" to ${target} dictionary`,
     kind: 'quickfix',
     command: {
       command: 'grammarly.addWord',

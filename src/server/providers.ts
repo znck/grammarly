@@ -1,3 +1,4 @@
+import { createHandler, GrammarlyServerAPI } from '@/protocol'
 import createDebugger from 'debug'
 // @ts-ignore
 import toMarkdown from 'html-to-md'
@@ -12,9 +13,6 @@ import {
   isSpellingAlert,
 } from './helpers'
 import { isIgnoredDocument } from './settings'
-import { onRequestFromClient } from '@/shared/requests'
-import { Grammarly } from '@/shared/grammarly'
-import { createHandler, GrammarlyServerAPI } from '@/protocol'
 
 const debug = createDebugger('grammarly:server')
 
@@ -27,6 +25,7 @@ export async function onCodeAction(connection: Connection, { range, textDocument
   const document = await getTextDocument(textDocument.uri)!
   const grammarly = await getGrammarlyDocument(textDocument.uri)
   const isWorkspace = !!folders && folders.length > 1
+  const isAuthenticated = grammarly.document.isAuthenticated
 
   debug('onCodeAction', {
     textDocument,
@@ -49,7 +48,7 @@ export async function onCodeAction(connection: Connection, { range, textDocument
           actions.push(createAddToDictionaryFix(document, alert, 'user'))
           actions.push(createAddToDictionaryFix(document, alert, 'folder'))
           if (isWorkspace) actions.push(createAddToDictionaryFix(document, alert, 'workspace'))
-          actions.push(createAddToDictionaryFix(document, alert, 'grammarly'))
+          if (isAuthenticated) actions.push(createAddToDictionaryFix(document, alert, 'grammarly'))
         }
       }
     })

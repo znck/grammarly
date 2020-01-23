@@ -450,7 +450,11 @@ export namespace Grammarly {
       this.refresh()
     }
 
-    get status() {
+    public get isAuthenticated() {
+      return !!this.authParams && this.status === 'active'
+    }
+
+    public get status() {
       return this._status
     }
 
