@@ -1,5 +1,10 @@
 import WebSocket from 'ws'
 import { anonymous, AuthCookie, authenticate, UA } from './grammarly-auth'
+import createLogger from 'debug'
+
+process.env.DEBUG = 'grammarly:*'
+
+const debug = createLogger('grammarly:shared')
 
 export interface AuthParams {
   username: string
@@ -13,14 +18,14 @@ export interface Connection {
 
 export async function connect(params?: AuthParams, cookie?: AuthCookie) {
   if (!cookie) {
-    const rawCookie = await (params ? authenticate(params.username, params.username) : anonymous())
+    const rawCookie = await (params ? authenticate(params.username, params.password) : anonymous())
 
     if (rawCookie) cookie = rawCookie.parsed
   }
 
   if (cookie) return connectUsingCookie(cookie)
 
-  throw new Error('Cannot connect to grammarly.')
+  throw new Error('Cannot connect to grammarly, no cookie found.')
 }
 
 function toCookie(params: Record<string, string>) {

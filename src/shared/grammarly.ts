@@ -471,7 +471,7 @@ export namespace Grammarly {
     }
 
     refresh() {
-      debug({ type: 'INIT', documentId: this.document.uri })
+      debug({ type: 'INIT', documentId: this.document.uri, account: !!this.authParams ? 'private' : 'public' })
       connect(this.authParams, this.cookie).then(connection => this.handleConnection(connection))
     }
 

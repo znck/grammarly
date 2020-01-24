@@ -4,7 +4,7 @@ import { setDocumentsConnection } from './documents'
 import { env } from './env'
 import { capturePromiseErrors as voidOnError } from './helpers'
 import { onCodeAction, onHover, setProviderConnection } from './providers'
-import { onDidChangeConfiguration, setSettingsConnection } from './settings'
+import { onDidChangeConfiguration, setSettingsConnection, refreshGlobalConfiguration } from './settings'
 
 process.env.DEBUG = 'grammarly:*'
 
@@ -37,9 +37,11 @@ setDocumentsConnection(connection)
 setProviderConnection(connection)
 setSettingsConnection(connection)
 
-connection.onInitialized(() => debug('Server Ready.'))
+connection.onInitialized(() => {
+  debug('Server Ready.')
+  refreshGlobalConfiguration()
+})
 connection.onDidChangeConfiguration(onDidChangeConfiguration)
 connection.onCodeAction(voidOnError(params => onCodeAction(connection, params)))
 connection.onHover(voidOnError(params => onHover(params)))
-
 connection.listen()

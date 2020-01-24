@@ -57,5 +57,10 @@ export function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
   } else {
     Object.assign(globalSettings, change.settings.grammarly)
   }
-  // TODO: Check all documents again.
+}
+
+export async function refreshGlobalConfiguration() {
+  const result = await connection.workspace.getConfiguration('grammarly')
+
+  Object.assign(globalSettings, result)
 }

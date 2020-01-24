@@ -48,7 +48,7 @@ export async function onCodeAction(connection: Connection, { range, textDocument
           actions.push(createAddToDictionaryFix(document, alert, 'user'))
           actions.push(createAddToDictionaryFix(document, alert, 'folder'))
           if (isWorkspace) actions.push(createAddToDictionaryFix(document, alert, 'workspace'))
-          if (isAuthenticated) actions.push(createAddToDictionaryFix(document, alert, 'grammarly'))
+          if (isAuthenticated) actions.push(createAddToDictionaryFix(document, alert, 'Grammarly'))
         }
       }
     })
