@@ -43,6 +43,9 @@ export const DEFAULT_SETTINGS: GrammarlySettings = {
     '[markdown]': {
       ignore: ['code'],
     },
+    '[markdown react]': {
+      ignore: ['code'],
+    },
   },
 
   /** Grammarly Config */
