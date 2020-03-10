@@ -37,7 +37,7 @@ export function createHandler<T extends APILike>(handlers: T): LanguageServer {
 
 export type DictionaryType = 'grammarly' | 'workspace' | 'folder' | 'user'
 
-export interface DocumentStatitics {
+export interface DocumentStatistics {
   performance: {
     score: number
   }
@@ -75,5 +75,5 @@ export interface GrammarlyServerAPI {
   ): Promise<void>
 
   getSummary(resource: string): Promise<DocumentSummary>
-  getStatistics(resource: string): Promise<DocumentStatitics>
+  getStatistics(resource: string): Promise<DocumentStatistics>
 }
