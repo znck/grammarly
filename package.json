@@ -317,7 +317,7 @@
   },
   "dependencies": {
     "@flatten-js/interval-tree": "^1.0.10",
-    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-json": "^4.0.2",
     "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "html-to-md": "^0.3.2",
