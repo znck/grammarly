@@ -328,7 +328,7 @@
     "supports-color": "^7.1.0",
     "utf-8-validate": "^5.0.2",
     "vscode-languageclient": "6.1.1",
-    "vscode-languageserver": "6.0.0-next.1",
+    "vscode-languageserver": "6.1.1",
     "vscode-languageserver-protocol": "^3.14.1",
     "ws": "^7.2.0"
   }
