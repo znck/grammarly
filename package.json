@@ -304,7 +304,7 @@
     "@types/node": "^10.12.21",
     "@types/node-fetch": "^2.5.3",
     "@types/turndown": "^5.0.0",
-    "@types/ws": "^6.0.3",
+    "@types/ws": "^7.2.2",
     "rollup": "^1.26.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
