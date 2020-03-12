@@ -18,6 +18,7 @@
   "activationEvents": [
     "onLanguage:plaintext",
     "onLanguage:markdown",
+    "onLanguage:mdx",
     "onCommand:grammarly.check"
   ],
   "contributes": {
