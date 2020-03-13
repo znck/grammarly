@@ -330,6 +330,6 @@
     "vscode-languageclient": "6.1.1",
     "vscode-languageserver": "6.1.1",
     "vscode-languageserver-protocol": "^3.15.3",
-    "ws": "^7.2.0"
+    "ws": "^7.2.3"
   }
 }
