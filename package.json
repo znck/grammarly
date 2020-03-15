@@ -19,6 +19,7 @@
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:mdx",
+    "onLanguage:asciidoc",
     "onCommand:grammarly.check"
   ],
   "contributes": {

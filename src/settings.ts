@@ -46,6 +46,9 @@ export const DEFAULT_SETTINGS: GrammarlySettings = {
     '[mdx]': {
       ignore: ['code'],
     },
+    '[asciidoc]': {
+      ignore: ['code'],
+    },
   },
 
   /** Grammarly Config */

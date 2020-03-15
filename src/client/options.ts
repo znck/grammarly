@@ -23,7 +23,7 @@ export function getLanguageServerOptions(module: string): ServerOptions {
   }
 }
 
-export const LANGUAGES = ['plaintext', 'markdown', 'mdx', 'latex', 'restructuredtext', 'git-commit', 'git-rebase']
+export const LANGUAGES = ['plaintext', 'markdown', 'mdx', 'asciidoc', 'latex', 'restructuredtext', 'git-commit', 'git-rebase']
 export function getLanguageClientOptions(): LanguageClientOptions {
   return {
     documentSelector: generateDocumentSelectors(LANGUAGES),
