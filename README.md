@@ -10,14 +10,15 @@ Unofficial Grammarly extension.
 - Replacement and synonym suggestions.
 - Checks plaintext and markdown.
 
+## Using a Paid Grammarly Account
+
+Use the `Grammarly: Set Grammarly credentials` command to enter your account credentials. The command will prompt you first for a username and then for a password.
+
+![set credentials screencast](./assets/set-credentials-screencast.gif)
+
 ## Extension Settings
 
 This extension contributes to the following settings:
-
-### Machine Scoped
-
-- `grammarly.username`: A username for grammarly.com (optional).
-- `grammarly.password`: A password for grammarly.com (optional).
 
 ### Resource
 
