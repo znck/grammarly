@@ -5,12 +5,12 @@ import { registerCheckCommand } from './client/commands/check'
 import { registerIgnoreWordCommand } from './client/commands/ignore-issue'
 import { registerStatsCommand } from './client/commands/stats'
 import { registerStatusBar } from './client/status-bar'
+import { registerSetCredentials } from './client/commands/set-credentials'
 
 process.env.DEBUG = 'grammarly:*'
 
 export async function activate(context: ExtensionContext) {
   console.log('Welcome to "Grammarly" extension.')
-
   startClient(context)
 
   registerSubscriptions(context)
@@ -30,7 +30,8 @@ function registerSubscriptions(context: ExtensionContext) {
       registerCheckCommand(),
       registerIgnoreWordCommand(),
       registerAddWordCommand(),
-      registerStatsCommand()
+      registerStatsCommand(),
     )
+    return registerSetCredentials(context)
   })
 }

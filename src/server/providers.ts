@@ -13,6 +13,8 @@ import {
   isSpellingAlert,
 } from './helpers'
 import { isIgnoredDocument } from './settings'
+import { init } from '@/shared/credentialsStore'
+import { inMemoryKeyChain } from '@/shared/inMemoryKeyChain'
 
 const debug = createDebugger('grammarly:server')
 
@@ -151,6 +153,9 @@ export function setProviderConnection(connection: Connection) {
         scores: grammarly.scores,
       }
     },
+    async setCredentials(account: string, password: string) {
+      init(inMemoryKeyChain({[account]: password}))
+    }
   }).listen(connection)
 }
 

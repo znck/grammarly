@@ -1,6 +1,7 @@
 import { sendCustomEventToClient } from '@/shared/events'
 import { Grammarly } from '@/shared/grammarly'
 import { Connection, TextDocument, TextDocuments } from 'vscode-languageserver'
+import { TextDocument as TxtDocument } from 'vscode-languageserver-textdocument'
 import { isKnownWord } from './dictionary'
 import { createDiagnostic, isSpellingAlert } from './helpers'
 import { getAuthParams, getDocumentSettings, removeDocumentSetting, isIgnoredDocument } from './settings'
@@ -16,7 +17,7 @@ export interface GrammarlyDocument {
   findSynonyms(offsetStart: number, word: string): Promise<Grammarly.TokenMeaning[]>
 }
 
-export const documents = new TextDocuments(2 /* TextDocumentSyncKind.Incremental */)
+export const documents = new TextDocuments(TxtDocument)
 export const grammarlyDocuments = new Map<string, GrammarlyDocument>()
 
 let connection: Connection
@@ -72,7 +73,8 @@ async function getOrCreateGrammarlyDocument(document: TextDocument) {
 
 async function createGrammarlyDocument(document: TextDocument) {
   const settings = await getDocumentSettings(document.uri)
-  const host = new Grammarly.DocumentHost(document, settings, getAuthParams())
+  const authParams = await getAuthParams()
+  const host = new Grammarly.DocumentHost(document, settings, authParams)
   const instance: GrammarlyDocument = {
     alerts: {},
     synonyms: {},

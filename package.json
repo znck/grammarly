@@ -19,23 +19,14 @@
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:mdx",
-    "onCommand:grammarly.check"
+    "onCommand:grammarly.check",
+    "onCommand:grammarly.setCredentials"
   ],
   "contributes": {
     "configuration": {
       "type": "object",
       "title": "Grammarly",
       "properties": {
-        "grammarly.username": {
-          "description": "A username for grammarly.com (optional).",
-          "scope": "machine",
-          "type": "string"
-        },
-        "grammarly.password": {
-          "description": "A password for grammarly.com (optional).",
-          "scope": "machine",
-          "type": "string"
-        },
         "grammarly.audience": {
           "scope": "resource",
           "enum": [
@@ -284,6 +275,11 @@
         "command": "grammarly.check",
         "title": "Check grammar errors",
         "category": "Grammarly"
+      },
+      {
+        "command": "grammarly.setCredentials",
+        "title": "Set Grammarly credentials",
+        "category": "Grammarly"
       }
     ]
   },
@@ -299,6 +295,7 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
+    "@types/keytar": "^4.0.1",
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^2.2.42",
     "@types/node": "^12.12.30",
@@ -313,7 +310,7 @@
     "standard-version": "^7.0.1",
     "tslib": "^1.10.0",
     "typescript": "^3.8.3",
-    "vscode": "^1.1.28"
+    "vscode": "^1.1.36"
   },
   "dependencies": {
     "@flatten-js/interval-tree": "^1.0.10",
@@ -330,6 +327,7 @@
     "vscode-languageclient": "6.1.1",
     "vscode-languageserver": "6.1.1",
     "vscode-languageserver-protocol": "^3.15.3",
+    "vscode-languageserver-textdocument": "^1.0.1",
     "ws": "^7.2.0"
   }
 }

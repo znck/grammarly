@@ -3,13 +3,21 @@ import { AuthParams } from '@/shared/socket'
 import minimatch from 'minimatch'
 import { Connection, DidChangeConfigurationParams } from 'vscode-languageserver'
 import { env } from './env'
+import { getCredentials } from '@/shared/credentialsStore'
+import debug from 'debug'
 
 const globalSettings = { ...DEFAULT_SETTINGS }
 const documentSettings = new Map<string, Promise<GrammarlySettings>>()
 let connection: Connection
 
-export function getAuthParams(): AuthParams {
-  return (globalSettings.password && globalSettings.username ? globalSettings : undefined) as AuthParams
+export async function getAuthParams(): Promise<AuthParams|undefined> {
+  try {
+    return await getCredentials()
+  }
+  catch(err) {
+    debug('grammarly:server:settings')(err)
+    return undefined
+  }
 }
 
 export function setSettingsConnection(conn: Connection) {

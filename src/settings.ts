@@ -1,9 +1,7 @@
 import { Grammarly } from './shared/grammarly'
 
 export interface GrammarlySettings {
-  /** Grammarly Credentials */
-  username: string | undefined
-  password: string | undefined
+  credentialsPath: string | null
 
   /** Extension Config */
   ignore: string[]
@@ -33,8 +31,7 @@ export interface GrammarlySettings {
 
 export const DEFAULT_SETTINGS: GrammarlySettings = {
   /** Grammarly Credentials */
-  username: undefined,
-  password: undefined,
+  credentialsPath: null,
 
   /** Extension Config */
   ignore: [],
