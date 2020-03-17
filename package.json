@@ -305,7 +305,7 @@
     "@types/node-fetch": "^2.5.5",
     "@types/turndown": "^5.0.0",
     "@types/ws": "^7.2.2",
-    "rollup": "^1.26.3",
+    "rollup": "^1.32.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
