@@ -52,7 +52,7 @@ export async function multiStepInput() {
   }
 
   function shouldResume() {
-    return Promise.resolve(true);
+    return new Promise<boolean>(() => {})
   }
 
   function validateRequired(fieldName: string) {
