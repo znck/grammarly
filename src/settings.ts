@@ -1,10 +1,6 @@
 import { Grammarly } from './shared/grammarly'
 
 export interface GrammarlySettings {
-  /** Grammarly Credentials */
-  username: string | undefined
-  password: string | undefined
-
   /** Extension Config */
   ignore: string[]
   userWords: string[]
@@ -32,10 +28,6 @@ export interface GrammarlySettings {
 }
 
 export const DEFAULT_SETTINGS: GrammarlySettings = {
-  /** Grammarly Credentials */
-  username: undefined,
-  password: undefined,
-
   /** Extension Config */
   ignore: [],
   userWords: [],

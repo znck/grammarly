@@ -76,4 +76,5 @@ export interface GrammarlyServerAPI {
 
   getSummary(resource: string): Promise<DocumentSummary>
   getStatistics(resource: string): Promise<DocumentStatistics>
+  setCredentials(account: string, password: string): Promise<void>
 }
