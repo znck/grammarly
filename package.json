@@ -337,6 +337,6 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts,json,md,yml}": "prettier --write"
+    "*.{js,ts,json,yml}": "prettier --write"
   }
 }
