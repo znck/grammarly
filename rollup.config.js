@@ -13,9 +13,14 @@ export default [
       file: 'out/extension.js',
       sourcemap: true,
     },
-    plugins: [node({ preferBuiltins: true }), cjs(), ts({ tsconfig: 'tsconfig.build.json' })],
+    plugins: [
+      node({ preferBuiltins: true }),
+      cjs(),
+      ts({ tsconfig: 'tsconfig.build.json' }),
+    ],
     external: [
       'vscode',
+      'keytar',
       // BuiltIns
       'child_process',
       'crypto',
@@ -41,7 +46,12 @@ export default [
       file: 'out/server.js',
       sourcemap: true,
     },
-    plugins: [node({ preferBuiltins: true }), cjs(), ts({ tsconfig: 'tsconfig.build.json' }), json()],
+    plugins: [
+      node({ preferBuiltins: true }),
+      cjs(),
+      ts({ tsconfig: 'tsconfig.build.json' }),
+      json(),
+    ],
     external: [
       // BuiltIns
       'child_process',
