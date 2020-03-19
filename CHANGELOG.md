@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.0-alpha.0"></a>
+# [0.7.0-alpha.0](https://github.com/znck/grammarly/compare/v0.6.2...v0.7.0-alpha.0) (2020-03-19)
+
+
+### Features
+
+* Credentials moved out of settings ([#50](https://github.com/znck/grammarly/issues/50)) ([c34a923](https://github.com/znck/grammarly/commit/c34a923))
+
+
+
 <a name="0.6.2"></a>
 ## [0.6.2](https://github.com/znck/grammarly/compare/v0.6.1...v0.6.2) (2020-01-24)
 
