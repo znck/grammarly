@@ -303,6 +303,8 @@
     "@types/node-fetch": "^2.5.5",
     "@types/turndown": "^5.0.0",
     "@types/ws": "^7.2.2",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
     "rollup": "^2.1.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -311,7 +313,8 @@
     "standard-version": "^7.1.0",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3",
-    "vscode": "^1.1.36"
+    "vscode": "^1.1.36",
+    "yorkie": "^2.0.0"
   },
   "dependencies": {
     "@flatten-js/interval-tree": "^1.0.10",
@@ -329,5 +332,11 @@
     "vscode-languageserver-protocol": "^3.15.3",
     "vscode-languageserver-textdocument": "^1.0.1",
     "ws": "^7.2.3"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,md,yml}": "prettier --write"
   }
 }
