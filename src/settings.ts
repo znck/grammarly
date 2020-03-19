@@ -1,30 +1,30 @@
-import { Grammarly } from './shared/grammarly'
+import { Grammarly } from './shared/grammarly';
 
 export interface GrammarlySettings {
   /** Extension Config */
-  ignore: string[]
-  userWords: string[]
+  ignore: string[];
+  userWords: string[];
   diagnostics: Record<
     string,
     {
-      ignore: string[]
+      ignore: string[];
     }
-  >
+  >;
 
   /** Grammarly Config */
-  audience: Grammarly.DocumentAudience
-  dialect: Grammarly.Dialect
-  domain: Grammarly.DocumentDomain
-  emotion: Grammarly.WritingTone
-  emotions: Grammarly.WritingEmotion[]
-  goals: Grammarly.DocumentGoal[]
-  style: Grammarly.WritingStyle
+  audience: Grammarly.DocumentAudience;
+  dialect: Grammarly.Dialect;
+  domain: Grammarly.DocumentDomain;
+  emotion: Grammarly.WritingTone;
+  emotions: Grammarly.WritingEmotion[];
+  goals: Grammarly.DocumentGoal[];
+  style: Grammarly.WritingStyle;
 
   /** Grammarly Document Config */
   overrides: Array<{
-    files: string[]
-    config: Partial<Grammarly.DocumentContext>
-  }>
+    files: string[];
+    config: Partial<Grammarly.DocumentContext>;
+  }>;
 }
 
 export const DEFAULT_SETTINGS: GrammarlySettings = {
@@ -51,4 +51,4 @@ export const DEFAULT_SETTINGS: GrammarlySettings = {
 
   /** Grammarly Document Config */
   overrides: [],
-}
+};

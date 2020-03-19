@@ -1,4 +1,4 @@
-import { KeyChain } from "./credentialsStore";
+import { KeyChain } from './credentialsStore';
 
 export const inMemoryKeyChain = (
   accounts: Record<string, string>
@@ -21,8 +21,8 @@ export const inMemoryKeyChain = (
     ): Promise<Array<{ account: string; password: string }>> => {
       return Object.entries(keyChainAccounts).map(([key, val]) => ({
         account: key,
-        password: val
+        password: val,
       }));
-    }
+    },
   } as KeyChain;
 };

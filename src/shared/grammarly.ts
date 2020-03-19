@@ -1,15 +1,15 @@
-import WebSocket from 'ws'
-import { AuthParams, connect, Connection } from './socket'
-import { EventEmitter } from 'events'
-import { TextDocument } from 'vscode-languageclient'
-import { AuthCookie } from './grammarly-auth'
-import createLogger from 'debug'
-import { GrammarlySettings } from '../settings'
-import minimatch from 'minimatch'
+import WebSocket from 'ws';
+import { AuthParams, connect, Connection } from './socket';
+import { EventEmitter } from 'events';
+import { TextDocument } from 'vscode-languageclient';
+import { AuthCookie } from './grammarly-auth';
+import createLogger from 'debug';
+import { GrammarlySettings } from '../settings';
+import minimatch from 'minimatch';
 
-process.env.DEBUG = 'grammarly:*'
+process.env.DEBUG = 'grammarly:*';
 
-const debug = createLogger('grammarly:host')
+const debug = createLogger('grammarly:host');
 
 export namespace Grammarly {
   export enum Action {
@@ -54,243 +54,243 @@ export namespace Grammarly {
   export interface Message extends IMessage<Action> {}
 
   export interface IMessage<T> {
-    action: T
+    action: T;
   }
 
   export interface Response extends IMessage<Action | ResponseAction> {
-    id: number
+    id: number;
   }
 
   export interface StartMessage extends Message {
-    action: Action.START
-    client: 'denali_editor'
-    clientSubType: 'general'
-    clientSupports: Feature[]
-    clientVersion: '1.5.43-2114+master'
-    dialect: Dialect
-    docid: string
-    documentContext: DocumentContext
+    action: Action.START;
+    client: 'denali_editor';
+    clientSubType: 'general';
+    clientSupports: Feature[];
+    clientVersion: '1.5.43-2114+master';
+    dialect: Dialect;
+    docid: string;
+    documentContext: DocumentContext;
   }
 
   export interface StartResponse extends Response {
-    action: Action.START
-    sid: number
+    action: Action.START;
+    sid: number;
   }
 
   export namespace OT {
     export interface Init {
       0: {
-        insert: string
-      }
+        insert: string;
+      };
     }
 
     export interface Insert {
       0: {
-        retain: number
-      }
+        retain: number;
+      };
       1: {
-        insert: string
-      }
+        insert: string;
+      };
     }
 
     export interface Delete {
       0: {
-        retain: number
-      }
+        retain: number;
+      };
       1: {
-        delete: number
-      }
+        delete: number;
+      };
     }
 
-    export type Operation = Init | Insert | Delete
+    export type Operation = Init | Insert | Delete;
   }
 
   export interface OperationalTransformMessage extends Message {
-    action: Action.OPERATION_TRANSFORM
-    doc_len: number
-    rev: number
-    deltas: Array<{ ops: OT.Operation }>
+    action: Action.OPERATION_TRANSFORM;
+    doc_len: number;
+    rev: number;
+    deltas: Array<{ ops: OT.Operation }>;
   }
 
   export interface OperationTransformResponse extends Response {
-    action: Action.OPERATION_TRANSFORM
-    rev: number
+    action: Action.OPERATION_TRANSFORM;
+    rev: number;
   }
 
   export interface SynonymsMessage extends Message {
-    action: Action.SYNONYMS
-    begin: number
-    token: string
+    action: Action.SYNONYMS;
+    begin: number;
+    token: string;
   }
 
   export interface AddToDictionaryMessage extends Message {
-    action: Action.FEEDBACK
-    type: 'ADD_TO_DICTIONARY'
-    alertId: string
+    action: Action.FEEDBACK;
+    type: 'ADD_TO_DICTIONARY';
+    alertId: string;
   }
 
   export interface IgnoreMessage extends Message {
-    action: Action.FEEDBACK
-    type: 'IGNORE'
-    alertId: string
+    action: Action.FEEDBACK;
+    type: 'IGNORE';
+    alertId: string;
   }
 
   export interface IncorrectSuggestionMessage extends Message {
-    action: Action.FEEDBACK
-    type: 'WRONG_SUGGESTION'
-    alertId: string
+    action: Action.FEEDBACK;
+    type: 'WRONG_SUGGESTION';
+    alertId: string;
   }
 
   export interface OffensiveContentMessage extends Message {
-    action: Action.FEEDBACK
-    type: 'OFFENSIVE_CONTENT'
-    alertId: string
+    action: Action.FEEDBACK;
+    type: 'OFFENSIVE_CONTENT';
+    alertId: string;
   }
 
   export interface Alert {
-    id: number
+    id: number;
 
-    begin: number
-    end: number
-    text: string
+    begin: number;
+    end: number;
+    text: string;
 
-    point: string
-    group: string
-    category: string
-    categoryHuman: string
+    point: string;
+    group: string;
+    category: string;
+    categoryHuman: string;
 
-    title: string
-    todo: string
-    details: string
-    examples: string
-    explanation: string
+    title: string;
+    todo: string;
+    details: string;
+    examples: string;
+    explanation: string;
 
-    highlightBegin: number
-    highlightEnd: number
-    highlightText: string
+    highlightBegin: number;
+    highlightEnd: number;
+    highlightText: string;
 
-    replacements: string[]
+    replacements: string[];
 
-    impact: string
+    impact: string;
 
-    sentence_no: number
-    hidden: boolean
+    sentence_no: number;
+    hidden: boolean;
   }
 
   export interface AlertResponse extends Alert, Response {
-    action: Action.ALERT
-    rev: number
-    pid: number
-    rid: number
-    sid: number
+    action: Action.ALERT;
+    rev: number;
+    pid: number;
+    rid: number;
+    sid: number;
   }
 
   export interface RemoveAlertResponse extends Response {
-    action: Action.REMOVE
-    id: number
+    action: Action.REMOVE;
+    id: number;
   }
 
   export interface FinishedResponse extends Response {
-    action: Action.FINISHED
-    dialect: Dialect
-    foreign: boolean
-    generalScore: number
+    action: Action.FINISHED;
+    dialect: Dialect;
+    foreign: boolean;
+    generalScore: number;
     outcomeScores: {
-      Clarity: number
-      Correctness: number
-      Engagement: number
-      GeneralScore: number
-      Tone: number
-    }
-    removed: number[]
-    rev: number
-    score: number
-    sid: number
+      Clarity: number;
+      Correctness: number;
+      Engagement: number;
+      GeneralScore: number;
+      Tone: number;
+    };
+    removed: number[];
+    rev: number;
+    score: number;
+    sid: number;
   }
 
   export interface FeedbackResponse extends Response {
     scores: {
-      Clarity: number
-      Correctness: number
-      Engagement: number
-      GeneralScore: number
-      Tone: number
-    }
+      Clarity: number;
+      Correctness: number;
+      Engagement: number;
+      GeneralScore: number;
+      Tone: number;
+    };
   }
 
   export interface StatsResponse extends Response {
-    action: ResponseAction.STATS
-    chars: number
-    words: number
-    sentences: number
-    uniqueWords: number
-    uniqueWordsIndex: number
-    rareWords: number
-    rareWordsIndex: number
-    wordLength: number
-    wordLengthIndex: number
-    sentenceLength: number
-    sentenceLengthIndex: number
-    readabilityScore: number
-    readabilityDescription: string
+    action: ResponseAction.STATS;
+    chars: number;
+    words: number;
+    sentences: number;
+    uniqueWords: number;
+    uniqueWordsIndex: number;
+    rareWords: number;
+    rareWordsIndex: number;
+    wordLength: number;
+    wordLengthIndex: number;
+    sentenceLength: number;
+    sentenceLengthIndex: number;
+    readabilityScore: number;
+    readabilityDescription: string;
     emotionScore: {
-      sentiment: string
-      intensity: string
-    }
+      sentiment: string;
+      intensity: string;
+    };
   }
 
   export interface TokenMeaning {
-    meaning: string
-    synonyms: Array<{ base: string; derived: string }>
+    meaning: string;
+    synonyms: Array<{ base: string; derived: string }>;
   }
 
   export interface SynonymsResponse extends Response {
-    action: Action.SYNONYMS
-    token: string
+    action: Action.SYNONYMS;
+    token: string;
     synonyms: {
-      correlationId: number
-      meanings: TokenMeaning[]
-      pos: string
-      token: string
-    }
+      correlationId: number;
+      meanings: TokenMeaning[];
+      pos: string;
+      token: string;
+    };
   }
 
   export interface OptionMessage extends Message {
-    action: Action.OPTION
-    name: string
-    value: string | number | boolean
+    action: Action.OPTION;
+    name: string;
+    value: string | number | boolean;
   }
 
   export interface OptionResponse extends Response {
-    action: Action.OPTION
+    action: Action.OPTION;
   }
 
   export interface PingMessage extends Message {
-    action: Action.PING
+    action: Action.PING;
   }
 
   export interface PingResponse extends Response {
-    action: Action.PING
+    action: Action.PING;
   }
 
   export interface ContextMessage extends Message {
-    action: Action.CONTEXT
-    rev: number
-    documentContext: DocumentContext
+    action: Action.CONTEXT;
+    rev: number;
+    documentContext: DocumentContext;
   }
 
   export interface ContextResponse extends Response {
-    action: Action.CONTEXT
-    rev: number
+    action: Action.CONTEXT;
+    rev: number;
   }
 
   enum Severity {
     INFO = 'info',
   }
   export interface ErrorResponse extends Response {
-    error: string
-    severity: Severity
-    action: Action.ERROR
+    error: string;
+    severity: Severity;
+    action: Action.ERROR;
   }
 
   export enum DocumentAudience {
@@ -342,58 +342,66 @@ export namespace Grammarly {
   }
 
   export interface DocumentContext {
-    audience: DocumentAudience
-    dialect: Dialect
-    domain: DocumentDomain
-    emotion: WritingTone
-    emotions: WritingEmotion[]
-    goals: DocumentGoal[]
-    style: WritingStyle
+    audience: DocumentAudience;
+    dialect: Dialect;
+    domain: DocumentDomain;
+    emotion: WritingTone;
+    emotions: WritingEmotion[];
+    goals: DocumentGoal[];
+    style: WritingStyle;
   }
 
   export interface ResponseTypes {
-    [Action.ALERT]: AlertResponse
-    [Action.CONTEXT]: ContextResponse
-    [Action.ERROR]: ErrorResponse
-    [Action.FINISHED]: FinishedResponse
-    [Action.OPTION]: OptionResponse
-    [Action.PING]: PingResponse
-    [Action.REMOVE]: RemoveAlertResponse
-    [Action.START]: StartResponse
-    [Action.OPERATION_TRANSFORM]: OperationTransformResponse
-    [Action.SYNONYMS]: SynonymsResponse
-    [Action.FEEDBACK]: FeedbackResponse
-    [Action.STATS]: StatsResponse
-    [ResponseAction.EMOTIONS]: Response
-    [ResponseAction.TEXT_INFO]: Response
+    [Action.ALERT]: AlertResponse;
+    [Action.CONTEXT]: ContextResponse;
+    [Action.ERROR]: ErrorResponse;
+    [Action.FINISHED]: FinishedResponse;
+    [Action.OPTION]: OptionResponse;
+    [Action.PING]: PingResponse;
+    [Action.REMOVE]: RemoveAlertResponse;
+    [Action.START]: StartResponse;
+    [Action.OPERATION_TRANSFORM]: OperationTransformResponse;
+    [Action.SYNONYMS]: SynonymsResponse;
+    [Action.FEEDBACK]: FeedbackResponse;
+    [Action.STATS]: StatsResponse;
+    [ResponseAction.EMOTIONS]: Response;
+    [ResponseAction.TEXT_INFO]: Response;
   }
 
   export interface EmotionsResponse {
-    action: ResponseAction.EMOTIONS
-    hidden: boolean
+    action: ResponseAction.EMOTIONS;
+    hidden: boolean;
     emotinos: Array<{
-      emoji: string
-      name: string
-      confidence: string
-    }>
+      emoji: string;
+      name: string;
+      confidence: string;
+    }>;
   }
 
   export interface TextInfoResponse extends Response {
-    action: ResponseAction.TEXT_INFO
-    wordsCount: number
-    charsCount: number
-    readabilityScore: number
+    action: ResponseAction.TEXT_INFO;
+    wordsCount: number;
+    charsCount: number;
+    readabilityScore: number;
   }
 
-  function isResponseType(response: Response, kind: keyof ResponseTypes): response is ResponseTypes[typeof kind] {
-    return response.action === kind
+  function isResponseType(
+    response: Response,
+    kind: keyof ResponseTypes
+  ): response is ResponseTypes[typeof kind] {
+    return response.action === kind;
   }
 
-  export function getDocumentContext(document: TextDocument, config: GrammarlySettings): DocumentContext {
-    const uri = document.uri
+  export function getDocumentContext(
+    document: TextDocument,
+    config: GrammarlySettings
+  ): DocumentContext {
+    const uri = document.uri;
     const override = config.overrides.find(override =>
-      override.files.some(pattern => uri.endsWith(pattern) || minimatch(uri, pattern))
-    )
+      override.files.some(
+        pattern => uri.endsWith(pattern) || minimatch(uri, pattern)
+      )
+    );
 
     const context = {
       audience: config.audience,
@@ -403,117 +411,133 @@ export namespace Grammarly {
       emotions: config.emotions,
       goals: config.goals,
       style: config.style,
-    }
+    };
 
     if (override) {
-      const { config } = override
+      const { config } = override;
 
-      if (config.audience) context.audience = config.audience
-      if (config.dialect) context.dialect = config.dialect
-      if (config.domain) context.domain = config.domain
-      if (config.emotion) context.emotion = config.emotion
-      if (config.emotions) context.emotions = config.emotions
-      if (config.goals) context.goals = config.goals
-      if (config.style) context.style = config.style
+      if (config.audience) context.audience = config.audience;
+      if (config.dialect) context.dialect = config.dialect;
+      if (config.domain) context.domain = config.domain;
+      if (config.emotion) context.emotion = config.emotion;
+      if (config.emotions) context.emotions = config.emotions;
+      if (config.goals) context.goals = config.goals;
+      if (config.style) context.style = config.style;
     }
 
-    return context
+    return context;
   }
 
   export class DocumentHost extends EventEmitter {
-    private currentMessageId = -1
-    private currentRevision = -1
-    private socket: WebSocket | null = null
-    private cookie: AuthCookie | undefined
-    private queue: Message[] = []
-    private _status: 'active' | 'inactive' | 'broken' = 'inactive'
-    private intervalHandle: null | NodeJS.Timeout = null
+    private currentMessageId = -1;
+    private currentRevision = -1;
+    private socket: WebSocket | null = null;
+    private cookie: AuthCookie | undefined;
+    private queue: Message[] = [];
+    private _status: 'active' | 'inactive' | 'broken' = 'inactive';
+    private intervalHandle: null | NodeJS.Timeout = null;
 
     constructor(
       private readonly document: TextDocument,
       private readonly settings: GrammarlySettings,
       private readonly authParams?: AuthParams
     ) {
-      super()
+      super();
 
       this.on(Action.ERROR, error => {
-        if (error.error === 'cannot_find_synonym') return
+        if (error.error === 'cannot_find_synonym') return;
 
-        console.error('Grammarly connection terminated due to error:', error)
-        this._status = 'inactive'
-        if (this.intervalHandle) clearInterval(this.intervalHandle)
-        this.queue.length = 0
-        this.socket!.close()
-        this.refresh()
-      })
+        console.error('Grammarly connection terminated due to error:', error);
+        this._status = 'inactive';
+        if (this.intervalHandle) clearInterval(this.intervalHandle);
+        this.queue.length = 0;
+        this.socket!.close();
+        this.refresh();
+      });
 
-      this.refresh()
+      this.refresh();
     }
 
     public get isAuthenticated() {
-      return !!this.authParams && this.status === 'active'
+      return !!this.authParams && this.status === 'active';
     }
 
     public get status() {
-      return this._status
+      return this._status;
     }
 
     private async handleConnection(connection: Connection) {
-      this.socket = connection.socket
-      this.cookie = connection.cookie
+      this.socket = connection.socket;
+      this.cookie = connection.cookie;
 
-      this.socket!.onmessage = event => this.onResponse(JSON.parse(event.data.toString()))
+      this.socket!.onmessage = event =>
+        this.onResponse(JSON.parse(event.data.toString()));
       // this.socket.onerror // TODO: Handle socket errors.
 
-      await this.sendStartMessage()
-      this.insert(0, this.document.getText())
-      this.set('gnar_containerId', this.cookie!.gnar_containerId)
+      await this.sendStartMessage();
+      this.insert(0, this.document.getText());
+      this.set('gnar_containerId', this.cookie!.gnar_containerId);
     }
 
     refresh() {
-      debug({ type: 'INIT', documentId: this.document.uri, account: !!this.authParams ? 'private' : 'public' })
-      connect(this.authParams, this.cookie).then(connection => this.handleConnection(connection))
+      debug({
+        type: 'INIT',
+        documentId: this.document.uri,
+        account: !!this.authParams ? 'private' : 'public',
+      });
+      connect(this.authParams, this.cookie).then(connection =>
+        this.handleConnection(connection)
+      );
     }
 
     dispose() {
       if (this.socket) {
-        delete this.socket.onmessage
+        delete this.socket.onmessage;
 
-        this.socket.close()
-        delete this.socket
+        this.socket.close();
+        delete this.socket;
       }
 
-      if (this.intervalHandle) clearInterval(this.intervalHandle)
+      if (this.intervalHandle) clearInterval(this.intervalHandle);
     }
 
     private onResponse(response: Response) {
-      if (response.action !== ResponseAction.PONG) debug('🔻', response)
+      if (response.action !== ResponseAction.PONG) debug('🔻', response);
 
       if (this.status === 'inactive') {
         if (isResponseType(response, Action.START)) {
-          this._status = 'active'
-          const messages = this.queue.slice()
-          this.queue.length = 0
-          messages.forEach(message => this.send(message))
-          this.intervalHandle = setInterval(() => this.send({ action: Action.PING }), 30000)
+          this._status = 'active';
+          const messages = this.queue.slice();
+          this.queue.length = 0;
+          messages.forEach(message => this.send(message));
+          this.intervalHandle = setInterval(
+            () => this.send({ action: Action.PING }),
+            30000
+          );
         } else {
-          this._status = 'broken'
+          this._status = 'broken';
         }
       }
 
-      this.emit(response.action, response)
+      this.emit(response.action, response);
     }
 
-    on<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
-      return super.on(event, fn)
+    on<K extends keyof ResponseTypes>(
+      event: K,
+      fn: (response: ResponseTypes[K]) => void
+    ): this {
+      return super.on(event, fn);
     }
 
-    once<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
-      return super.once(event, fn)
+    once<K extends keyof ResponseTypes>(
+      event: K,
+      fn: (response: ResponseTypes[K]) => void
+    ): this {
+      return super.once(event, fn);
     }
 
     private async sendStartMessage() {
-      const documentContext = getDocumentContext(this.document, this.settings)
+      const documentContext = getDocumentContext(this.document, this.settings);
 
       const start: StartMessage = {
         action: Action.START,
@@ -537,9 +561,9 @@ export namespace Grammarly {
         dialect: documentContext.dialect,
         documentContext: documentContext,
         docid: Buffer.from(this.document.uri).toString('base64'),
-      }
+      };
 
-      this.send(start)
+      this.send(start);
     }
 
     insert(documentLength: number, content: string, offsetStart?: number) {
@@ -550,12 +574,14 @@ export namespace Grammarly {
         deltas: [
           {
             ops:
-              typeof offsetStart === 'number' ? [{ retain: offsetStart }, { insert: content }] : [{ insert: content }],
+              typeof offsetStart === 'number'
+                ? [{ retain: offsetStart }, { insert: content }]
+                : [{ insert: content }],
           },
         ],
-      }
+      };
 
-      this.send(ot)
+      this.send(ot);
     }
 
     delete(documentLength: number, deleteLength: number, offsetStart: number) {
@@ -568,9 +594,9 @@ export namespace Grammarly {
             ops: [{ retain: offsetStart }, { delete: deleteLength }],
           },
         ],
-      }
+      };
 
-      this.send(ot)
+      this.send(ot);
     }
 
     synonyms(offsetStart: number, word: string) {
@@ -578,9 +604,9 @@ export namespace Grammarly {
         action: Action.SYNONYMS,
         begin: offsetStart,
         token: word,
-      }
+      };
 
-      return this.sendAndWaitForResponse(message)
+      return this.sendAndWaitForResponse(message);
     }
 
     addToDictionary(alertId: number) {
@@ -588,13 +614,16 @@ export namespace Grammarly {
         action: Action.FEEDBACK,
         type: 'ADD_TO_DICTIONARY',
         alertId: String(alertId),
-      }
+      };
 
-      this.send(message)
+      this.send(message);
     }
 
     getTextStats() {
-      return this.sendAndWaitForResponse({ action: Action.STATS }, ResponseAction.STATS)
+      return this.sendAndWaitForResponse(
+        { action: Action.STATS },
+        ResponseAction.STATS
+      );
     }
 
     dismissAlert(alertId: number) {
@@ -602,9 +631,9 @@ export namespace Grammarly {
         action: Action.FEEDBACK,
         type: 'IGNORE',
         alertId: String(alertId),
-      }
+      };
 
-      this.send(message)
+      this.send(message);
     }
 
     setContext(context: DocumentContext) {
@@ -612,9 +641,9 @@ export namespace Grammarly {
         action: Action.CONTEXT,
         documentContext: context,
         rev: this.currentRevision,
-      }
+      };
 
-      this.send(message)
+      this.send(message);
     }
 
     set(key: string, value: string | number | boolean) {
@@ -622,9 +651,9 @@ export namespace Grammarly {
         action: Action.OPTION,
         name: key,
         value: value,
-      }
+      };
 
-      this.send(option)
+      this.send(option);
     }
 
     private async sendAndWaitForResponse<T extends Action>(
@@ -633,38 +662,43 @@ export namespace Grammarly {
     ): Promise<ResponseTypes[T]> {
       return new Promise<any>((resolve, reject) => {
         const handler = (response: Response) => {
-          debug('Expecting: ' + id + ' Got: ' + response.id)
+          debug('Expecting: ' + id + ' Got: ' + response.id);
           if (response.id === id) {
-            this.off(message.action, handler)
-            this.off(Action.ERROR, handler)
+            this.off(message.action, handler);
+            this.off(Action.ERROR, handler);
 
-            response.action === Action.ERROR ? reject(response) : resolve(response)
+            response.action === Action.ERROR
+              ? reject(response)
+              : resolve(response);
           }
-        }
+        };
 
-        debug('Schedule a handler for: ' + message.action)
-        this.on(expecting as any, handler)
-        this.on(Action.ERROR, handler)
+        debug('Schedule a handler for: ' + message.action);
+        this.on(expecting as any, handler);
+        this.on(Action.ERROR, handler);
 
-        const id = this.send(message)
-      })
+        const id = this.send(message);
+      });
     }
 
     private send(message: Message): number {
       const payload: any = {
         ...message,
-      }
+      };
 
       if (!('id' in payload)) {
-        payload.id = ++this.currentMessageId
+        payload.id = ++this.currentMessageId;
       }
 
-      if (this.socket && (this.status === 'active' || message.action === Action.START)) {
-        if (message.action !== Action.PING) debug('🔺', payload)
-        this.socket.send(JSON.stringify(payload))
-      } else this.queue.push(payload)
+      if (
+        this.socket &&
+        (this.status === 'active' || message.action === Action.START)
+      ) {
+        if (message.action !== Action.PING) debug('🔺', payload);
+        this.socket.send(JSON.stringify(payload));
+      } else this.queue.push(payload);
 
-      return payload.id
+      return payload.id;
     }
   }
 }

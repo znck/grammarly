@@ -4,8 +4,8 @@ import {
   Disposable,
   QuickInputButton,
   QuickInput,
-  QuickInputButtons
-} from "vscode";
+  QuickInputButtons,
+} from 'vscode';
 
 export async function multiStepInput() {
   interface State {
@@ -22,7 +22,7 @@ export async function multiStepInput() {
     return state as State;
   }
 
-  const title = "Set Grammarly Credentials";
+  const title = 'Set Grammarly Credentials';
 
   async function inputUsername(input: MultiStepInput, state: Partial<State>) {
     // TODO: Remember current value when navigating back.
@@ -30,10 +30,10 @@ export async function multiStepInput() {
       title,
       step: 1,
       totalSteps: 2,
-      value: state.username || "",
-      prompt: "Set Grammarly username",
-      validate: validateRequired("Username"),
-      shouldResume: shouldResume
+      value: state.username || '',
+      prompt: 'Set Grammarly username',
+      validate: validateRequired('Username'),
+      shouldResume: shouldResume,
     });
     return (input: MultiStepInput) => inputPassword(input, state);
   }
@@ -44,15 +44,15 @@ export async function multiStepInput() {
       title,
       step: 2,
       totalSteps: 2,
-      value: state.password || "",
-      prompt: "Set Grammarly password",
-      validate: validateRequired("Password"),
-      shouldResume: shouldResume
+      value: state.password || '',
+      prompt: 'Set Grammarly password',
+      validate: validateRequired('Password'),
+      shouldResume: shouldResume,
     });
   }
 
   function shouldResume() {
-    return new Promise<boolean>(() => {})
+    return new Promise<boolean>(() => {});
   }
 
   function validateRequired(fieldName: string) {
@@ -148,7 +148,7 @@ class MultiStepInput {
     activeItem,
     placeholder,
     buttons,
-    shouldResume
+    shouldResume,
   }: P) {
     const disposables: Disposable[] = [];
     try {
@@ -166,7 +166,7 @@ class MultiStepInput {
         }
         input.buttons = [
           ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-          ...(buttons || [])
+          ...(buttons || []),
         ];
         disposables.push(
           input.onDidTriggerButton(item => {
@@ -206,7 +206,7 @@ class MultiStepInput {
     prompt,
     validate,
     buttons,
-    shouldResume
+    shouldResume,
   }: P) {
     const disposables: Disposable[] = [];
     try {
@@ -217,13 +217,13 @@ class MultiStepInput {
         input.title = title;
         input.step = step;
         input.totalSteps = totalSteps;
-        input.value = value || "";
+        input.value = value || '';
         input.prompt = prompt;
         input.buttons = [
           ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
-          ...(buttons || [])
+          ...(buttons || []),
         ];
-        let validating = validate("");
+        let validating = validate('');
         disposables.push(
           input.onDidTriggerButton(item => {
             if (item === QuickInputButtons.Back) {

@@ -1,7 +1,10 @@
-import { getDocumentSettings, getSettings } from './settings'
+import { getDocumentSettings, getSettings } from './settings';
 
 export async function isKnownWord(word: string, uri?: string) {
-  const settings = await (uri ? getDocumentSettings(uri) : getSettings())
+  const settings = await (uri ? getDocumentSettings(uri) : getSettings());
 
-  return settings.userWords.includes(word) || settings.userWords.includes(word.toLocaleLowerCase())
+  return (
+    settings.userWords.includes(word) ||
+    settings.userWords.includes(word.toLocaleLowerCase())
+  );
 }

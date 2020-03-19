@@ -1,5 +1,5 @@
-import * as keytarType from "keytar";
-import { AuthParams } from "./socket";
+import * as keytarType from 'keytar';
+import { AuthParams } from './socket';
 
 function getNodeModule<T>(moduleName: string): T | undefined {
   try {
@@ -9,29 +9,29 @@ function getNodeModule<T>(moduleName: string): T | undefined {
 }
 
 export type KeyChain = {
-  getPassword: typeof keytarType["getPassword"];
-  setPassword: typeof keytarType["setPassword"];
-  deletePassword: typeof keytarType["deletePassword"];
-  findCredentials: typeof keytarType["findCredentials"];
+  getPassword: typeof keytarType['getPassword'];
+  setPassword: typeof keytarType['setPassword'];
+  deletePassword: typeof keytarType['deletePassword'];
+  findCredentials: typeof keytarType['findCredentials'];
 };
 
 export const failingKeyChain: KeyChain = {
   async getPassword() {
-    throw new Error("System keychain unavailable");
+    throw new Error('System keychain unavailable');
   },
   async setPassword() {
-    throw new Error("System keychain unavailable");
+    throw new Error('System keychain unavailable');
   },
   async deletePassword() {
-    throw new Error("System keychain unavailable");
+    throw new Error('System keychain unavailable');
   },
   async findCredentials() {
-    throw new Error("System keychain unavailable");
-  }
+    throw new Error('System keychain unavailable');
+  },
 };
 
-const systemKeyChain = getNodeModule<KeyChain>("keytar") || failingKeyChain;
-const SERVICE_ID = "vscode-grammarly";
+const systemKeyChain = getNodeModule<KeyChain>('keytar') || failingKeyChain;
+const SERVICE_ID = 'vscode-grammarly';
 let defaultKeychain: KeyChain = failingKeyChain;
 
 export function init(keychain: KeyChain = systemKeyChain) {
@@ -57,13 +57,13 @@ export async function deletePassword(
 }
 
 export async function getCredentials({
-  keychain = defaultKeychain
+  keychain = defaultKeychain,
 } = {}): Promise<AuthParams> {
   const credentials = await keychain?.findCredentials(SERVICE_ID);
   if (credentials && credentials.length > 0) {
     return {
       username: credentials[0].account,
-      password: credentials[0].password
+      password: credentials[0].password,
     };
   }
   return (undefined as unknown) as AuthParams;

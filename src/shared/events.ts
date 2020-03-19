@@ -1,11 +1,17 @@
-import { LanguageClient } from 'vscode-languageclient'
-import { Connection } from 'vscode-languageserver'
-import { TextDocument } from 'vscode-languageserver-protocol'
-import { Grammarly } from './grammarly'
+import { LanguageClient } from 'vscode-languageclient';
+import { Connection } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-protocol';
+import { Grammarly } from './grammarly';
 
 interface ServerToClientEvent {
-  [Grammarly.Action.FEEDBACK](uri: TextDocument['uri'], response: Grammarly.FeedbackResponse): void
-  [Grammarly.Action.FINISHED](uri: TextDocument['uri'], response: Grammarly.FinishedResponse): void
+  [Grammarly.Action.FEEDBACK](
+    uri: TextDocument['uri'],
+    response: Grammarly.FeedbackResponse
+  ): void;
+  [Grammarly.Action.FINISHED](
+    uri: TextDocument['uri'],
+    response: Grammarly.FinishedResponse
+  ): void;
 }
 
 interface ClientToServerEvent {}
@@ -17,7 +23,7 @@ export function sendCustomEventToClient<E extends keyof ServerToClientEvent>(
   event: E,
   params: Parameters<ServerToClientEvent[E]>
 ): void {
-  connection.sendNotification('event:grammarly.' + event, params)
+  connection.sendNotification('event:grammarly.' + event, params);
 }
 
 export function sendCustomEventToServer<E extends keyof ClientToServerEvent>(
@@ -25,7 +31,7 @@ export function sendCustomEventToServer<E extends keyof ClientToServerEvent>(
   event: E,
   params: Parameters<ClientToServerEvent[E]>
 ): void {
-  connection.sendNotification('event:grammarly.' + event, params)
+  connection.sendNotification('event:grammarly.' + event, params);
 }
 
 export function onCustomEventFromServer<E extends keyof ServerToClientEvent>(
@@ -33,7 +39,7 @@ export function onCustomEventFromServer<E extends keyof ServerToClientEvent>(
   event: E,
   fn: ServerToClientEvent[E]
 ) {
-  connection.onNotification('event:grammarly.' + event, fn as any)
+  connection.onNotification('event:grammarly.' + event, fn as any);
 }
 
 export function onCustomEventFromClient<E extends keyof ClientToServerEvent>(
@@ -41,5 +47,5 @@ export function onCustomEventFromClient<E extends keyof ClientToServerEvent>(
   event: E,
   fn: ClientToServerEvent[E]
 ) {
-  connection.onNotification('event:grammarly.' + event, fn as any)
+  connection.onNotification('event:grammarly.' + event, fn as any);
 }

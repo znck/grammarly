@@ -1,17 +1,17 @@
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 
-import createLogger from 'debug'
+import createLogger from 'debug';
 
-const debug = createLogger('grammarly:auth')
+const debug = createLogger('grammarly:auth');
 
 function toCookie(params: Record<string, string>) {
   return Object.entries(params)
     .map(([key, value]) => key + '=' + value + ';')
-    .join(' ')
+    .join(' ');
 }
 
 export const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36'
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36';
 
 const BROWSER_HEADERS = {
   'User-Agent': UA,
@@ -20,31 +20,31 @@ const BROWSER_HEADERS = {
   'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
   'Cache-Control': 'no-cache',
   Pragma: 'no-cache',
-}
+};
 
 function cookieToObject(cookies: string[]) {
   return cookies
     .map(x => x.split('='))
     .reduce((obj, [key, val]) => {
-      obj[key as keyof AuthCookie] = val.split(';')[0]
+      obj[key as keyof AuthCookie] = val.split(';')[0];
 
-      return obj
-    }, {} as AuthCookie)
+      return obj;
+    }, {} as AuthCookie);
 }
 
 export interface AuthCookie {
-  gnar_containerId: string
-  grauth: string
-  'csrf-token': string
-  funnelType: string
-  browser_info: string
-  redirect_location: string
+  gnar_containerId: string;
+  grauth: string;
+  'csrf-token': string;
+  funnelType: string;
+  browser_info: string;
+  redirect_location: string;
 }
 
 export interface RawAuthCookie {
-  raw: string
-  headers: string[]
-  parsed: AuthCookie
+  raw: string;
+  headers: string[];
+  parsed: AuthCookie;
 }
 
 async function getInitialCookie(): Promise<RawAuthCookie | null> {
@@ -58,24 +58,24 @@ async function getInitialCookie(): Promise<RawAuthCookie | null> {
       Referer: 'https://www.grammarly.com/',
     },
     method: 'GET',
-  })
+  });
 
   if (response.ok) {
-    const cookies = response.headers.raw()['set-cookie']
+    const cookies = response.headers.raw()['set-cookie'];
     const result = {
       raw: response.headers.get('Set-Cookie')!,
       headers: cookies,
       parsed: cookieToObject(cookies),
-    }
+    };
 
-    debug('initial cookie', cookies)
+    debug('initial cookie', cookies);
 
-    return result
+    return result;
   }
 
-  debug('no initial cookie', response)
+  debug('no initial cookie', response);
 
-  return null
+  return null;
 }
 
 function generateRedirectLocation(): string {
@@ -84,15 +84,16 @@ function generateRedirectLocation(): string {
       type: '',
       location: `https://www.grammarly.com/after_install_page?extension_install=true&utm_medium=store&utm_source=chrome`,
     })
-  ).toString('base64')
+  ).toString('base64');
 }
 
 export async function anonymous() {
-  const cookie = await getInitialCookie()
-  if (!cookie) return null
+  const cookie = await getInitialCookie();
+  if (!cookie) return null;
 
   const response = await fetch(
-    'https://auth.grammarly.com/v3/user/oranonymous?app=chromeExt&containerId=' + cookie.parsed.gnar_containerId,
+    'https://auth.grammarly.com/v3/user/oranonymous?app=chromeExt&containerId=' +
+      cookie.parsed.gnar_containerId,
     {
       method: 'GET',
       headers: {
@@ -115,12 +116,12 @@ export async function anonymous() {
         }),
       },
     }
-  )
+  );
 
   if (response.ok) {
-    const cookies = response.headers.raw()['set-cookie']
+    const cookies = response.headers.raw()['set-cookie'];
 
-    debug('can continue as anonymous user')
+    debug('can continue as anonymous user');
 
     return {
       raw: response.headers.get('Set-Cookie')!,
@@ -129,18 +130,21 @@ export async function anonymous() {
         ...cookie.parsed,
         ...cookieToObject(cookies),
       },
-    }
+    };
   }
 
-  debug('anonymous login failed', response)
+  debug('anonymous login failed', response);
 
-  return null
+  return null;
 }
 
-export async function authenticate(username: string, password: string): Promise<RawAuthCookie | null> {
-  const cookie = await getInitialCookie()
+export async function authenticate(
+  username: string,
+  password: string
+): Promise<RawAuthCookie | null> {
+  const cookie = await getInitialCookie();
 
-  if (!cookie) return null
+  if (!cookie) return null;
 
   const headers = {
     accept: 'application/json',
@@ -154,20 +158,22 @@ export async function authenticate(username: string, password: string): Promise<
     'sec-fetch-site': 'same-site',
     'sec-fetch-mode': 'cors',
     cookie: `gnar_containrId=${cookie.parsed.gnar_containerId}; grauth=${cookie.parsed.grauth}; csrf-token=${cookie.parsed['csrf-token']}`,
-  }
+  };
 
-  debug('authenticating as ' + username, headers)
+  debug('authenticating as ' + username, headers);
 
   const response = await fetch('https://auth.grammarly.com/v3/api/login', {
     follow: 0,
     compress: true,
     method: 'POST',
-    body: JSON.stringify({ email_login: { email: username, password, secureLogin: false } }),
+    body: JSON.stringify({
+      email_login: { email: username, password, secureLogin: false },
+    }),
     headers,
-  })
+  });
 
   if (response.ok) {
-    const cookies = response.headers.raw()['set-cookie']
+    const cookies = response.headers.raw()['set-cookie'];
     const result = {
       raw: response.headers.get('Set-Cookie')!,
       headers: cookies,
@@ -175,14 +181,14 @@ export async function authenticate(username: string, password: string): Promise<
         ...cookie.parsed,
         ...cookieToObject(cookies),
       },
-    }
+    };
 
-    debug('authenticated', result.parsed)
+    debug('authenticated', result.parsed);
 
-    return result
+    return result;
   }
 
-  debug('authentication failed', response.status, response.headers)
+  debug('authentication failed', response.status, response.headers);
 
-  return null
+  return null;
 }

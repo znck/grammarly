@@ -1,6 +1,6 @@
-import { getClient, getGrammarlyClient } from '@/client'
-import { onCustomEventFromServer } from '@/shared/events'
-import { Grammarly } from '@/shared/grammarly'
+import { getClient, getGrammarlyClient } from '@/client';
+import { onCustomEventFromServer } from '@/shared/events';
+import { Grammarly } from '@/shared/grammarly';
 import {
   ExtensionContext,
   StatusBarAlignment,
@@ -9,104 +9,118 @@ import {
   ThemeColor,
   window,
   workspace,
-} from 'vscode'
-import { isIgnoredDocument } from '../utils'
+} from 'vscode';
+import { isIgnoredDocument } from '../utils';
 
-let statusBar: StatusBarItem
+let statusBar: StatusBarItem;
 
 export function registerStatusBar(context: ExtensionContext) {
-  statusBar = window.createStatusBarItem(StatusBarAlignment.Left)
+  statusBar = window.createStatusBarItem(StatusBarAlignment.Left);
 
-  statusBar.text = '$(globe) checking...'
-  statusBar.tooltip = 'Grammarly waiting...'
-  statusBar.color = new ThemeColor('statusBar.foreground')
+  statusBar.text = '$(globe) checking...';
+  statusBar.tooltip = 'Grammarly waiting...';
+  statusBar.color = new ThemeColor('statusBar.foreground');
 
-  context.subscriptions.push(statusBar)
-  context.subscriptions.push(window.onDidChangeActiveTextEditor(e => onDidOpenDocument(e && e.document)))
-  context.subscriptions.push(workspace.onDidCloseTextDocument(onDidCloseDocument))
+  context.subscriptions.push(statusBar);
+  context.subscriptions.push(
+    window.onDidChangeActiveTextEditor(e => onDidOpenDocument(e && e.document))
+  );
+  context.subscriptions.push(
+    workspace.onDidCloseTextDocument(onDidCloseDocument)
+  );
 
-  const client = getClient()
+  const client = getClient();
 
   client.onReady().then(() => {
     onCustomEventFromServer(client, Grammarly.Action.FEEDBACK, uri => {
       if (isActiveDocument(uri)) {
-        update(uri)
+        update(uri);
       }
-    })
+    });
 
     onCustomEventFromServer(client, Grammarly.Action.FINISHED, uri => {
       if (isActiveDocument(uri)) {
-        update(uri)
+        update(uri);
       }
-    })
-  })
+    });
+  });
 
-  onDidOpenDocument(window.activeTextEditor && window.activeTextEditor.document)
+  onDidOpenDocument(
+    window.activeTextEditor && window.activeTextEditor.document
+  );
 }
 
 function setTooltip(status: {
-  Clarity: number
-  Correctness: number
-  Engagement: number
-  GeneralScore: number
-  Tone: number
+  Clarity: number;
+  Correctness: number;
+  Engagement: number;
+  GeneralScore: number;
+  Tone: number;
 }) {
-  const v = (num: number) => Number.parseInt(`${num * 100}`)
+  const v = (num: number) => Number.parseInt(`${num * 100}`);
   statusBar.tooltip = [
     `Clarity: ${v(status.Clarity)}`,
     `Correctness: ${v(status.Correctness)}`,
     `Engagement: ${v(status.Engagement)}`,
     `Tone: ${v(status.Tone)}`,
-  ].join('\n')
+  ].join('\n');
 }
 
 function isActiveDocument(uri: string) {
-  return window.activeTextEditor && window.activeTextEditor.document.uri.toString() === uri
+  return (
+    window.activeTextEditor &&
+    window.activeTextEditor.document.uri.toString() === uri
+  );
 }
 
 async function update(activeDocumentURI: string) {
-  const summary = await getGrammarlyClient().getSummary(activeDocumentURI)
-  statusBar.text = '$(globe) ' + summary.overall + ' out of 100'
+  const summary = await getGrammarlyClient().getSummary(activeDocumentURI);
+  statusBar.text = '$(globe) ' + summary.overall + ' out of 100';
 
-  setTooltip(summary.scores)
-  statusBar.show()
+  setTooltip(summary.scores);
+  statusBar.show();
 }
 
-let lastDocument: TextDocument
+let lastDocument: TextDocument;
 async function onDidOpenDocument(document?: TextDocument) {
   if (document) {
-    lastDocument = document
-    const isIgnored = isIgnoredDocument(document)
+    lastDocument = document;
+    const isIgnored = isIgnoredDocument(document);
 
     if (!isIgnored) {
-      statusBar.command = 'grammarly.stats'
-      statusBar.text = '$(globe) checking...'
-      statusBar.tooltip = 'Grammarly waiting...'
-      statusBar.show()
+      statusBar.command = 'grammarly.stats';
+      statusBar.text = '$(globe) checking...';
+      statusBar.tooltip = 'Grammarly waiting...';
+      statusBar.show();
 
-      return update(document.uri.toString())
+      return update(document.uri.toString());
     }
   }
 
   if (isVisibleDocument(lastDocument)) {
-    return
+    return;
   }
 
-  statusBar.command = undefined
-  return statusBar.hide()
+  statusBar.command = undefined;
+  return statusBar.hide();
 }
 
 function isVisibleDocument(document: TextDocument) {
-  return !!document && window.visibleTextEditors.some(editor => areDocumentsEqual(editor.document, document))
+  return (
+    !!document &&
+    window.visibleTextEditors.some(editor =>
+      areDocumentsEqual(editor.document, document)
+    )
+  );
 }
 
 function areDocumentsEqual(doc1: TextDocument, doc2: TextDocument): unknown {
-  return doc1.uri.toString() === doc2.uri.toString()
+  return doc1.uri.toString() === doc2.uri.toString();
 }
 
 function onDidCloseDocument(document: TextDocument) {
   if (lastDocument && document.uri.toString() === lastDocument.uri.toString()) {
-    statusBar.command = undefined
-    statusBar.hide()
+    statusBar.command = undefined;
+    statusBar.hide();
   }
 }

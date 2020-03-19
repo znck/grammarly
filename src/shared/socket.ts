@@ -1,37 +1,39 @@
-import WebSocket from 'ws'
-import { anonymous, AuthCookie, authenticate, UA } from './grammarly-auth'
-import createLogger from 'debug'
+import WebSocket from 'ws';
+import { anonymous, AuthCookie, authenticate, UA } from './grammarly-auth';
+import createLogger from 'debug';
 
-process.env.DEBUG = 'grammarly:*'
+process.env.DEBUG = 'grammarly:*';
 
-const debug = createLogger('grammarly:shared')
+const debug = createLogger('grammarly:shared');
 
 export interface AuthParams {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
 
 export interface Connection {
-  socket: WebSocket
-  cookie: AuthCookie
+  socket: WebSocket;
+  cookie: AuthCookie;
 }
 
 export async function connect(params?: AuthParams, cookie?: AuthCookie) {
   if (!cookie) {
-    const rawCookie = await (params ? authenticate(params.username, params.password) : anonymous())
+    const rawCookie = await (params
+      ? authenticate(params.username, params.password)
+      : anonymous());
 
-    if (rawCookie) cookie = rawCookie.parsed
+    if (rawCookie) cookie = rawCookie.parsed;
   }
 
-  if (cookie) return connectUsingCookie(cookie)
+  if (cookie) return connectUsingCookie(cookie);
 
-  throw new Error('Cannot connect to grammarly, no cookie found.')
+  throw new Error('Cannot connect to grammarly, no cookie found.');
 }
 
 function toCookie(params: Record<string, string>) {
   return Object.entries(params)
     .map(([key, value]) => key + '=' + value + ';')
-    .join(' ')
+    .join(' ');
 }
 
 function connectUsingCookie(cookie: AuthCookie): Promise<Connection> {
@@ -58,18 +60,18 @@ function connectUsingCookie(cookie: AuthCookie): Promise<Connection> {
         Upgrade: 'websocket',
       },
       origin: 'https://app.grammarly.com',
-    })
+    });
 
     socket.onopen = () => {
       resolve({
         socket,
         cookie,
-      })
-    }
+      });
+    };
 
     socket.onerror = (err: unknown) => {
-      reject(err)
-      socket.close()
-    }
-  })
+      reject(err);
+      socket.close();
+    };
+  });
 }
