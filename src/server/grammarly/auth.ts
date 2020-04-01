@@ -11,7 +11,7 @@ function toCookie(params: Record<string, string>) {
 }
 
 export const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36';
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36';
 
 const BROWSER_HEADERS = {
   'User-Agent': UA,
@@ -82,14 +82,15 @@ function generateRedirectLocation(): string {
   return Buffer.from(
     JSON.stringify({
       type: '',
-      location: `https://www.grammarly.com/after_install_page?extension_install=true&utm_medium=store&utm_source=chrome`,
+      location: `https://www.grammarly.com/`,
     })
   ).toString('base64');
 }
 
 export async function anonymous() {
+  debug('connecting annonymously');
   const cookie = await getInitialCookie();
-  if (!cookie) return null;
+  if (!cookie) throw new Error('Authentication cannot be started.');
 
   const response = await fetch(
     'https://auth.grammarly.com/v3/user/oranonymous?app=chromeExt&containerId=' +
@@ -121,8 +122,6 @@ export async function anonymous() {
   if (response.ok) {
     const cookies = response.headers.raw()['set-cookie'];
 
-    debug('can continue as anonymous user');
-
     return {
       raw: response.headers.get('Set-Cookie')!,
       headers: cookies,
@@ -133,18 +132,22 @@ export async function anonymous() {
     };
   }
 
-  debug('anonymous login failed', response);
+  try {
+    debug('anonymous connection failed', await response.json());
+  } catch {}
 
-  return null;
+  throw new Error(response.statusText);
 }
 
 export async function authenticate(
   username: string,
   password: string
-): Promise<RawAuthCookie | null> {
+): Promise<RawAuthCookie> {
+  debug('connecting as ' + username);
+
   const cookie = await getInitialCookie();
 
-  if (!cookie) return null;
+  if (!cookie) throw new Error('Authentication cannot be started.');
 
   const headers = {
     accept: 'application/json',
@@ -152,15 +155,13 @@ export async function authenticate(
     'content-type': 'application/json',
     'user-agent': BROWSER_HEADERS['User-Agent'],
     'x-client-type': 'funnel',
-    'x-client-version': '1.2.1082',
+    'x-client-version': '1.2.2026',
     'x-container-id': cookie.parsed.gnar_containerId,
     'x-csrf-token': cookie.parsed['csrf-token'],
     'sec-fetch-site': 'same-site',
     'sec-fetch-mode': 'cors',
     cookie: `gnar_containrId=${cookie.parsed.gnar_containerId}; grauth=${cookie.parsed.grauth}; csrf-token=${cookie.parsed['csrf-token']}`,
   };
-
-  debug('authenticating as ' + username, headers);
 
   const response = await fetch('https://auth.grammarly.com/v3/api/login', {
     follow: 0,
@@ -173,6 +174,9 @@ export async function authenticate(
   });
 
   if (response.ok) {
+    const data = await response.json();
+    debug('auth resp', data);
+
     const cookies = response.headers.raw()['set-cookie'];
     const result = {
       raw: response.headers.get('Set-Cookie')!,
@@ -183,12 +187,26 @@ export async function authenticate(
       },
     };
 
-    debug('authenticated', result.parsed);
-
     return result;
   }
 
-  debug('authentication failed', response.status, response.headers);
+  const result = await response.json();
 
-  return null;
+  debug(`${username} connection failed`, result);
+
+  if (result.error === 'SHOW_CAPTCHA') {
+    const error = new Error('Authentication requires captcha input.');
+
+    // @ts-ignore
+    error.code = result.error;
+
+    throw error;
+  } else {
+    const error = new Error(response.statusText);
+
+    // @ts-ignore
+    error.code = result.error;
+
+    throw error;
+  }
 }

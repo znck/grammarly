@@ -1,10 +1,10 @@
 import WebSocket from 'ws';
-import { AuthParams, connect, Connection } from './socket';
+import { AuthParams, connect, Connection } from '../socket';
 import { EventEmitter } from 'events';
 import { TextDocument } from 'vscode-languageclient';
-import { AuthCookie } from './grammarly-auth';
+import { AuthCookie } from './auth';
 import createLogger from 'debug';
-import { GrammarlySettings } from '../settings';
+import { GrammarlySettings } from '../../settings';
 import minimatch from 'minimatch';
 
 process.env.DEBUG = 'grammarly:*';
@@ -432,22 +432,23 @@ export namespace Grammarly {
     private currentMessageId = -1;
     private currentRevision = -1;
     private socket: WebSocket | null = null;
-    private cookie: AuthCookie | undefined;
     private queue: Message[] = [];
     private _status: 'active' | 'inactive' | 'broken' = 'inactive';
+    private _isAuthenticated = false;
     private intervalHandle: null | NodeJS.Timeout = null;
 
     constructor(
       private readonly document: TextDocument,
-      private readonly settings: GrammarlySettings,
-      private readonly authParams?: AuthParams
+      private readonly settings: DocumentContext,
+      public readonly authParams?: AuthParams,
+      public readonly cookie?: AuthCookie
     ) {
       super();
 
       this.on(Action.ERROR, error => {
         if (error.error === 'cannot_find_synonym') return;
 
-        console.error('Grammarly connection terminated due to error:', error);
+        console.error('Grammarly connection terminated due to error:', error); // TODO: Show error.
         this._status = 'inactive';
         if (this.intervalHandle) clearInterval(this.intervalHandle);
         this.queue.length = 0;
@@ -459,7 +460,7 @@ export namespace Grammarly {
     }
 
     public get isAuthenticated() {
-      return !!this.authParams && this.status === 'active';
+      return this._isAuthenticated;
     }
 
     public get status() {
@@ -468,7 +469,16 @@ export namespace Grammarly {
 
     private async handleConnection(connection: Connection) {
       this.socket = connection.socket;
+      // @ts-ignore - readonly for external
       this.cookie = connection.cookie;
+
+      if (this.authParams?.username) {
+        this._isAuthenticated = true;
+      } else {
+        this._isAuthenticated = false;
+      }
+
+      this.emit('ready');
 
       this.socket!.onmessage = event =>
         this.onResponse(JSON.parse(event.data.toString()));
@@ -485,9 +495,9 @@ export namespace Grammarly {
         documentId: this.document.uri,
         account: !!this.authParams ? 'private' : 'public',
       });
-      connect(this.authParams, this.cookie).then(connection =>
-        this.handleConnection(connection)
-      );
+      connect(this.authParams, this.cookie)
+        .then(connection => this.handleConnection(connection))
+        .catch(error => this.emit('abort', error));
     }
 
     dispose() {
@@ -522,6 +532,7 @@ export namespace Grammarly {
       this.emit(response.action, response);
     }
 
+    on(event: string, fn: (...args: any[]) => any): this;
     on<K extends keyof ResponseTypes>(
       event: K,
       fn: (response: ResponseTypes[K]) => void
@@ -529,6 +540,7 @@ export namespace Grammarly {
       return super.on(event, fn);
     }
 
+    once(event: string, fn: () => any): this;
     once<K extends keyof ResponseTypes>(
       event: K,
       fn: (response: ResponseTypes[K]) => void
@@ -537,7 +549,7 @@ export namespace Grammarly {
     }
 
     private async sendStartMessage() {
-      const documentContext = getDocumentContext(this.document, this.settings);
+      const documentContext = this.settings;
 
       const start: StartMessage = {
         action: Action.START,

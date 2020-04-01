@@ -1,24 +1,25 @@
-import { Grammarly } from '@/shared/grammarly';
+import { Grammarly } from '@/server/grammarly';
 import {
   CodeAction,
   Diagnostic,
   DiagnosticSeverity,
+  DiagnosticTag,
   Range,
   TextDocument,
 } from 'vscode-languageserver';
-import { env } from './env';
 
 export function createGrammarlyFix(
+  document: TextDocument,
   alert: Grammarly.Alert,
   replacement: string,
-  document: TextDocument
+  diagnostics: Diagnostic[] = []
 ): CodeAction {
   return {
     title: `${alert.todo} -> ${replacement}`.replace(/^[a-z]/, m =>
       m.toLocaleUpperCase()
     ),
     kind: 'quickfix' /* CodeActionKind.QuickFix */,
-    diagnostics: [createDiagnostic(alert, document)],
+    diagnostics,
     isPreferred: true,
     edit: {
       changes: {
@@ -34,13 +35,13 @@ export function createGrammarlyFix(
 }
 
 export function createGrammarlySynonymFix(
+  document: TextDocument,
   word: string,
   replacement: { base: string; derived: string },
-  document: TextDocument,
   range: Range
 ): CodeAction {
   return {
-    title: `${word} -> ${replacement.derived}`,
+    title: `Synonym: ${word} -> ${replacement.derived}`,
     kind: 'quickfix' /* CodeActionKind.QuickFix */,
     edit: {
       changes: {
@@ -85,7 +86,30 @@ export function createIgnoreFix(
     },
   };
 }
+export function toMarkdown(source: string) {
+  return source
+    .replace(/<p>/gi, _ => `\n\n`)
+    .replace(/<br\/?>/gi, _ => `  \n`)
+    .replace(/<span class="red">Incorrect:/gi, _ => `- **Incorrect:** `)
+    .replace(/<span class="green">Correct:/gi, _ => `- **Correct:** `)
+    .replace(/\s?<b>(.*?)<\/b>\s?/gi, (_, content) => ` **${content}** `)
+    .replace(/\s?<i>(.*?)<\/i>\s?/gi, (_, content) => ` _${content}_ `)
+    .replace(/<\/?[^>]+(>|$)/g, '')
+    .replace(/\n\n(\n|\s)+/, '\n\n')
+    .trim();
+}
 
+export function getMarkdownDescription(alert: Grammarly.Alert) {
+  return alert.explanation || alert.details || alert.examples
+    ? toMarkdown(
+        `### ${alert.title}${
+          alert.explanation ? `\n\n${alert.explanation}` : ''
+        }${alert.details ? `\n\n${alert.details}` : ''}${
+          alert.examples ? `\n\n### Examples\n\n${alert.examples}` : ''
+        }`
+      )
+    : '';
+}
 export function isSpellingAlert(alert: Grammarly.Alert) {
   return alert.group === 'Spelling';
 }
@@ -105,60 +129,22 @@ export function capturePromiseErrors<T extends Function>(
 }
 
 export function createDiagnostic(
+  document: TextDocument,
   alert: Grammarly.Alert,
-  document: TextDocument
+  severityMap: Record<string, DiagnosticSeverity>
 ) {
+  const severity = severityMap[alert.category] || DiagnosticSeverity.Hint;
   const diagnostic: Diagnostic = {
-    severity: getAlertSeverity(alert),
-    message: (alert.title || alert.categoryHuman!).replace(
-      /<\/?[^>]+(>|$)/g,
-      ''
-    ),
-    source: 'Grammarly',
+    severity,
+    message: (alert.title || '').replace(/<\/?[^>]+(>|$)/g, ''),
+    source: 'Grammarly: ' + alert.category,
     code: alert.id,
     range: getRangeInDocument(document, alert.begin, alert.end),
-    tags: alert.hidden ? [1] : [],
+    tags:
+      severity === DiagnosticSeverity.Hint ? [DiagnosticTag.Unnecessary] : [],
   };
 
-  if (env.hasDiagnosticRelatedInformationCapability) {
-    if (shouldIncludeAdditionalInformation(alert)) {
-      diagnostic.relatedInformation = [
-        {
-          location: {
-            uri: document.uri,
-            range: getRangeInDocument(
-              document,
-              alert.highlightBegin,
-              alert.highlightEnd
-            ),
-          },
-          message: alert.highlightText!,
-        },
-      ];
-    }
-  }
-
   return diagnostic;
-}
-
-export function shouldIncludeAdditionalInformation(
-  alert: Grammarly.Alert
-): boolean {
-  return !!(alert.highlightText && alert.highlightText.length <= 60);
-}
-
-export function getAlertSeverity(alert: Grammarly.Alert): DiagnosticSeverity {
-  switch (alert.category) {
-    case 'WordChoice':
-    case 'PassiveVoice':
-    case 'Readability':
-      return 3; /* DiagnosticSeverity.Information */
-    case 'Clarity':
-    case 'Dialects':
-      return 2; /* DiagnosticSeverity.Warning */
-    default:
-      return 1; /* DiagnosticSeverity.Error */
-  }
 }
 
 export function getRangeInDocument(

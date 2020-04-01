@@ -1,37 +1,36 @@
+import 'reflect-metadata';
+import { Container } from 'inversify';
 import { ExtensionContext } from 'vscode';
-import { startClient, stopClient, getClient } from './client';
-import { registerAddWordCommand } from './client/commands/add-word';
-import { registerCheckCommand } from './client/commands/check';
-import { registerIgnoreWordCommand } from './client/commands/ignore-issue';
-import { registerStatsCommand } from './client/commands/stats';
-import { registerStatusBar } from './client/status-bar';
-import { registerSetCredentials } from './client/commands/set-credentials';
+import { GrammarlyClient } from './client';
+import { AddWordCommand } from './commands/add-word';
+import { CheckCommand } from './commands/check';
+import { IgnoreIssueCommand } from './commands/ignore-issue';
+import { StatsCommand } from './commands/stats';
+import { EXTENSION } from './constants';
+import { StatusBarController } from './controllers/status-bar';
+import { SetCredentialsCommand } from './commands/set-credentials';
 
 process.env.DEBUG = 'grammarly:*';
 
-export async function activate(context: ExtensionContext) {
-  console.log('Welcome to "Grammarly" extension.');
-  startClient(context);
+const container = new Container({
+  autoBindInjectable: true,
+  defaultScope: 'Singleton',
+});
 
-  registerSubscriptions(context);
-  registerStatusBar(context);
+export async function activate(context: ExtensionContext) {
+  container.bind(EXTENSION).toConstantValue(context);
+
+  await context.subscriptions.push(
+    container.get(GrammarlyClient).register(),
+    container.get(StatusBarController).register(),
+    container.get(AddWordCommand).register(),
+    container.get(CheckCommand).register(),
+    container.get(IgnoreIssueCommand).register(),
+    container.get(StatsCommand).register(),
+    container.get(SetCredentialsCommand).register()
+  );
 }
 
 export async function deactivate() {
-  await stopClient();
-}
-
-function registerSubscriptions(context: ExtensionContext) {
-  const client = getClient();
-
-  client.onReady().then(() => {
-    context.subscriptions.push(
-      // commands
-      registerCheckCommand(),
-      registerIgnoreWordCommand(),
-      registerAddWordCommand(),
-      registerStatsCommand()
-    );
-    return registerSetCredentials(context);
-  });
+  container.unbindAll();
 }

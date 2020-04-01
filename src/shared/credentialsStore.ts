@@ -1,5 +1,5 @@
 import * as keytarType from 'keytar';
-import { AuthParams } from './socket';
+import { AuthParams } from '../server/socket';
 
 function getNodeModule<T>(moduleName: string): T | undefined {
   try {

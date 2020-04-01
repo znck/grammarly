@@ -1,5 +1,10 @@
 import WebSocket from 'ws';
-import { anonymous, AuthCookie, authenticate, UA } from './grammarly-auth';
+import {
+  anonymous,
+  AuthCookie,
+  authenticate,
+  UA,
+} from '@/server/grammarly/auth';
 import createLogger from 'debug';
 
 process.env.DEBUG = 'grammarly:*';
@@ -18,11 +23,13 @@ export interface Connection {
 
 export async function connect(params?: AuthParams, cookie?: AuthCookie) {
   if (!cookie) {
-    const rawCookie = await (params
+    const rawCookie = await (params && params.username && params.password
       ? authenticate(params.username, params.password)
       : anonymous());
 
     if (rawCookie) cookie = rawCookie.parsed;
+  } else {
+    debug(`reusing session for ${params?.username || 'anonymous'}`);
   }
 
   if (cookie) return connectUsingCookie(cookie);

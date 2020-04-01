@@ -1,17 +1,33 @@
-import { getGrammarlyClient } from '@/client';
-import { isIgnoredDocument } from '@/client/utils';
+import { GrammarlyClient } from '@/client';
+import { Registerable } from '@/interfaces';
+import { injectable } from 'inversify';
 import { commands, window } from 'vscode';
-import { Disposable } from 'vscode-languageclient';
 
-export function registerStatsCommand(): Disposable {
-  return commands.registerCommand('grammarly.stats', async () => {
-    const { activeTextEditor } = window;
-    if (!activeTextEditor) return;
+@injectable()
+export class StatsCommand implements Registerable {
+  constructor(private readonly client: GrammarlyClient) {}
 
-    const { document } = activeTextEditor;
-    if (isIgnoredDocument(document)) return;
+  register() {
+    return commands.registerCommand('grammarly.stats', this.execute.bind(this));
+  }
 
-    const client = getGrammarlyClient();
+  private async execute() {
+    if (!this.client.isReady()) return;
+
+    if (!window.activeTextEditor) {
+      window.showInformationMessage('No active text document found.');
+
+      return;
+    }
+
+    const document = window.activeTextEditor.document;
+
+    if (this.client.isIgnoredDocument(document)) {
+      const ext = document.fileName.substr(document.fileName.lastIndexOf('.'));
+      window.showInformationMessage(`The ${ext} filetype is not supported.`);
+      // TODO: Add a button to create github issue.
+      return;
+    }
 
     try {
       const uri = document.uri.toString();
@@ -20,7 +36,7 @@ export function registerStatsCommand(): Disposable {
         content,
         readability,
         vocubulary,
-      } = await client.getStatistics(uri);
+      } = await this.client.getStatistics(uri);
 
       await window.showInformationMessage(
         `
@@ -56,7 +72,8 @@ export function registerStatsCommand(): Disposable {
         { modal: true }
       );
     } catch (error) {
-      console.error(error);
+      window.showErrorMessage(`Grammarly: ${error.message}`);
+      // TODO: Add report url.
     }
-  });
+  }
 }
