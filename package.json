@@ -345,7 +345,7 @@
     "minimatch": "^3.0.4",
     "node-fetch": "^2.6.0",
     "reflect-metadata": "^0.1.13",
-    "remark": "^11.0.2",
+    "remark": "^12.0.0",
     "supports-color": "^7.1.0",
     "utf-8-validate": "^5.0.2",
     "vscode-languageclient": "6.1.1",
