@@ -1,8 +1,8 @@
 // @ts-check
-import node from 'rollup-plugin-node-resolve'
-import cjs from 'rollup-plugin-commonjs'
-import ts from 'rollup-plugin-typescript'
-import json from '@rollup/plugin-json'
+import node from '@rollup/plugin-node-resolve';
+import cjs from '@rollup/plugin-commonjs';
+import ts from 'rollup-plugin-typescript';
+import json from '@rollup/plugin-json';
 
 /** @type {import('rollup').RollupOptions[]} */
 export default [
@@ -13,13 +13,12 @@ export default [
       file: 'out/extension.js',
       sourcemap: true,
     },
-    plugins: [
-      node({ preferBuiltins: true }),
-      cjs(),
-      ts({ tsconfig: 'tsconfig.build.json' }),
-    ],
+    plugins: [node(), cjs(), ts()],
     external: [
       'vscode',
+      'vscode-languageserver',
+      'keytar',
+      'inversify',
       'keytar',
       // BuiltIns
       'child_process',
@@ -46,13 +45,10 @@ export default [
       file: 'out/server.js',
       sourcemap: true,
     },
-    plugins: [
-      node({ preferBuiltins: true }),
-      cjs(),
-      ts({ tsconfig: 'tsconfig.build.json' }),
-      json(),
-    ],
+    plugins: [node(), cjs(), ts(), json()],
     external: [
+      'inversify',
+      'vscode-languageserver',
       // BuiltIns
       'child_process',
       'crypto',
@@ -72,4 +68,4 @@ export default [
       'zlib',
     ],
   },
-]
+];

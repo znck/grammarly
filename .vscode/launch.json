@@ -4,6 +4,12 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Debug Extension",
+      "configurations": ["Run Extension", "Attach to TS Server"]
+    }
+  ],
   "configurations": [
     {
       "name": "Attach to TS Server",
@@ -12,7 +18,7 @@
       "protocol": "inspector",
       "port": 6009,
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/out/"]
+      "outFiles": ["${workspaceFolder}/out/*.js"]
     },
 
     {
@@ -23,8 +29,11 @@
       "env": {
         "DEBUG": "grammarly:*"
       },
-      "args": ["--disable-extensions", "--extensionDevelopmentPath=${workspaceFolder}"],
-      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "${workspaceFolder}/fixtures"
+      ],
+      "outFiles": ["${workspaceFolder}/out/*.js"],
       "preLaunchTask": "npm: watch"
     },
     {
@@ -38,7 +47,7 @@
         "--extensionTestsPath=${workspaceFolder}/out/test"
       ],
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "npm: watch"
+      "preLaunchTask": "npm: compile"
     }
   ]
 }

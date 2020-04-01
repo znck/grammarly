@@ -1,6 +1,7 @@
-import { Grammarly } from './shared/grammarly';
+import { Grammarly } from './server/grammarly';
+import { DiagnosticSeverity } from 'vscode-languageserver';
 
-export interface GrammarlySettings {
+export interface GrammarlySettings extends Grammarly.DocumentContext {
   /** Extension Config */
   ignore: string[];
   userWords: string[];
@@ -10,15 +11,7 @@ export interface GrammarlySettings {
       ignore: string[];
     }
   >;
-
-  /** Grammarly Config */
-  audience: Grammarly.DocumentAudience;
-  dialect: Grammarly.Dialect;
-  domain: Grammarly.DocumentDomain;
-  emotion: Grammarly.WritingTone;
-  emotions: Grammarly.WritingEmotion[];
-  goals: Grammarly.DocumentGoal[];
-  style: Grammarly.WritingStyle;
+  severity: Record<string, DiagnosticSeverity>;
 
   /** Grammarly Document Config */
   overrides: Array<{
@@ -27,9 +20,18 @@ export interface GrammarlySettings {
   }>;
 }
 
-export const DEFAULT_SETTINGS: GrammarlySettings = {
+export const DEFAULT: GrammarlySettings = {
   /** Extension Config */
   ignore: [],
+  severity: {
+    Determiners: DiagnosticSeverity.Error,
+    Misspelled: DiagnosticSeverity.Error,
+    WordChoice: DiagnosticSeverity.Information,
+    PassiveVoice: DiagnosticSeverity.Information,
+    Readability: DiagnosticSeverity.Information,
+    Clarity: DiagnosticSeverity.Warning,
+    Dialects: DiagnosticSeverity.Warning,
+  },
   userWords: [],
   diagnostics: {
     '[markdown]': {

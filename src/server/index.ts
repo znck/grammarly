@@ -1,61 +1,50 @@
-import createLogger from 'debug';
+import { Container } from 'inversify';
+import 'reflect-metadata';
 import {
   createConnection,
-  InitializeResult,
+  Disposable,
   ProposedFeatures,
+  ServerCapabilities,
 } from 'vscode-languageserver';
-import { setDocumentsConnection } from './documents';
-import { env } from './env';
-import { capturePromiseErrors as voidOnError } from './helpers';
-import { onCodeAction, onHover, setProviderConnection } from './providers';
-import {
-  onDidChangeConfiguration,
-  setSettingsConnection,
-  refreshGlobalConfiguration,
-} from './settings';
+import { CLIENT, CONNECTION, SERVER } from './constants';
+import { ConfigurationService } from './services/configuration';
+import { DictionaryService } from './services/dictionary';
+import { DocumentService } from './services/document';
+import { GrammarlyService } from './services/grammarly';
 
 process.env.DEBUG = 'grammarly:*';
 
-const debug = createLogger('grammarly:server');
+const disposables: Disposable[] = [];
+const capabilities: ServerCapabilities = {};
+const container = new Container({
+  autoBindInjectable: true,
+  defaultScope: 'Singleton',
+});
 const connection = createConnection(ProposedFeatures.all);
 
-connection.onInitialize(
-  (params): InitializeResult => {
-    const capabilities = params.capabilities;
+container.bind(CONNECTION).toConstantValue(connection);
+container.bind(SERVER).toConstantValue(capabilities);
 
-    env.hasConfigurationCapability = !!(
-      capabilities.workspace && capabilities.workspace.configuration
-    );
-    env.hasWorkspaceFolderCapability = !!(
-      capabilities.workspace && capabilities.workspace.workspaceFolders
-    );
-    env.hasDiagnosticRelatedInformationCapability = !!(
-      capabilities.textDocument &&
-      capabilities.textDocument.publishDiagnostics &&
-      capabilities.textDocument.publishDiagnostics.relatedInformation
-    );
+connection.onInitialize(params => {
+  container.bind(CLIENT).toConstantValue(params.capabilities);
 
-    return {
-      capabilities: {
-        textDocumentSync: 2 /* TextDocumentSyncKind.Incremental */,
-        codeActionProvider: true,
-        hoverProvider: true,
-      },
-    };
-  }
-);
+  disposables.push(
+    container.get(ConfigurationService).register(),
+    container.get(DocumentService).register(),
+    container.get(DictionaryService).register(),
+    container.get(GrammarlyService).register()
+  );
 
-setDocumentsConnection(connection);
-setProviderConnection(connection);
-setSettingsConnection(connection);
-
-connection.onInitialized(() => {
-  debug('Server Ready.');
-  refreshGlobalConfiguration();
+  return {
+    serverInfo: {
+      name: 'Grammarly',
+    },
+    capabilities,
+  };
 });
-connection.onDidChangeConfiguration(onDidChangeConfiguration);
-connection.onCodeAction(
-  voidOnError(params => onCodeAction(connection, params))
-);
-connection.onHover(voidOnError(params => onHover(params)));
+
+connection.onExit(() => {
+  disposables.forEach(disposable => disposable.dispose());
+});
+
 connection.listen();

@@ -20,11 +20,10 @@
     "onLanguage:markdown",
     "onLanguage:mdx",
     "onCommand:grammarly.check",
-    "onCommand:grammarly.setCredentials"
+    "onCommand:grammarly.set-credentials"
   ],
   "contributes": {
     "configuration": {
-      "type": "object",
       "title": "Grammarly",
       "properties": {
         "grammarly.audience": {
@@ -122,6 +121,7 @@
           "default": []
         },
         "grammarly.overrides": {
+          "description": "Per document override for audience, dialect, domain, emotions and goals.",
           "scope": "resource",
           "type": "array",
           "items": {
@@ -238,7 +238,7 @@
           ]
         },
         "grammarly.userWords": {
-          "description": "User words to add to dictionary.",
+          "description": "A list of words as a local dictionary.",
           "scope": "resource",
           "type": "array",
           "items": {
@@ -267,6 +267,25 @@
               ]
             }
           }
+        },
+        "grammarly.severity": {
+          "type": "object",
+          "scope": "resource",
+          "description": "A mapping from Grammarly alert categories to VS Code diagnostics severity.",
+          "additionalProperties": {
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "enumDescriptions": [
+              "Error",
+              "Warning",
+              "Info",
+              "Hint"
+            ]
+          }
         }
       }
     },
@@ -277,8 +296,8 @@
         "category": "Grammarly"
       },
       {
-        "command": "grammarly.setCredentials",
-        "title": "Set Grammarly credentials",
+        "command": "grammarly.set-credentials",
+        "title": "Login to grammarly.com",
         "category": "Grammarly"
       }
     ]
@@ -294,7 +313,10 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.0.1",
+    "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
     "@types/debug": "^4.1.5",
     "@types/keytar": "^4.4.2",
     "@types/minimatch": "^3.0.3",
@@ -306,10 +328,7 @@
     "lint-staged": "^10.0.8",
     "prettier": "^1.19.1",
     "rollup": "^2.1.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-typescript2": "^0.26.0",
     "standard-version": "^7.1.0",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3",
@@ -321,9 +340,11 @@
     "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "html-to-md": "^0.3.2",
+    "inversify": "^5.0.1",
     "memoize-one": "^5.1.1",
     "minimatch": "^3.0.4",
     "node-fetch": "^2.6.0",
+    "reflect-metadata": "^0.1.13",
     "remark": "^11.0.2",
     "supports-color": "^7.1.0",
     "utf-8-validate": "^5.0.2",

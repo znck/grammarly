@@ -1,7 +1,7 @@
 import { LanguageClient } from 'vscode-languageclient';
 import { Connection } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-protocol';
-import { Grammarly } from './grammarly';
+import { Grammarly } from '../server/grammarly';
 
 interface ServerToClientEvent {
   [Grammarly.Action.FEEDBACK](
