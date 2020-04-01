@@ -1,11 +1,11 @@
-import WebSocket from 'ws';
-import { AuthParams, connect, Connection } from '../socket';
-import { EventEmitter } from 'events';
-import { TextDocument } from 'vscode-languageclient';
-import { AuthCookie } from './auth';
+import { GrammarlySettings } from '@/settings';
 import createLogger from 'debug';
-import { GrammarlySettings } from '../../settings';
+import { EventEmitter } from 'events';
 import minimatch from 'minimatch';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import WebSocket from 'ws';
+import { AuthParams, connect, Connection } from '@/server/socket';
+import { AuthCookie } from './auth';
 
 process.env.DEBUG = 'grammarly:*';
 

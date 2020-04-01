@@ -4,9 +4,18 @@ import cjs from '@rollup/plugin-commonjs';
 import ts from 'rollup-plugin-typescript';
 import json from '@rollup/plugin-json';
 
+function onwarn(message) {
+  if (
+    /node_modules\/inversify\/lib\/syntax\/binding_on_syntax\.js/.test(message)
+  )
+    return;
+  console.error(message);
+}
+
 /** @type {import('rollup').RollupOptions[]} */
 export default [
   {
+    onwarn,
     input: 'src/extension.ts',
     output: {
       format: 'cjs',
@@ -16,10 +25,8 @@ export default [
     plugins: [node(), cjs(), ts()],
     external: [
       'vscode',
-      'vscode-languageserver',
       'keytar',
-      'inversify',
-      'keytar',
+      // 'vscode-languageserver',
       // BuiltIns
       'child_process',
       'crypto',
@@ -39,16 +46,31 @@ export default [
     ],
   },
   {
+    onwarn,
     input: 'src/server/index.ts',
     output: {
       format: 'cjs',
       file: 'out/server.js',
       sourcemap: true,
     },
-    plugins: [node(), cjs(), ts(), json()],
+    plugins: [
+      node(),
+      cjs({
+        namedExports: {
+          'vscode-languageserver': [
+            'DiagnosticSeverity',
+            'Disposable',
+            'Connection',
+            'TextDocumentSyncKind',
+            'ServerCapabilities',
+            'DiagnosticTag',
+          ],
+        },
+      }),
+      ts(),
+      json(),
+    ],
     external: [
-      'inversify',
-      'vscode-languageserver',
       // BuiltIns
       'child_process',
       'crypto',

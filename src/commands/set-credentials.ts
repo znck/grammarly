@@ -1,8 +1,13 @@
 import { Registerable } from '@/interfaces';
 import { injectable } from 'inversify';
-import { commands, window, QuickInputButtons, InputBox } from 'vscode';
+import {
+  commands,
+  window,
+  QuickInputButtons,
+  InputBox,
+  Disposable,
+} from 'vscode';
 import keytar from 'keytar';
-import { Disposable } from 'vscode-languageclient';
 import { AuthParams } from '@/server/socket';
 import { authenticate } from '@/server/grammarly/auth';
 
