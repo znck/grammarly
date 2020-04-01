@@ -326,7 +326,7 @@
     "@types/turndown": "^5.0.0",
     "@types/ws": "^7.2.2",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.2",
     "rollup": "^2.1.0",
     "rollup-plugin-typescript": "^1.0.1",
     "standard-version": "^7.1.0",
