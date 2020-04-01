@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.2"></a>
+## [0.7.2](https://github.com/znck/grammarly/compare/v0.7.1...v0.7.2) (2020-04-01)
+
+
+### Bug Fixes
+
+* include inversify & vscode-languageserver in bundle ([62c8392](https://github.com/znck/grammarly/commit/62c8392))
+
+
+
 <a name="0.7.1"></a>
 ## [0.7.1](https://github.com/znck/grammarly/compare/v0.7.0...v0.7.1) (2020-04-01)
 
