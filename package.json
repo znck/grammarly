@@ -322,7 +322,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "@types/minimatch": "^3.0.3",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.9.8",
     "@types/node-fetch": "^2.5.5",
     "@types/turndown": "^5.0.0",
     "@types/ws": "^7.2.2",
