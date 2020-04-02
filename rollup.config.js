@@ -64,6 +64,7 @@ export default [
             'TextDocumentSyncKind',
             'ServerCapabilities',
             'DiagnosticTag',
+            'CodeActionKind',
           ],
         },
       }),

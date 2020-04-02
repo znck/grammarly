@@ -6,27 +6,35 @@ import {
   DiagnosticTag,
   Range,
   TextDocument,
+  CodeActionKind,
 } from 'vscode-languageserver';
 
 export function createGrammarlyFix(
   document: TextDocument,
   alert: Grammarly.Alert,
-  replacement: string,
+  newText: string,
   diagnostics: Diagnostic[] = []
 ): CodeAction {
+  const range = getRangeInDocument(document, alert.begin, alert.end);
+
   return {
-    title: `${alert.todo} -> ${replacement}`.replace(/^[a-z]/, m =>
+    title: `${alert.todo} -> ${newText}`.replace(/^[a-z]/, m =>
       m.toLocaleUpperCase()
     ),
-    kind: 'quickfix' /* CodeActionKind.QuickFix */,
+    kind: CodeActionKind.QuickFix,
     diagnostics,
     isPreferred: true,
+    command: {
+      command: 'grammarly.postQuickFix',
+      title: '',
+      arguments: [document.uri, alert.id, { range, newText }],
+    },
     edit: {
       changes: {
         [document.uri]: [
           {
-            range: getRangeInDocument(document, alert.begin, alert.end),
-            newText: replacement,
+            range,
+            newText,
           },
         ],
       },
@@ -42,7 +50,7 @@ export function createGrammarlySynonymFix(
 ): CodeAction {
   return {
     title: `Synonym: ${word} -> ${replacement.derived}`,
-    kind: 'quickfix' /* CodeActionKind.QuickFix */,
+    kind: CodeActionKind.QuickFix,
     edit: {
       changes: {
         [document.uri]: [
@@ -63,7 +71,7 @@ export function createAddToDictionaryFix(
 ): CodeAction {
   return {
     title: `Grammarly: add "${alert.text}" to ${target} dictionary`,
-    kind: 'quickfix',
+    kind: CodeActionKind.QuickFix,
     command: {
       command: 'grammarly.addWord',
       title: `Grammarly: save to ${target} dictionary`,
@@ -78,7 +86,7 @@ export function createIgnoreFix(
 ): CodeAction {
   return {
     title: `Grammarly: ignore issue`,
-    kind: 'quickfix',
+    kind: CodeActionKind.QuickFix,
     command: {
       command: 'grammarly.ignoreIssue',
       title: `Grammarly: ignore`,

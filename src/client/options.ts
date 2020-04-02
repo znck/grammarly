@@ -5,10 +5,7 @@ import {
 } from 'vscode-languageclient';
 
 export function generateDocumentSelectors(languages: string[]) {
-  return [
-    ...languages.map(language => ({ scheme: 'file', language })),
-    ...languages.map(language => ({ scheme: 'untitled', language })),
-  ];
+  return [...languages.map(language => ({ language }))];
 }
 
 export function getLanguageServerOptions(module: string): ServerOptions {

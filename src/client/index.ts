@@ -17,6 +17,7 @@ import {
   LANGUAGES,
 } from './options';
 import keytar from 'keytar';
+import { TextEdit } from 'vscode-languageserver-textdocument';
 
 @injectable()
 export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
@@ -109,6 +110,14 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
       !LANGUAGES.includes(document.languageId) ||
       ignore.some(pattern => minimatch(uri, pattern));
     return isIgnored;
+  }
+
+  async onCodeActionAccepted(uri: string, alertId: number, change: TextEdit) {
+    this.client.sendNotification('$/codeActionAccepted', {
+      uri,
+      alertId,
+      change,
+    });
   }
 
   async check(uri: string) {

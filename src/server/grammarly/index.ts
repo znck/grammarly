@@ -6,6 +6,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import WebSocket from 'ws';
 import { AuthParams, connect, Connection } from '@/server/socket';
 import { AuthCookie } from './auth';
+import debounce from 'lodash.debounce';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -133,6 +134,13 @@ export namespace Grammarly {
     action: Action.FEEDBACK;
     type: 'IGNORE';
     alertId: string;
+  }
+
+  export interface AcceptedMessage extends Message {
+    action: Action.FEEDBACK;
+    type: 'ACCEPTED';
+    alertId: string;
+    text: string;
   }
 
   export interface IncorrectSuggestionMessage extends Message {
@@ -483,6 +491,10 @@ export namespace Grammarly {
       this.socket!.onmessage = event =>
         this.onResponse(JSON.parse(event.data.toString()));
       // this.socket.onerror // TODO: Handle socket errors.
+      this.queue.length = 0;
+      this.ots.length = 0;
+      this.pendingResponses = 0;
+      this.currentMessageId = 0;
 
       await this.sendStartMessage();
       this.insert(0, this.document.getText());
@@ -509,27 +521,6 @@ export namespace Grammarly {
       }
 
       if (this.intervalHandle) clearInterval(this.intervalHandle);
-    }
-
-    private onResponse(response: Response) {
-      if (response.action !== ResponseAction.PONG) debug('🔻', response);
-
-      if (this.status === 'inactive') {
-        if (isResponseType(response, Action.START)) {
-          this._status = 'active';
-          const messages = this.queue.slice();
-          this.queue.length = 0;
-          messages.forEach(message => this.send(message));
-          this.intervalHandle = setInterval(
-            () => this.send({ action: Action.PING }),
-            30000
-          );
-        } else {
-          this._status = 'broken';
-        }
-      }
-
-      this.emit(response.action, response);
     }
 
     on(event: string, fn: (...args: any[]) => any): this;
@@ -593,7 +584,12 @@ export namespace Grammarly {
         ],
       };
 
-      this.send(ot);
+      if (typeof offsetStart === 'number') {
+        this.sendDebounced(ot);
+      } else {
+        this.flushOTs();
+        this.send(ot);
+      }
     }
 
     delete(documentLength: number, deleteLength: number, offsetStart: number) {
@@ -608,7 +604,7 @@ export namespace Grammarly {
         ],
       };
 
-      this.send(ot);
+      this.sendDebounced(ot);
     }
 
     synonyms(offsetStart: number, word: string) {
@@ -643,6 +639,17 @@ export namespace Grammarly {
         action: Action.FEEDBACK,
         type: 'IGNORE',
         alertId: String(alertId),
+      };
+
+      this.send(message);
+    }
+
+    acceptAlert(alertId: number, text: string) {
+      const message: AcceptedMessage = {
+        action: Action.FEEDBACK,
+        type: 'ACCEPTED',
+        alertId: String(alertId),
+        text,
       };
 
       this.send(message);
@@ -693,7 +700,73 @@ export namespace Grammarly {
       });
     }
 
+    private ots: Message[] = [];
+    private sendDebounced(message: Message) {
+      this.ots.push(message);
+      this.flushOTsDebounced();
+    }
+
+    private flushOTsDebounced = debounce(() => this.flushOTs(), 500, {
+      maxWait: 2000,
+      leading: false,
+      trailing: true,
+    });
+
+    private flushOTs() {
+      this.ots.forEach(message => this.send(message));
+      this.ots.length = 0;
+    }
+
+    private pendingResponses = 0;
+    private onResponse(response: Response) {
+      if (this.pendingResponses > 0) this.pendingResponses--;
+
+      if (response.action !== ResponseAction.PONG) debug('🔻', response);
+      debug(
+        `status: queue=${this.queue.length}, pending=${this.pendingResponses}`
+      );
+
+      if (this.status === 'inactive') {
+        if (isResponseType(response, Action.START)) {
+          this._status = 'active';
+          this.flushQueue();
+          let missed = 0;
+          this.intervalHandle = setInterval(() => {
+            if (this.pendingResponses < 10) {
+              missed = 0;
+              this.send({ action: Action.PING });
+            } else {
+              debug(
+                `socket stuck with ${this.queue.length} messages and ${this.pendingResponses} pending responses`
+              );
+              if (missed++ > 2) {
+                debug('restart frozen socket');
+                this.refresh();
+              }
+            }
+          }, 10000);
+        } else {
+          this._status = 'broken';
+        }
+      } else {
+        this.flushQueue();
+      }
+
+      this.emit(response.action, response);
+    }
+
+    private flushQueue() {
+      if (this.status === 'active') {
+        let i = 0;
+        while (this.queue.length && this.pendingResponses < 10 && i++ < 10) {
+          this.send(this.queue.shift()!);
+        }
+      }
+    }
+
     private send(message: Message): number {
+      this.flushQueue();
+
       const payload: any = {
         ...message,
       };
@@ -704,9 +777,14 @@ export namespace Grammarly {
 
       if (
         this.socket &&
-        (this.status === 'active' || message.action === Action.START)
+        (this.status === 'active' || message.action === Action.START) &&
+        this.pendingResponses <= 10
       ) {
         if (message.action !== Action.PING) debug('🔺', payload);
+        debug(
+          `status: queue=${this.queue.length}, pending=${this.pendingResponses}`
+        );
+        this.pendingResponses++;
         this.socket.send(JSON.stringify(payload));
       } else this.queue.push(payload);
 

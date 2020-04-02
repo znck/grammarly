@@ -3,6 +3,7 @@ import {
   Range,
   TextDocument,
   TextDocumentContentChangeEvent,
+  TextEdit,
 } from 'vscode-languageserver-textdocument';
 import { Grammarly } from '.';
 import { AuthParams } from '../socket';
@@ -14,6 +15,7 @@ export class GrammarlyDocument implements TextDocument {
   private _isDirty = true;
   private rangeToIdentifierFn?: (interval: [number, number]) => string[];
   private constructor(private internal: TextDocument) {}
+  public changes: TextEdit[] = [];
 
   attachHost(
     settings: Grammarly.DocumentContext,
@@ -123,9 +125,9 @@ export class GrammarlyDocument implements TextDocument {
             change.text,
             offsetStart
           );
-          prevContent = TextDocument.applyEdits(document.internal, [
-            { range: change.range, newText: change.text },
-          ]);
+
+          const edit = { range: change.range, newText: change.text };
+          prevContent = TextDocument.applyEdits(document.internal, [edit]);
         } else {
           document._host!.insert(prevContent.length, change.text);
           prevContent = change.text;
@@ -138,6 +140,15 @@ export class GrammarlyDocument implements TextDocument {
       changes,
       version
     );
+
+    if (document._host) {
+      changes.forEach(change => {
+        if ('range' in change) {
+          const edit = { range: change.range, newText: change.text };
+          document._host!.emit('$/change', edit);
+        }
+      });
+    }
 
     return document;
   }

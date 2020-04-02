@@ -9,6 +9,7 @@ import { StatsCommand } from './commands/stats';
 import { EXTENSION } from './constants';
 import { StatusBarController } from './controllers/status-bar';
 import { SetCredentialsCommand } from './commands/set-credentials';
+import { PostQuickFixCommand } from './commands/post-quick-fix';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -27,7 +28,8 @@ export async function activate(context: ExtensionContext) {
     container.get(CheckCommand).register(),
     container.get(IgnoreIssueCommand).register(),
     container.get(StatsCommand).register(),
-    container.get(SetCredentialsCommand).register()
+    container.get(SetCredentialsCommand).register(),
+    container.get(PostQuickFixCommand).register()
   );
 }
 

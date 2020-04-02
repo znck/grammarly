@@ -13,6 +13,7 @@ import {
   ServerCapabilities,
   DiagnosticSeverity,
 } from 'vscode-languageserver';
+import { TextEdit } from 'vscode-languageserver-textdocument';
 import { Grammarly } from '../grammarly';
 import { GrammarlyDocument } from '../grammarly/document';
 import {
@@ -71,6 +72,10 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     );
     this.connection.onRequest('$/getSummary', this.getSummary.bind(this));
     this.connection.onRequest('$/getStatistics', this.getStatistics.bind(this));
+    this.connection.onNotification(
+      '$/codeActionAccepted',
+      this.onCodeActionAccepted.bind(this)
+    );
 
     return Disposable.create(() => {
       this.diagnostics.clear();
@@ -99,6 +104,7 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     if (state) {
       state.alerts = {};
       state.diagnostics = {};
+      this.clearDiagnostics(document);
     }
 
     document.host!.refresh();
@@ -207,6 +213,55 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     return actions;
   }
 
+  private onCodeActionAccepted({
+    uri,
+    alertId,
+    change,
+  }: {
+    uri: string;
+    alertId: number;
+    change: TextEdit;
+  }) {
+    const document = this.documents.get(uri);
+    if (!document || !document.host) return;
+
+    document.host.acceptAlert(alertId, change.newText);
+
+    // this.applyTextEdit(document, change);
+  }
+
+  private applyTextEdit(document: GrammarlyDocument, change: TextEdit) {
+    const state = this.diagnostics.get(document.uri);
+    if (!document.host || !state) return;
+
+    const offsetStart = document.offsetAt(change.range.start);
+    const offsetEnd = document.offsetAt(change.range.end);
+    const deleteLength = offsetEnd - offsetStart;
+    const changeLength = change.newText.length - deleteLength;
+    const offset = offsetStart + changeLength;
+
+    Object.values(state.alerts)
+      .filter(alert => alert.begin > offset)
+      .forEach(alert => {
+        alert.begin += changeLength;
+        alert.end += changeLength;
+        alert.highlightBegin += changeLength;
+        alert.highlightEnd += changeLength;
+
+        debug(`reposition alert ${alert.id} in ${document.uri}`);
+
+        if (alert.id in state.diagnostics) {
+          state.diagnostics[alert.id] = createDiagnostic(
+            document,
+            alert,
+            state.severity
+          );
+        }
+      });
+
+    this.sendDiagnostics(document);
+  }
+
   private onHover({ position, textDocument }: HoverParams) {
     const document = this.documents.get(textDocument.uri);
     const state = this.diagnostics.get(textDocument.uri);
@@ -232,18 +287,20 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
       },
     };
 
-    debug(result);
-
     return result;
   }
 
   private disposeDocumentDiagnostics(document: GrammarlyDocument) {
+    this.clearDiagnostics(document);
+    this.diagnostics.delete(document.uri);
+  }
+
+  private clearDiagnostics(document: GrammarlyDocument) {
     this.connection.sendDiagnostics({
       diagnostics: [],
       uri: document.uri,
       version: document.version,
     });
-    this.diagnostics.delete(document.uri);
   }
 
   private async initDocumentDiagnostics(document: GrammarlyDocument) {
@@ -281,6 +338,9 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
       });
       host.on(Grammarly.Action.SYNONYMS, result => {
         this.synonyms.set(result.token, result.synonyms.meanings);
+      });
+      host.on('$/change', change => {
+        this.applyTextEdit(document, change);
       });
     }
   }
@@ -345,6 +405,8 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     delete state.alerts[alert.id];
     delete state.diagnostics[alert.id];
 
+    debug(`dismiss alert ${alert.id} in ${document.uri}`);
+
     this.sendDiagnostics(document);
   }
 
@@ -368,6 +430,8 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     if (!state) return;
 
     state.alerts[alert.id] = alert;
+
+    debug(`new alert ${alert.id} in ${document.uri}`);
 
     if (isSpellingAlert(alert)) {
       if (this.dictionary.isKnownWord(alert.text)) {

@@ -62,6 +62,8 @@ export class DocumentService implements Registerable {
   }
 
   private async handleOpen(document: GrammarlyDocument) {
+    if (document.uri.startsWith('git:/')) return;
+
     const settings = await this.configuration.getDocumentSettings(document.uri);
 
     await this.loadCredentials();
