@@ -51,10 +51,10 @@ This extension contributes to the following settings:
 
 ### Version 0.8.0
 
-- Adds support all file schemes (except `git://`).
-- Allows configuring diagnostics severity.
-- Detailed explanation for grammar issues on hover.
-- Updates diagnostics position on text change.
+- All file schemes (except `git://`) are supported.
+- Diagnostics severity is now configurable.
+- Detailed explanation for grammar issues is provided on hover.
+- Diagnostics position are updated on text change.
 
 ### Version 0.7.0
 
