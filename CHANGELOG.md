@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/znck/grammarly/compare/v0.7.2...v0.8.0) (2020-04-02)
+
+
+### Features
+
+* Allow any file scheme for supported languages ([635dacb](https://github.com/znck/grammarly/commit/635dacb))
+
+
+
 <a name="0.7.2"></a>
 ## [0.7.2](https://github.com/znck/grammarly/compare/v0.7.1...v0.7.2) (2020-04-01)
 
