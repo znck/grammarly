@@ -3,7 +3,7 @@
   "publisher": "znck",
   "displayName": "Grammarly",
   "description": "Grammarly grammar checking for Visual Studio Code.",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "icon": "assets/logo.png",
   "engines": {
     "vscode": "^1.39.0"
