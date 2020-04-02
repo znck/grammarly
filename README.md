@@ -51,7 +51,7 @@ This extension contributes to the following settings:
 
 ### Version 0.9.0
 
-- Set document goals interactively using `Grammarly: Set document goals` commnd.
+- Set document goals interactively using `Grammarly: Set document goals` command.
 
 ### Version 0.8.0
 
