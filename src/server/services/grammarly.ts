@@ -107,6 +107,11 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
       this.clearDiagnostics(document);
     }
 
+    document.host!.settings = await this.configuration.getDocumentSettings(
+      document.uri,
+      true
+    );
+
     document.host!.refresh();
   }
 

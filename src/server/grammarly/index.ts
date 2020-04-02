@@ -447,9 +447,9 @@ export namespace Grammarly {
 
     constructor(
       private readonly document: TextDocument,
-      private readonly settings: DocumentContext,
-      public readonly authParams?: AuthParams,
-      public readonly cookie?: AuthCookie
+      public settings: DocumentContext,
+      public authParams?: AuthParams,
+      public cookie?: AuthCookie
     ) {
       super();
 

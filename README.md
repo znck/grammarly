@@ -49,12 +49,16 @@ This extension contributes to the following settings:
 
 ## Release Notes
 
+### Version 0.9.0
+
+- Set document goals interactively using `Grammarly: Set document goals` commnd.
+
 ### Version 0.8.0
 
 - All file schemes (except `git://`) are supported.
 - Diagnostics severity is now configurable.
-- Detailed explanation for grammar issues is provided on hover.
-- Diagnostics position are updated on text change.
+- A detailed explanation for grammar issues is provided on hover.
+- Diagnostics positions are updated on text change.
 
 ### Version 0.7.0
 

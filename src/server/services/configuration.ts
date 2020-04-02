@@ -31,6 +31,8 @@ export class ConfigurationService implements Registerable {
           ...this.default,
           ...settings.grammarly,
         };
+        this.perDocumentSettings.clear();
+        this.wip.clear();
       }
     });
 
@@ -74,8 +76,8 @@ export class ConfigurationService implements Registerable {
     return config.diagnostics[`[${languageId}]`]?.ignore || [];
   }
 
-  getDocumentSettings(uri: string) {
-    if (this.perDocumentSettings.has(uri)) {
+  getDocumentSettings(uri: string, fresh = false) {
+    if (this.perDocumentSettings.has(uri) && fresh === false) {
       return this.perDocumentSettings.get(uri)!;
     }
 

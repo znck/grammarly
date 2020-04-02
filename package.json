@@ -20,7 +20,8 @@
     "onLanguage:markdown",
     "onLanguage:mdx",
     "onCommand:grammarly.check",
-    "onCommand:grammarly.set-credentials"
+    "onCommand:grammarly.set-credentials",
+    "onCommand:grammarly.set-goals"
   ],
   "contributes": {
     "configuration": {
@@ -298,6 +299,11 @@
       {
         "command": "grammarly.set-credentials",
         "title": "Login to grammarly.com",
+        "category": "Grammarly"
+      },
+      {
+        "command": "grammarly.set-goals",
+        "title": "Set document goals",
         "category": "Grammarly"
       }
     ]

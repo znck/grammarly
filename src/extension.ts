@@ -10,6 +10,7 @@ import { EXTENSION } from './constants';
 import { StatusBarController } from './controllers/status-bar';
 import { SetCredentialsCommand } from './commands/set-credentials';
 import { PostQuickFixCommand } from './commands/post-quick-fix';
+import { SetGoalsCommand } from './commands/set-goals';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -21,7 +22,7 @@ const container = new Container({
 export async function activate(context: ExtensionContext) {
   container.bind(EXTENSION).toConstantValue(context);
 
-  await context.subscriptions.push(
+  context.subscriptions.push(
     container.get(GrammarlyClient).register(),
     container.get(StatusBarController).register(),
     container.get(AddWordCommand).register(),
@@ -29,7 +30,8 @@ export async function activate(context: ExtensionContext) {
     container.get(IgnoreIssueCommand).register(),
     container.get(StatsCommand).register(),
     container.get(SetCredentialsCommand).register(),
-    container.get(PostQuickFixCommand).register()
+    container.get(PostQuickFixCommand).register(),
+    container.get(SetGoalsCommand).register()
   );
 }
 
