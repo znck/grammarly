@@ -13,7 +13,7 @@ export class SetGoalsCommand implements Registerable {
 
   register() {
     return commands.registerCommand(
-      'grammarly.set-goals',
+      'grammarly.setGoals',
       this.execute.bind(this)
     );
   }
@@ -45,8 +45,8 @@ export class SetGoalsCommand implements Registerable {
     const config = workspace
       .getConfiguration()
       .get<GrammarlySettings>('grammarly')!;
-    const override = config.overrides.find(override =>
-      override.files.some(pattern => minimatch(uri, pattern))
+    const override = config.overrides.find((override) =>
+      override.files.some((pattern) => minimatch(uri, pattern))
     );
     const settings: Grammarly.DocumentContext = {
       audience: config.audience,
@@ -231,7 +231,7 @@ export class SetGoalsCommand implements Registerable {
         config.get<GrammarlySettings['overrides']>('overrides') || [];
       const file = workspace.asRelativePath(document.uri);
       const pattern = `**/${file}`;
-      const index = overrides.findIndex(override =>
+      const index = overrides.findIndex((override) =>
         override.files.includes(pattern)
       );
 

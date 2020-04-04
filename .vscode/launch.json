@@ -44,10 +44,16 @@
       "args": [
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test"
+        "--extensionTestsPath=${workspaceFolder}/out-test/runner",
+        "--user-data-dir",
+        "${workspaceFolder}/fixtures/user",
+        "${workspaceFolder}/fixtures/folder"
       ],
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "npm: compile"
+      "outFiles": [
+        "${workspaceFolder}/out-test/**/*.js",
+        "${workspaceFolder}/out/**/*.js"
+      ],
+      "preLaunchTask": "npm: build:test"
     }
   ]
 }

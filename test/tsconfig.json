@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "../out-test",
+    "rootDir": ".",
+    "declaration": false,
+    "esModuleInterop": true,
+    "sourceMap": true
+  }
+}

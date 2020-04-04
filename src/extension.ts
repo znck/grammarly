@@ -19,7 +19,12 @@ const container = new Container({
   defaultScope: 'Singleton',
 });
 
+let isActive = false;
 export async function activate(context: ExtensionContext) {
+  if (isActive) return;
+
+  isActive = true;
+
   container.bind(EXTENSION).toConstantValue(context);
 
   context.subscriptions.push(
@@ -33,8 +38,11 @@ export async function activate(context: ExtensionContext) {
     container.get(PostQuickFixCommand).register(),
     container.get(SetGoalsCommand).register()
   );
+
+  return container.get(GrammarlyClient).onReady();
 }
 
 export async function deactivate() {
+  isActive = false;
   container.unbindAll();
 }

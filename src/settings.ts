@@ -26,11 +26,14 @@ export const DEFAULT: GrammarlySettings = {
   severity: {
     Determiners: DiagnosticSeverity.Error,
     Misspelled: DiagnosticSeverity.Error,
+    Unknown: DiagnosticSeverity.Error,
+
+    Clarity: DiagnosticSeverity.Warning,
+    Dialects: DiagnosticSeverity.Warning,
+
     WordChoice: DiagnosticSeverity.Information,
     PassiveVoice: DiagnosticSeverity.Information,
     Readability: DiagnosticSeverity.Information,
-    Clarity: DiagnosticSeverity.Warning,
-    Dialects: DiagnosticSeverity.Warning,
   },
   userWords: [],
   diagnostics: {

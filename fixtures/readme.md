@@ -1,5 +1,5 @@
 # Example Document
 
-```js
-// Ths is a example document for testing Grammarly extensoin.
-```
+This document is an example document for testing Grammarly extension.
+
+An unknown word like inversifyjs can be added to the dictionary.

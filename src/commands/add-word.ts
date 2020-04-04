@@ -9,7 +9,7 @@ export class AddWordCommand implements Registerable {
 
   register() {
     return commands.registerCommand(
-      'grammarly.add-word',
+      'grammarly.addWord',
       this.execute.bind(this)
     );
   }
@@ -20,8 +20,6 @@ export class AddWordCommand implements Registerable {
     code: number,
     word: string
   ) {
-    if (!this.client.isReady()) return;
-
     switch (target) {
       case 'folder':
         await addToFolderDictionary(documentURI, word);
@@ -36,12 +34,16 @@ export class AddWordCommand implements Registerable {
         break;
 
       case 'grammarly':
-        await this.client.addToDictionary(documentURI, code);
-        break;
-    }
+        if (this.client.isReady()) {
+          vscode.window.showInformationMessage(
+            `Grammarly service is not ready for adding the word "${word}" to the dictionary.`
+          );
 
-    if (target !== 'grammarly') {
-      await this.client.dismissAlert(documentURI, code);
+          return;
+        }
+        await this.client.addToDictionary(documentURI, code);
+        await this.client.dismissAlert(documentURI, code);
+        break;
     }
   }
 }
@@ -50,9 +52,10 @@ async function addToUserDictionary(word: string) {
   const config = workspace.getConfiguration('grammarly');
   const words = config.get<string[]>('userWords') || [];
 
-  words.sort();
-
   if (!words.includes(word)) {
+    words.push(word);
+    words.sort();
+
     await config.update('userWords', words, ConfigurationTarget.Global);
   }
 }
@@ -61,9 +64,10 @@ async function addToFolderDictionary(uri: string, word: string) {
   const config = workspace.getConfiguration('grammarly', Uri.parse(uri));
   const words = config.get<string[]>('userWords') || [];
 
-  words.sort();
-
   if (!words.includes(word)) {
+    words.push(word);
+    words.sort();
+
     await config.update(
       'userWords',
       words,
@@ -76,9 +80,10 @@ async function addToWorkspaceDictionary(uri: string, word: string) {
   const config = workspace.getConfiguration('grammarly', Uri.parse(uri));
   const words = config.get<string[]>('userWords') || [];
 
-  words.sort();
-
   if (!words.includes(word)) {
+    words.push(word);
+    words.sort();
+
     await config.update('userWords', words, ConfigurationTarget.Workspace);
   }
 }

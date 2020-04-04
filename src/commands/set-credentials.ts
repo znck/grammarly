@@ -10,7 +10,7 @@ import { form, input } from '@/form';
 export class SetCredentialsCommand implements Registerable {
   register() {
     return commands.registerCommand(
-      'grammarly.set-credentials',
+      'grammarly.setCredentials',
       this.execute.bind(this)
     );
   }

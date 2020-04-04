@@ -40,6 +40,8 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
     this.client.onReady().then(() => {
       this._isReady = true;
       this.client.onRequest('$/credentials', async () => {
+        if (process.env.EXTENSION_TEST_MODE) return;
+
         const credentials =
           (await keytar.findCredentials('vscode-grammarly')) ||
           (await keytar.findCredentials('https://www.grammarly.com')) ||
@@ -54,6 +56,8 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
       });
 
       this.client.onRequest('$/getCookie', async () => {
+        if (process.env.EXTENSION_TEST_MODE) return;
+
         const content = await keytar.findPassword('vscode-grammarly-cookie');
 
         if (content) return JSON.parse(content);
@@ -108,7 +112,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
         .get<string[]>('ignore') || [];
     const isIgnored =
       !LANGUAGES.includes(document.languageId) ||
-      ignore.some(pattern => minimatch(uri, pattern));
+      ignore.some((pattern) => minimatch(uri, pattern));
     return isIgnored;
   }
 
