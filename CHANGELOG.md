@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.9.1"></a>
+## [0.9.1](https://github.com/znck/grammarly/compare/v0.9.0...v0.9.1) (2020-04-04)
+
+
+### Bug Fixes
+
+* **#76:** grammarly.addWord command ([de3017f](https://github.com/znck/grammarly/commit/de3017f)), closes [#76](https://github.com/znck/grammarly/issues/76)
+
+
+
 <a name="0.9.0"></a>
 # [0.9.0](https://github.com/znck/grammarly/compare/v0.8.0...v0.9.0) (2020-04-02)
 
