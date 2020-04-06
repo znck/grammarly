@@ -337,7 +337,7 @@
     "@types/ws": "^7.2.3",
     "chai": "^4.2.0",
     "fast-glob": "^3.2.2",
-    "lint-staged": "^10.1.1",
+    "lint-staged": "^10.1.2",
     "mocha": "^7.1.1",
     "prettier": "^2.0.2",
     "rollup": "^2.3.2",
