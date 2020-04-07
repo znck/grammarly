@@ -89,10 +89,11 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     if (!document || !state) return null;
 
     return {
+      // TODO: Add grammarly status.
       overall: state.overallScore,
       scores: state.scores,
-      username: document.host!.isAuthenticated
-        ? document.host!.authParams!.username
+      username: document.host?.isAuthenticated
+        ? document.host.authParams!.username
         : undefined,
     };
   }
@@ -107,34 +108,37 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
       this.clearDiagnostics(document);
     }
 
-    document.host!.settings = await this.configuration.getDocumentSettings(
-      document.uri,
-      true
-    );
-
-    document.host!.refresh();
+    if (!document.host) {
+      this.documents.attachHost(document, true);
+    } else {
+      document.host.settings = await this.configuration.getDocumentSettings(
+        document.uri,
+        true
+      );
+      document.host.refresh();
+    }
   }
 
   async dismissAlert(uri: string, alertId: number) {
     const document = this.documents.get(uri);
-    if (!document) return;
+    if (!document || !document.host) return;
 
-    document.host!.dismissAlert(alertId);
+    document.host.dismissAlert(alertId);
   }
 
   async addToDictionary(uri: string, alertId: number) {
     const document = this.documents.get(uri);
-    if (!document) return;
+    if (!document || !document.host) return;
 
-    document.host!.addToDictionary(alertId);
+    document.host.addToDictionary(alertId);
   }
 
   async getStatistics(uri: string): Promise<DocumentStatistics | null> {
     const document = this.documents.get(uri);
     const state = this.diagnostics.get(uri);
-    if (!document || !state) return null;
+    if (!document || !document.host || !state) return null; // TODO: return inactive status.
 
-    const response = await document.host!.getTextStats();
+    const response = await document.host.getTextStats();
 
     return {
       performance: {
@@ -169,19 +173,19 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
   }: CodeActionParams): Promise<CodeAction[] | null> {
     const document = this.documents.get(textDocument.uri);
     const state = this.diagnostics.get(textDocument.uri);
-    if (!document || !state) return null;
+    if (!document || !document.host || !state) return null;
 
     const folders = await this.connection.workspace.getWorkspaceFolders();
     const isWorkspace = !!folders && folders.length > 1;
-    const isAuthenticated = document.host!.isAuthenticated;
+    const isAuthenticated = document.host.isAuthenticated;
 
     const actions: CodeAction[] = [];
     const alerts: Grammarly.Alert[] = context.diagnostics
-      .map(diagnostic => state.alerts[diagnostic.code as number])
+      .map((diagnostic) => state.alerts[diagnostic.code as number])
       .filter(Boolean);
 
-    alerts.forEach(alert => {
-      alert.replacements.map(replacement =>
+    alerts.forEach((alert) => {
+      alert.replacements.map((replacement) =>
         actions.push(createGrammarlyFix(document, alert, replacement))
       );
       actions.push(createIgnoreFix(document, alert));
@@ -200,13 +204,13 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     const word = document.getText(range);
     if (word && /^[a-z]+$/.test(word)) {
       if (!this.synonyms.has(word)) {
-        await document.host!.synonyms(document.offsetAt(range.start), word);
+        await document.host.synonyms(document.offsetAt(range.start), word);
       }
 
       const synonyms = this.synonyms.get(word);
       if (synonyms) {
-        synonyms.forEach(meaning => {
-          meaning.synonyms.forEach(replacement => {
+        synonyms.forEach((meaning) => {
+          meaning.synonyms.forEach((replacement) => {
             actions.push(
               createGrammarlySynonymFix(document, word, replacement, range)
             );
@@ -246,8 +250,8 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     const offset = offsetStart + changeLength;
 
     Object.values(state.alerts)
-      .filter(alert => alert.begin > offset)
-      .forEach(alert => {
+      .filter((alert) => alert.begin > offset)
+      .forEach((alert) => {
         alert.begin += changeLength;
         alert.end += changeLength;
         alert.highlightBegin += changeLength;
@@ -274,12 +278,14 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
 
     const offset = document.offsetAt(position);
     const alerts = Object.values(state.alerts).filter(
-      alert => alert.highlightBegin <= offset && offset <= alert.highlightEnd
+      (alert) => alert.highlightBegin <= offset && offset <= alert.highlightEnd
     );
     if (!alerts.length) return null;
 
-    const offsetStart = Math.min(...alerts.map(alert => alert.highlightBegin));
-    const offsetEnd = Math.min(...alerts.map(alert => alert.highlightEnd));
+    const offsetStart = Math.min(
+      ...alerts.map((alert) => alert.highlightBegin)
+    );
+    const offsetEnd = Math.min(...alerts.map((alert) => alert.highlightEnd));
 
     const result: Hover = {
       range: getRangeInDocument(document, offsetStart, offsetEnd),
@@ -323,28 +329,28 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
       );
 
       this.diagnostics.set(document.uri, documentDiagnostics);
-      host.on(Grammarly.Action.ALERT, alert => this.onAlert(document, alert));
-      host.on(Grammarly.Action.REMOVE, alert =>
+      host.on(Grammarly.Action.ALERT, (alert) => this.onAlert(document, alert));
+      host.on(Grammarly.Action.REMOVE, (alert) =>
         this.onRemoveAlert(document, alert)
       );
-      host.on(Grammarly.Action.FEEDBACK, result => {
+      host.on(Grammarly.Action.FEEDBACK, (result) => {
         this.onFeedback(document, result);
         this.connection.sendNotification(Grammarly.Action.FEEDBACK, [
           document.uri,
           result,
         ]);
       });
-      host.on(Grammarly.Action.FINISHED, result => {
+      host.on(Grammarly.Action.FINISHED, (result) => {
         this.onFinished(document, result);
         this.connection.sendNotification(Grammarly.Action.FINISHED, [
           document.uri,
           result,
         ]);
       });
-      host.on(Grammarly.Action.SYNONYMS, result => {
+      host.on(Grammarly.Action.SYNONYMS, (result) => {
         this.synonyms.set(result.token, result.synonyms.meanings);
       });
-      host.on('$/change', change => {
+      host.on('$/change', (change) => {
         this.applyTextEdit(document, change);
       });
     }
@@ -393,7 +399,7 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     };
 
     const scores = Object.values(state.scores);
-    if (scores.every(score => score === 1)) {
+    if (scores.every((score) => score === 1)) {
       state.alerts = {};
       state.overallScore = 100;
       this.sendDiagnostics(document);
@@ -432,7 +438,7 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
   ): void {
     const state = this.diagnostics.get(document.uri);
 
-    if (!state) return;
+    if (!state || !document.host) return;
 
     state.alerts[alert.id] = alert;
 
@@ -440,16 +446,16 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
 
     if (isSpellingAlert(alert)) {
       if (this.dictionary.isKnownWord(alert.text)) {
-        document.host!.dismissAlert(alert.id);
+        document.host.dismissAlert(alert.id);
       }
     }
 
     if (document.inIgnoredRange([alert.begin, alert.end], state.ignoredTags)) {
-      document.host!.dismissAlert(alert.id);
+      document.host.dismissAlert(alert.id);
     }
 
     if (alert.hidden) {
-      document.host!.dismissAlert(alert.id);
+      document.host.dismissAlert(alert.id);
     } else {
       state.diagnostics[alert.id] = createDiagnostic(
         document,

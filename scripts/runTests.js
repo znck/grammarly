@@ -20,8 +20,7 @@ async function main() {
       extensionTestsPath,
       launchArgs: [
         '--disable-extensions',
-        '--user-data-dir',
-        Path.relative(__dirname, '../fixtures/user'),
+        '--user-data-dir=' + Path.resolve(__dirname, '../fixtures/user'),
         Path.resolve(__dirname, '../fixtures/folder'),
       ],
       extensionTestsEnv: {

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { after, before, suite, test } from 'mocha';
+import { before, suite, teardown, test } from 'mocha';
 import vscode from 'vscode';
 import {
   executeCodeActionProvider,
@@ -14,8 +14,9 @@ suite('Language Server', function () {
     await vscode.extensions.getExtension('znck.grammarly').activate();
   });
 
-  after(function () {
-    vscode.window.showInformationMessage('All tests done!');
+  teardown(async () => {
+    await vscode.commands.executeCommand('workbench.action.files.revert');
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
   test('CodeAction: add to dictionary', async function () {

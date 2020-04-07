@@ -37,6 +37,7 @@ You can assign severity levels to the Grammarly diagnostics category. To find di
 
 This extension contributes to the following settings:
 
+- `grammarly.autoActivate`: Configures Grammarly activation behavior. When set to `false`, you need to run `Grammarly: Check grammar errors` to start Grammarly service.
 - `grammarly.audience`: Sets the default audience for every document.
 - `grammarly.dialect`: Sets the default dialect for every document.
 - `grammarly.domain`: Sets the default domain for every document.
@@ -48,6 +49,10 @@ This extension contributes to the following settings:
 - `grammarly.severity`: Remap the severity of Grammarly alerts.
 
 ## Release Notes
+
+### Version 0.10.0
+
+- Opt-out automatic activation by setting `grammarly.autoActivate` to `false`.
 
 ### Version 0.9.0
 

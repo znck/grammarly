@@ -45,8 +45,7 @@
         "--disable-extensions",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/out-test/runner",
-        "--user-data-dir",
-        "${workspaceFolder}/fixtures/user",
+        "--user-data-dir='${workspaceFolder}/fixtures/user'",
         "${workspaceFolder}/fixtures/folder"
       ],
       "outFiles": [

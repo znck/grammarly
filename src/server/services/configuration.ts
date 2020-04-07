@@ -27,6 +27,7 @@ export class ConfigurationService implements Registerable {
 
   register() {
     this.connection.onDidChangeConfiguration(({ settings }) => {
+      console.log(settings);
       if ('grammarly' in settings) {
         this.user = {
           ...this.default,

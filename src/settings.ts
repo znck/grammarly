@@ -3,6 +3,7 @@ import { DiagnosticSeverity } from 'vscode-languageserver';
 
 export interface GrammarlySettings extends Grammarly.DocumentContext {
   /** Extension Config */
+  autoActivate: boolean;
   ignore: string[];
   userWords: string[];
   diagnostics: Record<
@@ -22,6 +23,7 @@ export interface GrammarlySettings extends Grammarly.DocumentContext {
 
 export const DEFAULT: GrammarlySettings = {
   /** Extension Config */
+  autoActivate: true,
   ignore: [],
   severity: {
     Determiners: DiagnosticSeverity.Error,

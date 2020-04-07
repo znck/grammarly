@@ -27,6 +27,12 @@
     "configuration": {
       "title": "Grammarly",
       "properties": {
+        "grammarly.autoActivate": {
+          "scope": "resource",
+          "type": "boolean",
+          "description": "Enable Grammarly service when a supported document is opended.",
+          "default": true
+        },
         "grammarly.audience": {
           "scope": "resource",
           "enum": [

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { afterEach, before, suite, test } from 'mocha';
+import { before, suite, teardown, test } from 'mocha';
 import vscode from 'vscode';
 import {
   getFile,
@@ -13,7 +13,7 @@ suite('Commands', function () {
     await vscode.extensions.getExtension('znck.grammarly').activate();
   });
 
-  afterEach(() => {
+  teardown(async () => {
     resetVSCodeFolder();
   });
 

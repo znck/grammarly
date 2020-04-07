@@ -4,8 +4,14 @@ import {
   TransportKind,
 } from 'vscode-languageclient';
 
-export function generateDocumentSelectors(languages: string[]) {
-  return [...languages.map(language => ({ language }))];
+const supportedSchemes = ['file', 'untitled', 'vue', 'gist'];
+
+export function generateDocumentSelectors(
+  languages: string[]
+): LanguageClientOptions['documentSelector'] {
+  return languages
+    .map((language) => supportedSchemes.map((scheme) => ({ language, scheme })))
+    .flat(Infinity);
 }
 
 export function getLanguageServerOptions(module: string): ServerOptions {

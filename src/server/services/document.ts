@@ -37,15 +37,15 @@ export class DocumentService implements Registerable {
     this.documents.listen(this.connection);
 
     const disposables = [
-      this.documents.onDidOpen(({ document }) => this.handleOpen(document)),
+      this.documents.onDidOpen(({ document }) => this.attachHost(document)),
       this.documents.onDidClose(({ document }) => this.handleClose(document)),
       Disposable.create(() =>
-        this.documents.all().forEach(document => document.detachHost())
+        this.documents.all().forEach((document) => document.detachHost())
       ),
     ];
 
     return Disposable.create(() =>
-      disposables.forEach(disposable => disposable.dispose())
+      disposables.forEach((disposable) => disposable.dispose())
     );
   }
 
@@ -61,8 +61,8 @@ export class DocumentService implements Registerable {
     this.onDocumentCloseCbs.push(fn);
   }
 
-  private async handleOpen(document: GrammarlyDocument) {
-    if (document.uri.startsWith('git:/')) return;
+  async attachHost(document: GrammarlyDocument, force = false) {
+    if (!this.configuration.settings.autoActivate && !force) return;
 
     const settings = await this.configuration.getDocumentSettings(document.uri);
 
@@ -72,47 +72,49 @@ export class DocumentService implements Registerable {
     document.attachHost(settings, this.credentials, this.cookie);
 
     if (!this.cookie) {
-      document.host!.once('ready', () => {
-        if (document.host!.isAuthenticated) {
+      document.host?.once('ready', () => {
+        if (document.host?.isAuthenticated) {
           this.connection.sendRequest('$/setCookie', {
-            username: document.host!.authParams!.username,
-            cookie: document.host!.cookie!,
+            username: document.host.authParams!.username,
+            cookie: document.host.cookie!,
           });
         }
       });
     }
-    document.host!.on(Grammarly.Action.ERROR, error => {
-      this.connection.sendRequest('$/error', [error.message]);
-    });
-    document.host!.on('abort', async (error: any) => {
-      document.detachHost();
-      if (/^(SHOW_CAPTCHA|RATE_LIMITED)$/.test(error.code || '')) {
-        const result = await this.connection.sendRequest<any>('$/error', [
-          error.message,
-          [{ title: 'Retry' }, { title: 'Connect Annonymously' }],
-        ]);
-
-        const action = result?.title;
-        if (action === 'Retry') {
-          await this.connection.sendRequest('$/setCookie', null);
-          setTimeout(() => {
-            this.handleOpen(document);
-          }, 0);
-        } else if (action === 'Connect Annonymously') {
-          await this.connection.sendRequest('$/setCookie', null);
-          const credentials = this.credentials;
-          setTimeout(() => {
-            this.credentials = {} as any;
-            this.handleOpen(document);
-            this.credentials = credentials;
-          }, 0);
-        }
-      } else {
+    if (document.host) {
+      document.host.on(Grammarly.Action.ERROR, (error) => {
         this.connection.sendRequest('$/error', [error.message]);
-      }
-    });
+      });
+      document.host.on('abort', async (error: any) => {
+        document.detachHost();
+        if (/^(SHOW_CAPTCHA|RATE_LIMITED)$/.test(error.code || '')) {
+          const result = await this.connection.sendRequest<any>('$/error', [
+            error.message,
+            [{ title: 'Retry' }, { title: 'Connect Annonymously' }],
+          ]);
 
-    this.onDocumentOpenCbs.forEach(cb => cb(document));
+          const action = result?.title;
+          if (action === 'Retry') {
+            await this.connection.sendRequest('$/setCookie', null);
+            setTimeout(() => {
+              this.attachHost(document);
+            }, 0);
+          } else if (action === 'Connect Annonymously') {
+            await this.connection.sendRequest('$/setCookie', null);
+            const credentials = this.credentials;
+            setTimeout(() => {
+              this.credentials = {} as any;
+              this.attachHost(document);
+              this.credentials = credentials;
+            }, 0);
+          }
+        } else {
+          this.connection.sendRequest('$/error', [error.message]);
+        }
+      });
+    }
+
+    this.onDocumentOpenCbs.forEach((cb) => cb(document));
   }
 
   private async loadSessions() {
@@ -140,7 +142,7 @@ export class DocumentService implements Registerable {
   }
 
   private async handleClose(document: GrammarlyDocument) {
-    this.onDocumentCloseCbs.forEach(cb => cb(document));
+    this.onDocumentCloseCbs.forEach((cb) => cb(document));
     document.detachHost();
   }
 }

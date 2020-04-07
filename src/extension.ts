@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, Disposable } from 'vscode';
 import { GrammarlyClient } from './client';
 import { AddWordCommand } from './commands/add-word';
 import { CheckCommand } from './commands/check';
@@ -14,19 +14,13 @@ import { SetGoalsCommand } from './commands/set-goals';
 
 process.env.DEBUG = 'grammarly:*';
 
-const container = new Container({
-  autoBindInjectable: true,
-  defaultScope: 'Singleton',
-});
-
-let isActive = false;
 export async function activate(context: ExtensionContext) {
-  if (isActive) return;
-
-  isActive = true;
+  const container = new Container({
+    autoBindInjectable: true,
+    defaultScope: 'Singleton',
+  });
 
   container.bind(EXTENSION).toConstantValue(context);
-
   context.subscriptions.push(
     container.get(GrammarlyClient).register(),
     container.get(StatusBarController).register(),
@@ -36,13 +30,11 @@ export async function activate(context: ExtensionContext) {
     container.get(StatsCommand).register(),
     container.get(SetCredentialsCommand).register(),
     container.get(PostQuickFixCommand).register(),
-    container.get(SetGoalsCommand).register()
+    container.get(SetGoalsCommand).register(),
+    new Disposable(() => container.unbindAll())
   );
 
   return container.get(GrammarlyClient).onReady();
 }
 
-export async function deactivate() {
-  isActive = false;
-  container.unbindAll();
-}
+export function deactivate() {}
