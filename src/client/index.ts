@@ -1,23 +1,22 @@
 import { EXTENSION } from '@/constants';
-import minimatch from 'minimatch';
 import { Registerable } from '@/interfaces';
 import {
-  DictionaryType,
   DocumentStatistics,
   DocumentSummary,
-  GrammarlyServerFeatures,
   GrammarlyServerEvents,
+  GrammarlyServerFeatures,
 } from '@/protocol';
 import { inject, injectable } from 'inversify';
-import { ExtensionContext, window, TextDocument, workspace } from 'vscode';
+import keytar from 'keytar';
+import minimatch from 'minimatch';
+import { ExtensionContext, TextDocument, window, workspace } from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
+import { TextEdit } from 'vscode-languageserver-textdocument';
 import {
   getLanguageClientOptions,
   getLanguageServerOptions,
   LANGUAGES,
 } from './options';
-import keytar from 'keytar';
-import { TextEdit } from 'vscode-languageserver-textdocument';
 
 @injectable()
 export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {

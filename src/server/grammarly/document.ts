@@ -45,7 +45,7 @@ export class GrammarlyDocument implements TextDocument {
     if (this.rangeToIdentifierFn) {
       const matched = new Set(this.rangeToIdentifierFn(interval));
 
-      return tags.some(tag => matched.has(tag));
+      return tags.some((tag) => matched.has(tag));
     }
 
     return false;
@@ -106,7 +106,7 @@ export class GrammarlyDocument implements TextDocument {
     document._isDirty = true;
     if (document._host) {
       let prevContent = document.getText();
-      changes.forEach(change => {
+      changes.forEach((change) => {
         if ('range' in change) {
           const offsetStart = document.offsetAt(change.range.start);
           const offsetEnd = document.offsetAt(change.range.end);
@@ -142,7 +142,7 @@ export class GrammarlyDocument implements TextDocument {
     );
 
     if (document._host) {
-      changes.forEach(change => {
+      changes.forEach((change) => {
         if ('range' in change) {
           const edit = { range: change.range, newText: change.text };
           document._host!.emit('$/change', edit);

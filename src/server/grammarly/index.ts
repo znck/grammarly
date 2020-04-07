@@ -7,6 +7,7 @@ import WebSocket from 'ws';
 import { AuthParams, connect, Connection } from '@/server/socket';
 import { AuthCookie } from './auth';
 import debounce from 'lodash.debounce';
+import { toArray } from '@/utils/toArray';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -405,9 +406,9 @@ export namespace Grammarly {
     config: GrammarlySettings
   ): DocumentContext {
     const uri = document.uri;
-    const override = config.overrides.find(override =>
-      override.files.some(
-        pattern => uri.endsWith(pattern) || minimatch(uri, pattern)
+    const override = config.overrides.find((override) =>
+      toArray(override.files).some(
+        (pattern) => uri.endsWith(pattern) || minimatch(uri, pattern)
       )
     );
 
@@ -453,7 +454,7 @@ export namespace Grammarly {
     ) {
       super();
 
-      this.on(Action.ERROR, error => {
+      this.on(Action.ERROR, (error) => {
         if (error.error === 'cannot_find_synonym') return;
 
         console.error('Grammarly connection terminated due to error:', error); // TODO: Show error.
@@ -488,7 +489,7 @@ export namespace Grammarly {
 
       this.emit('ready');
 
-      this.socket!.onmessage = event =>
+      this.socket!.onmessage = (event) =>
         this.onResponse(JSON.parse(event.data.toString()));
       // this.socket.onerror // TODO: Handle socket errors.
       this.queue.length = 0;
@@ -508,8 +509,8 @@ export namespace Grammarly {
         account: !!this.authParams ? 'private' : 'public',
       });
       connect(this.authParams, this.cookie)
-        .then(connection => this.handleConnection(connection))
-        .catch(error => this.emit('abort', error));
+        .then((connection) => this.handleConnection(connection))
+        .catch((error) => this.emit('abort', error));
     }
 
     dispose() {
@@ -713,7 +714,7 @@ export namespace Grammarly {
     });
 
     private flushOTs() {
-      this.ots.forEach(message => this.send(message));
+      this.ots.forEach((message) => this.send(message));
       this.ots.length = 0;
     }
 

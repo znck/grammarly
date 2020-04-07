@@ -6,6 +6,7 @@ import { form, select } from '@/form';
 import { GrammarlySettings } from '@/settings';
 import { Grammarly } from '@/server/grammarly';
 import minimatch from 'minimatch';
+import { toArray } from '../utils/toArray';
 
 @injectable()
 export class SetGoalsCommand implements Registerable {
@@ -46,7 +47,7 @@ export class SetGoalsCommand implements Registerable {
       .getConfiguration()
       .get<GrammarlySettings>('grammarly')!;
     const override = config.overrides.find((override) =>
-      override.files.some((pattern) => minimatch(uri, pattern))
+      toArray(override.files).some((pattern) => minimatch(uri, pattern))
     );
     const settings: Grammarly.DocumentContext = {
       audience: config.audience,

@@ -9,6 +9,7 @@ import {
   DiagnosticSeverity,
   Disposable,
 } from 'vscode-languageserver';
+import { toArray } from '@/utils/toArray';
 
 @injectable()
 export class ConfigurationService implements Registerable {
@@ -37,12 +38,14 @@ export class ConfigurationService implements Registerable {
     });
 
     setTimeout(() => {
-      this.connection.workspace.getConfiguration('grammarly').then(settings => {
-        this.user = {
-          ...this.default,
-          ...settings,
-        };
-      });
+      this.connection.workspace
+        .getConfiguration('grammarly')
+        .then((settings) => {
+          this.user = {
+            ...this.default,
+            ...settings,
+          };
+        });
     }, 0);
 
     return Disposable.create(() => {
@@ -94,8 +97,8 @@ export class ConfigurationService implements Registerable {
         })),
       };
 
-      const override = config.overrides.find(override =>
-        override.files.some(pattern => minimatch(uri, pattern))
+      const override = config.overrides.find((override) =>
+        toArray(override.files).some((pattern) => minimatch(uri, pattern))
       );
 
       const settings: Grammarly.DocumentContext = {
@@ -124,6 +127,6 @@ export class ConfigurationService implements Registerable {
   }
 
   isIgnoredDocument(uri: string) {
-    return this.user.ignore.some(pattern => minimatch(uri, pattern));
+    return toArray(this.user.ignore).some((pattern) => minimatch(uri, pattern));
   }
 }
