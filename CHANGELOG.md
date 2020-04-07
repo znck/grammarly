@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/znck/grammarly/compare/v0.9.1...v0.10.0) (2020-04-07)
+
+
+### Bug Fixes
+
+* wrap override files in toArray ([573d932](https://github.com/znck/grammarly/commit/573d932)), closes [#82](https://github.com/znck/grammarly/issues/82)
+
+
+### Features
+
+* opt-in auto activation ([b819de2](https://github.com/znck/grammarly/commit/b819de2)), closes [#77](https://github.com/znck/grammarly/issues/77)
+
+
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://github.com/znck/grammarly/compare/v0.9.0...v0.9.1) (2020-04-04)
 
