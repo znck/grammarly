@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/znck/grammarly/compare/v0.11.0...v0.12.0) (2020-04-14)
+
+
+### Features
+
+* add logout command ([250260d](https://github.com/znck/grammarly/commit/250260d))
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/znck/grammarly/compare/v0.10.0...v0.11.0) (2020-04-14)
 
