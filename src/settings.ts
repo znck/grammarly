@@ -29,13 +29,18 @@ export const DEFAULT: GrammarlySettings = {
     Determiners: DiagnosticSeverity.Error,
     Misspelled: DiagnosticSeverity.Error,
     Unknown: DiagnosticSeverity.Error,
+    ClosingPunct: DiagnosticSeverity.Error,
+    Nouns: DiagnosticSeverity.Error,
 
+    OddWords: DiagnosticSeverity.Warning,
+    CompPunct: DiagnosticSeverity.Warning,
     Clarity: DiagnosticSeverity.Warning,
     Dialects: DiagnosticSeverity.Warning,
 
     WordChoice: DiagnosticSeverity.Information,
-    PassiveVoice: DiagnosticSeverity.Information,
     Readability: DiagnosticSeverity.Information,
+
+    PassiveVoice: DiagnosticSeverity.Hint,
   },
   userWords: [],
   diagnostics: {

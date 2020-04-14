@@ -394,22 +394,14 @@ export namespace Grammarly {
     readabilityScore: number;
   }
 
-  function isResponseType(
-    response: Response,
-    kind: keyof ResponseTypes
-  ): response is ResponseTypes[typeof kind] {
+  function isResponseType(response: Response, kind: keyof ResponseTypes): response is ResponseTypes[typeof kind] {
     return response.action === kind;
   }
 
-  export function getDocumentContext(
-    document: TextDocument,
-    config: GrammarlySettings
-  ): DocumentContext {
+  export function getDocumentContext(document: TextDocument, config: GrammarlySettings): DocumentContext {
     const uri = document.uri;
     const override = config.overrides.find((override) =>
-      toArray(override.files).some(
-        (pattern) => uri.endsWith(pattern) || minimatch(uri, pattern)
-      )
+      toArray(override.files).some((pattern) => uri.endsWith(pattern) || minimatch(uri, pattern))
     );
 
     const context = {
@@ -487,10 +479,9 @@ export namespace Grammarly {
         this._isAuthenticated = false;
       }
 
-      this.emit('ready');
+      this.emit('$/ready');
 
-      this.socket!.onmessage = (event) =>
-        this.onResponse(JSON.parse(event.data.toString()));
+      this.socket!.onmessage = (event) => this.onResponse(JSON.parse(event.data.toString()));
       // this.socket.onerror // TODO: Handle socket errors.
       this.queue.length = 0;
       this.ots.length = 0;
@@ -508,9 +499,10 @@ export namespace Grammarly {
         documentId: this.document.uri,
         account: !!this.authParams ? 'private' : 'public',
       });
+      this.emit('$/connect');
       connect(this.authParams, this.cookie)
         .then((connection) => this.handleConnection(connection))
-        .catch((error) => this.emit('abort', error));
+        .catch((error) => this.emit('$/error', error));
     }
 
     dispose() {
@@ -525,18 +517,12 @@ export namespace Grammarly {
     }
 
     on(event: string, fn: (...args: any[]) => any): this;
-    on<K extends keyof ResponseTypes>(
-      event: K,
-      fn: (response: ResponseTypes[K]) => void
-    ): this {
+    on<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
       return super.on(event, fn);
     }
 
     once(event: string, fn: () => any): this;
-    once<K extends keyof ResponseTypes>(
-      event: K,
-      fn: (response: ResponseTypes[K]) => void
-    ): this {
+    once<K extends keyof ResponseTypes>(event: K, fn: (response: ResponseTypes[K]) => void): this {
       return super.once(event, fn);
     }
 
@@ -578,9 +564,7 @@ export namespace Grammarly {
         deltas: [
           {
             ops:
-              typeof offsetStart === 'number'
-                ? [{ retain: offsetStart }, { insert: content }]
-                : [{ insert: content }],
+              typeof offsetStart === 'number' ? [{ retain: offsetStart }, { insert: content }] : [{ insert: content }],
           },
         ],
       };
@@ -629,10 +613,7 @@ export namespace Grammarly {
     }
 
     getTextStats() {
-      return this.sendAndWaitForResponse(
-        { action: Action.STATS },
-        ResponseAction.STATS
-      );
+      return this.sendAndWaitForResponse({ action: Action.STATS }, ResponseAction.STATS);
     }
 
     dismissAlert(alertId: number) {
@@ -687,9 +668,7 @@ export namespace Grammarly {
             this.off(message.action, handler);
             this.off(Action.ERROR, handler);
 
-            response.action === Action.ERROR
-              ? reject(response)
-              : resolve(response);
+            response.action === Action.ERROR ? reject(response) : resolve(response);
           }
         };
 
@@ -723,9 +702,7 @@ export namespace Grammarly {
       if (this.pendingResponses > 0) this.pendingResponses--;
 
       if (response.action !== ResponseAction.PONG) debug('🔻', response);
-      debug(
-        `status: queue=${this.queue.length}, pending=${this.pendingResponses}`
-      );
+      debug(`status: queue=${this.queue.length}, pending=${this.pendingResponses}`);
 
       if (this.status === 'inactive') {
         if (isResponseType(response, Action.START)) {
@@ -737,9 +714,7 @@ export namespace Grammarly {
               missed = 0;
               this.send({ action: Action.PING });
             } else {
-              debug(
-                `socket stuck with ${this.queue.length} messages and ${this.pendingResponses} pending responses`
-              );
+              debug(`socket stuck with ${this.queue.length} messages and ${this.pendingResponses} pending responses`);
               if (missed++ > 2) {
                 debug('restart frozen socket');
                 this.refresh();
@@ -776,15 +751,9 @@ export namespace Grammarly {
         payload.id = ++this.currentMessageId;
       }
 
-      if (
-        this.socket &&
-        (this.status === 'active' || message.action === Action.START) &&
-        this.pendingResponses <= 10
-      ) {
+      if (this.socket && (this.status === 'active' || message.action === Action.START) && this.pendingResponses <= 10) {
         if (message.action !== Action.PING) debug('🔺', payload);
-        debug(
-          `status: queue=${this.queue.length}, pending=${this.pendingResponses}`
-        );
+        debug(`status: queue=${this.queue.length}, pending=${this.pendingResponses}`);
         this.pendingResponses++;
         this.socket.send(JSON.stringify(payload));
       } else this.queue.push(payload);

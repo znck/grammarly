@@ -26,18 +26,30 @@ export interface DocumentStatistics {
     rareWords: number;
   };
 }
-
-export interface DocumentSummary {
-  overall: number;
-  username?: string;
-  scores: {
-    Clarity: number;
-    Correctness: number;
-    Engagement: number;
-    GeneralScore: number;
-    Tone: number;
-  };
+export enum ServiceStatus {
+  INACTIVE,
+  CONNECTING,
+  READY,
+  WAITING,
+  ERRORED,
 }
+
+export type DocumentSummary =
+  | {
+      status: ServiceStatus.INACTIVE | ServiceStatus.CONNECTING | ServiceStatus.ERRORED;
+    }
+  | {
+      status: ServiceStatus.READY | ServiceStatus.WAITING;
+      overall: number;
+      username?: string;
+      scores: {
+        Clarity: number;
+        Correctness: number;
+        Engagement: number;
+        GeneralScore: number;
+        Tone: number;
+      };
+    };
 
 export interface GrammarlyServerFeatures {
   check(resourse: string): Promise<void>;
@@ -55,12 +67,5 @@ export interface GrammarlyClientFeatures {
 }
 
 export interface GrammarlyServerEvents {
-  [Grammarly.Action.FEEDBACK](
-    uri: string,
-    response: Grammarly.FeedbackResponse
-  ): void;
-  [Grammarly.Action.FINISHED](
-    uri: string,
-    response: Grammarly.FinishedResponse
-  ): void;
+  ['$/summary'](uri: string, summary: DocumentSummary): void;
 }

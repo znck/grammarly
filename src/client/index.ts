@@ -1,22 +1,13 @@
 import { EXTENSION } from '@/constants';
 import { Registerable } from '@/interfaces';
-import {
-  DocumentStatistics,
-  DocumentSummary,
-  GrammarlyServerEvents,
-  GrammarlyServerFeatures,
-} from '@/protocol';
+import { DocumentStatistics, DocumentSummary, GrammarlyServerEvents, GrammarlyServerFeatures } from '@/protocol';
 import { inject, injectable } from 'inversify';
 import keytar from 'keytar';
 import minimatch from 'minimatch';
 import { ExtensionContext, TextDocument, window, workspace } from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import { TextEdit } from 'vscode-languageserver-textdocument';
-import {
-  getLanguageClientOptions,
-  getLanguageServerOptions,
-  LANGUAGES,
-} from './options';
+import { getLanguageClientOptions, getLanguageServerOptions, LANGUAGES } from './options';
 
 @injectable()
 export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
@@ -64,11 +55,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
 
       this.client.onRequest('$/setCookie', (cookie: any) => {
         if (cookie) {
-          keytar.setPassword(
-            'vscode-grammarly-cookie',
-            'default',
-            JSON.stringify(cookie)
-          );
+          keytar.setPassword('vscode-grammarly-cookie', 'default', JSON.stringify(cookie));
         } else {
           keytar.deletePassword('vscode-grammarly-cookie', 'default');
         }
@@ -96,22 +83,14 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
     return true;
   }
 
-  onEvent<Event extends keyof GrammarlyServerEvents>(
-    event: Event,
-    handler: GrammarlyServerEvents[Event]
-  ) {
-    return this.client.onNotification(`event:grammarly.${event}`, handler);
+  onEvent<Event extends keyof GrammarlyServerEvents>(event: Event, handler: GrammarlyServerEvents[Event]) {
+    return this.client.onNotification(`${event}`, handler);
   }
 
   isIgnoredDocument(document: TextDocument) {
     const uri = document.uri.toString();
-    const ignore =
-      workspace
-        .getConfiguration('grammarly', document.uri)
-        .get<string[]>('ignore') || [];
-    const isIgnored =
-      !LANGUAGES.includes(document.languageId) ||
-      ignore.some((pattern) => minimatch(uri, pattern));
+    const ignore = workspace.getConfiguration('grammarly', document.uri).get<string[]>('ignore') || [];
+    const isIgnored = !LANGUAGES.includes(document.languageId) || ignore.some((pattern) => minimatch(uri, pattern));
     return isIgnored;
   }
 
