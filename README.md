@@ -50,6 +50,11 @@ This extension contributes to the following settings:
 
 ## Release Notes
 
+### Version 0.11.0
+
+- New languages: asciidoc and json
+- Improved status bar to show extension activity and document status
+
 ### Version 0.10.0
 
 - Opt-out automatic activation by setting `grammarly.autoActivate` to `false`.
