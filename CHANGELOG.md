@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/znck/grammarly/compare/v0.10.0...v0.11.0) (2020-04-14)
+
+
+### Bug Fixes
+
+* avoid invalid values in showErrorMessage ([16e4828](https://github.com/znck/grammarly/commit/16e4828)), closes [#86](https://github.com/znck/grammarly/issues/86)
+
+
+### Features
+
+* add asciidoc to allowed languages ([38a603c](https://github.com/znck/grammarly/commit/38a603c)), closes [#51](https://github.com/znck/grammarly/issues/51) [#28](https://github.com/znck/grammarly/issues/28)
+* add json to allowed languages ([#62](https://github.com/znck/grammarly/issues/62)) ([7284dbc](https://github.com/znck/grammarly/commit/7284dbc))
+* improved status bar ([c36e651](https://github.com/znck/grammarly/commit/c36e651))
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/znck/grammarly/compare/v0.9.1...v0.10.0) (2020-04-07)
 
