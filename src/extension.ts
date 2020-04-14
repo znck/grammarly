@@ -11,6 +11,7 @@ import { StatusBarController } from './controllers/status-bar';
 import { SetCredentialsCommand } from './commands/set-credentials';
 import { PostQuickFixCommand } from './commands/post-quick-fix';
 import { SetGoalsCommand } from './commands/set-goals';
+import { ClearCredentialsCommand } from './commands/clear-credentials';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -29,6 +30,7 @@ export async function activate(context: ExtensionContext) {
     container.get(IgnoreIssueCommand).register(),
     container.get(StatsCommand).register(),
     container.get(SetCredentialsCommand).register(),
+    container.get(ClearCredentialsCommand).register(),
     container.get(PostQuickFixCommand).register(),
     container.get(SetGoalsCommand).register(),
     new Disposable(() => container.unbindAll())

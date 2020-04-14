@@ -50,10 +50,14 @@ This extension contributes to the following settings:
 
 ## Release Notes
 
+### Version 0.12.0
+
+- Adds a command to clear credentials.
+
 ### Version 0.11.0
 
-- New languages: asciidoc and json
-- Improved status bar to show extension activity and document status
+- New languages: asciidoc and json.
+- Improved status bar to show extension activity and document status.
 
 ### Version 0.10.0
 

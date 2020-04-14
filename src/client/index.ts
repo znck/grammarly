@@ -32,10 +32,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
       this.client.onRequest('$/credentials', async () => {
         if (process.env.EXTENSION_TEST_MODE) return;
 
-        const credentials =
-          (await keytar.findCredentials('vscode-grammarly')) ||
-          (await keytar.findCredentials('https://www.grammarly.com')) ||
-          [];
+        const credentials = (await keytar.findCredentials('vscode-grammarly')) || [];
 
         return credentials.length
           ? {

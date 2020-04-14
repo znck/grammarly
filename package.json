@@ -21,6 +21,7 @@
     "onLanguage:mdx",
     "onCommand:grammarly.check",
     "onCommand:grammarly.setCredentials",
+    "onCommand:grammarly.grammarly.clearCredentials",
     "onCommand:grammarly.setGoals"
   ],
   "contributes": {
@@ -305,6 +306,11 @@
       {
         "command": "grammarly.setCredentials",
         "title": "Login to grammarly.com",
+        "category": "Grammarly"
+      },
+      {
+        "command": "grammarly.clearCredentials",
+        "title": "Logout of grammarly.com",
         "category": "Grammarly"
       },
       {

@@ -9,10 +9,7 @@ import { form, input } from '@/form';
 @injectable()
 export class SetCredentialsCommand implements Registerable {
   register() {
-    return commands.registerCommand(
-      'grammarly.setCredentials',
-      this.execute.bind(this)
-    );
+    return commands.registerCommand('grammarly.setCredentials', this.execute.bind(this));
   }
 
   private async execute() {
@@ -39,14 +36,8 @@ export class SetCredentialsCommand implements Registerable {
     ]).run();
 
     if (newData) {
-      keytar.setPassword(
-        'vscode-grammarly',
-        newData.username,
-        newData.password
-      );
-      window.showInformationMessage(
-        `Logged in to grammarly.com as ${newData.username}.`
-      );
+      keytar.setPassword('vscode-grammarly', newData.username, newData.password);
+      window.showInformationMessage(`Logged in to grammarly.com as ${newData.username}.`);
     }
   }
 }
