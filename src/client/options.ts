@@ -36,6 +36,7 @@ export const LANGUAGES = [
   'mdx',
   'latex',
   'restructuredtext',
+  'json',
   'git-commit',
   'git-rebase',
 ];
