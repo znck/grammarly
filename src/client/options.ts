@@ -1,17 +1,9 @@
-import {
-  LanguageClientOptions,
-  ServerOptions,
-  TransportKind,
-} from 'vscode-languageclient';
+import { LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 const supportedSchemes = ['file', 'untitled', 'vue', 'gist'];
 
-export function generateDocumentSelectors(
-  languages: string[]
-): LanguageClientOptions['documentSelector'] {
-  return languages
-    .map((language) => supportedSchemes.map((scheme) => ({ language, scheme })))
-    .flat(Infinity);
+export function generateDocumentSelectors(languages: string[]): LanguageClientOptions['documentSelector'] {
+  return languages.map((language) => supportedSchemes.map((scheme) => ({ language, scheme }))).flat(Infinity);
 }
 
 export function getLanguageServerOptions(module: string): ServerOptions {
@@ -31,14 +23,15 @@ export function getLanguageServerOptions(module: string): ServerOptions {
 }
 
 export const LANGUAGES = [
-  'plaintext',
-  'markdown',
-  'mdx',
-  'latex',
-  'restructuredtext',
-  'json',
+  'asciidoc',
   'git-commit',
   'git-rebase',
+  'json',
+  'latex',
+  'markdown',
+  'mdx',
+  'plaintext',
+  'restructuredtext',
 ];
 export function getLanguageClientOptions(): LanguageClientOptions {
   return {
