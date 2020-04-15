@@ -13,6 +13,9 @@ export class ClearCredentialsCommand implements Registerable {
     for (const credentials of await keytar.findCredentials('vscode-grammarly')) {
       keytar.deletePassword('vscode-grammarly', credentials.account);
     }
+    for (const credentials of await keytar.findCredentials('vscode-grammarly-cookie')) {
+      keytar.deletePassword('vscode-grammarly-cookie', credentials.account);
+    }
     window.showInformationMessage(`Logged out of grammarly.com.`);
   }
 }
