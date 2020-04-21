@@ -1,11 +1,4 @@
-import {
-  Disposable,
-  InputBox,
-  QuickInputButtons,
-  window,
-  QuickPick,
-  QuickPickItem,
-} from 'vscode';
+import { Disposable, InputBox, QuickInputButtons, window, QuickPick, QuickPickItem } from 'vscode';
 export interface InputRenderOptions {
   value?: string;
 }
@@ -27,11 +20,7 @@ export interface FormField<T, F> {
   onAccept?(field: F, data: T, next: (error?: Error) => void): Promise<void>;
 }
 
-export function input<T>(
-  name: string,
-  label: string,
-  options: Partial<InputOptions<T>> = {}
-): FormField<T, InputBox> {
+export function input<T>(name: string, label: string, options: Partial<InputOptions<T>> = {}): FormField<T, InputBox> {
   return {
     name,
     onAccept: options.validate
@@ -75,19 +64,18 @@ export function select<T, R extends QuickPickItem>(
       field.matchOnDetail = true;
       field.value = props.value || options.value || '';
       field.placeholder = label;
-      field.canSelectMany =
-        'canSelectMany' in options ? options.canSelectMany! : false;
+      field.canSelectMany = 'canSelectMany' in options ? options.canSelectMany! : false;
 
       if (!field.canSelectMany) {
-        const item = items.find(item => item.picked);
+        const item = items.find((item) => item.picked);
 
         if (item) {
           field.selectedItems = [item];
           field.activeItems = [item];
         }
       } else {
-        field.selectedItems = items.filter(item => item.picked);
-        field.activeItems = items.filter(item => item.picked);
+        field.selectedItems = items.filter((item) => item.picked);
+        field.activeItems = items.filter((item) => item.picked);
       }
 
       return field;
@@ -95,10 +83,7 @@ export function select<T, R extends QuickPickItem>(
   };
 }
 
-export function form<T extends {}>(
-  label: string,
-  fields: FormField<T, InputBox | QuickPick<any>>[]
-) {
+export function form<T extends {}>(label: string, fields: FormField<T, InputBox | QuickPick<any>>[]) {
   const run = async () => {
     const data: any = {};
     const disposables: Disposable[] = [];
@@ -121,7 +106,7 @@ export function form<T extends {}>(
                   input.busy = true;
                   input.enabled = false;
                   input.ignoreFocusOut = true;
-                  field.onAccept(input, data, async error => {
+                  field.onAccept(input, data, async (error) => {
                     input.busy = false;
                     input.enabled = true;
                     input.ignoreFocusOut = false;
@@ -137,7 +122,7 @@ export function form<T extends {}>(
                   input.validationMessage = undefined;
                 }
               }),
-              input.onDidTriggerButton(button => {
+              input.onDidTriggerButton((button) => {
                 if (button === QuickInputButtons.Back) {
                   --index;
                   resolve();
@@ -151,15 +136,15 @@ export function form<T extends {}>(
         await exec();
         data[field.name] =
           'selectedItems' in input
-            ? input.selectedItems.length === 1
+            ? !input.canSelectMany
               ? input.selectedItems[0].label
-              : input.selectedItems.map(item => item.label)
+              : input.selectedItems.map((item) => item.label)
             : input.value;
-        disposables.forEach(disposable => disposable.dispose());
+        disposables.forEach((disposable) => disposable.dispose());
       }
       return data as T;
     } catch (error) {
-      disposables.forEach(disposable => disposable.dispose());
+      disposables.forEach((disposable) => disposable.dispose());
       return null;
     }
   };
