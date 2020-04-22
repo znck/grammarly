@@ -31,7 +31,7 @@
         "grammarly.autoActivate": {
           "scope": "resource",
           "type": "boolean",
-          "description": "Enable Grammarly service when a supported document is opended.",
+          "description": "Enable Grammarly service when a supported document is opened.",
           "default": true
         },
         "grammarly.audience": {
