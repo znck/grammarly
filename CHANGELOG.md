@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.2"></a>
+## [0.12.2](https://github.com/znck/grammarly/compare/v0.12.1...v0.12.2) (2020-05-10)
+
+
+### Bug Fixes
+
+* **#94:** grammarly config as string but array is expected. ([#95](https://github.com/znck/grammarly/issues/95)) ([bb16b98](https://github.com/znck/grammarly/commit/bb16b98)), closes [#94](https://github.com/znck/grammarly/issues/94) [#94](https://github.com/znck/grammarly/issues/94)
+
+
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://github.com/znck/grammarly/compare/v0.12.0...v0.12.1) (2020-04-15)
 
