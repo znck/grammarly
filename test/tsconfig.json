@@ -5,6 +5,7 @@
     "rootDir": ".",
     "declaration": false,
     "esModuleInterop": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true
   }
 }

@@ -1,8 +1,8 @@
 {
   "name": "grammarly",
   "publisher": "znck",
-  "displayName": "Grammarly",
-  "description": "Grammarly grammar checking for Visual Studio Code.",
+  "displayName": "Grammarly (unofficial)",
+  "description": "A grammar checking for Visual Studio Code using Grammarly.",
   "version": "0.12.2",
   "icon": "assets/logo.png",
   "engines": {
