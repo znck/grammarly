@@ -1,6 +1,13 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.12.4](https://github.com/znck/grammarly/compare/v0.12.3...v0.12.4) (2020-07-10)
+
+
+### Bug Fixes
+
+* catch errors while fetching synonyms ([ee93837](https://github.com/znck/grammarly/commit/ee938374462e542fa554279a80a7db27f0683bb0)), closes [#102](https://github.com/znck/grammarly/issues/102)
 
 <a name="0.12.3"></a>
 ## [0.12.3](https://github.com/znck/grammarly/compare/v0.12.2...v0.12.3) (2020-07-04)
