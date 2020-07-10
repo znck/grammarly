@@ -60,7 +60,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
 
       this.client.onRequest('$/error', (error, buttons) => {
         const actions = Array.from(buttons).filter(Boolean).map(String);
-
+        if (!error) return;
         return window.showErrorMessage('Grammarly: ' + error, ...actions);
       });
     });
