@@ -212,7 +212,11 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
     const word = document.getText(range);
     if (word && /^[a-z]+$/.test(word)) {
       if (!this.synonyms.has(word)) {
-        await document.host.synonyms(document.offsetAt(range.start), word);
+        try {
+          await document.host.synonyms(document.offsetAt(range.start), word);
+        } catch (error) {
+          debug('Error getting synonyms', error);
+        }
       }
 
       const synonyms = this.synonyms.get(word);
