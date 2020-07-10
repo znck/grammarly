@@ -330,7 +330,8 @@
     "watch": "rollup -c --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "pretest": "npm run build:test",
-    "test": "node scripts/runTests"
+    "test": "node scripts/runTests",
+    "release": "standard-version"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.0.1",
