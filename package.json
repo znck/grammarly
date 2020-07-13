@@ -355,7 +355,7 @@
     "prettier": "^2.0.4",
     "rollup": "^2.3.4",
     "rollup-plugin-typescript": "^1.0.1",
-    "standard-version": "^7.1.0",
+    "standard-version": "^8.0.1",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3",
     "vscode": "^1.1.36",
