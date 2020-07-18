@@ -18,9 +18,7 @@ export function createGrammarlyFix(
   const range = getRangeInDocument(document, alert.begin, alert.end);
 
   return {
-    title: `${alert.todo} -> ${newText}`.replace(/^[a-z]/, m =>
-      m.toLocaleUpperCase()
-    ),
+    title: `${alert.todo} -> ${newText}`.replace(/^[a-z]/, (m) => m.toLocaleUpperCase()),
     kind: CodeActionKind.QuickFix,
     diagnostics,
     isPreferred: true,
@@ -64,11 +62,7 @@ export function createGrammarlySynonymFix(
   };
 }
 
-export function createAddToDictionaryFix(
-  document: TextDocument,
-  alert: Grammarly.Alert,
-  target: string
-): CodeAction {
+export function createAddToDictionaryFix(document: TextDocument, alert: Grammarly.Alert, target: string): CodeAction {
   return {
     title: `Grammarly: add "${alert.text}" to ${target} dictionary`,
     kind: CodeActionKind.QuickFix,
@@ -80,10 +74,7 @@ export function createAddToDictionaryFix(
   };
 }
 
-export function createIgnoreFix(
-  document: TextDocument,
-  alert: Grammarly.Alert
-): CodeAction {
+export function createIgnoreFix(document: TextDocument, alert: Grammarly.Alert): CodeAction {
   return {
     title: `Grammarly: ignore issue`,
     kind: CodeActionKind.QuickFix,
@@ -96,10 +87,10 @@ export function createIgnoreFix(
 }
 export function toMarkdown(source: string) {
   return source
-    .replace(/<p>/gi, _ => `\n\n`)
-    .replace(/<br\/?>/gi, _ => `  \n`)
-    .replace(/<span class="red">Incorrect:/gi, _ => `- **Incorrect:** `)
-    .replace(/<span class="green">Correct:/gi, _ => `- **Correct:** `)
+    .replace(/<p>/gi, (_) => `\n\n`)
+    .replace(/<br\/?>/gi, (_) => `  \n`)
+    .replace(/<span class="red">Incorrect:/gi, (_) => `- **Incorrect:** `)
+    .replace(/<span class="green">Correct:/gi, (_) => `- **Correct:** `)
     .replace(/\s?<b>(.*?)<\/b>\s?/gi, (_, content) => ` **${content}** `)
     .replace(/\s?<i>(.*?)<\/i>\s?/gi, (_, content) => ` _${content}_ `)
     .replace(/<\/?[^>]+(>|$)/g, '')
@@ -110,11 +101,9 @@ export function toMarkdown(source: string) {
 export function getMarkdownDescription(alert: Grammarly.Alert) {
   return alert.explanation || alert.details || alert.examples
     ? toMarkdown(
-        `### ${alert.title}${
-          alert.explanation ? `\n\n${alert.explanation}` : ''
-        }${alert.details ? `\n\n${alert.details}` : ''}${
-          alert.examples ? `\n\n### Examples\n\n${alert.examples}` : ''
-        }`
+        `### ${alert.title}${alert.explanation ? `\n\n${alert.explanation}` : ''}${
+          alert.details ? `\n\n${alert.details}` : ''
+        }${alert.examples ? `\n\n### Examples\n\n${alert.examples}` : ''}`
       )
     : '';
 }
@@ -122,10 +111,7 @@ export function isSpellingAlert(alert: Grammarly.Alert) {
   return alert.group === 'Spelling';
 }
 
-export function capturePromiseErrors<T extends Function>(
-  fn: T,
-  fallback?: unknown
-): T {
+export function capturePromiseErrors<T extends Function>(fn: T, fallback?: unknown): T {
   return (async (...args: unknown[]) => {
     try {
       return await fn(...args);
@@ -141,25 +127,20 @@ export function createDiagnostic(
   alert: Grammarly.Alert,
   severityMap: Record<string, DiagnosticSeverity>
 ) {
-  const severity = severityMap[alert.category] || DiagnosticSeverity.Hint;
+  const severity = severityMap[alert.category] || severityMap['_default'];
   const diagnostic: Diagnostic = {
     severity,
     message: (alert.title || '').replace(/<\/?[^>]+(>|$)/g, ''),
     source: 'Grammarly: ' + alert.category,
     code: alert.id,
     range: getRangeInDocument(document, alert.begin, alert.end),
-    tags:
-      severity === DiagnosticSeverity.Hint ? [DiagnosticTag.Unnecessary] : [],
+    tags: severity === DiagnosticSeverity.Hint ? [DiagnosticTag.Unnecessary] : [],
   };
 
   return diagnostic;
 }
 
-export function getRangeInDocument(
-  document: TextDocument,
-  start: number,
-  end: number
-): Range {
+export function getRangeInDocument(document: TextDocument, start: number, end: number): Range {
   return {
     start: document.positionAt(start),
     end: document.positionAt(end),
