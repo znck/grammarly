@@ -41,6 +41,8 @@ export const DEFAULT: GrammarlySettings = {
     Readability: DiagnosticSeverity.Information,
 
     PassiveVoice: DiagnosticSeverity.Hint,
+
+    _default: DiagnosticSeverity.Hint,
   },
   userWords: [],
   diagnostics: {
