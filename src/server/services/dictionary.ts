@@ -1,7 +1,7 @@
 import { Registerable } from '@/interfaces';
-import { injectable, inject } from 'inversify';
+import { ConfigurationService } from '@/server/services/configuration';
+import { injectable } from 'inversify';
 import { Disposable } from 'vscode-languageserver';
-import { ConfigurationService } from './configuration';
 
 @injectable()
 export class DictionaryService implements Registerable {

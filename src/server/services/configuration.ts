@@ -4,11 +4,7 @@ import { Grammarly } from '@/server/grammarly';
 import { GrammarlySettings, DEFAULT } from '@/settings';
 import { inject, injectable } from 'inversify';
 import minimatch from 'minimatch';
-import {
-  Connection,
-  DiagnosticSeverity,
-  Disposable,
-} from 'vscode-languageserver';
+import { Connection, DiagnosticSeverity, Disposable } from 'vscode-languageserver';
 import { toArray } from '@/utils/toArray';
 
 @injectable()
@@ -39,14 +35,12 @@ export class ConfigurationService implements Registerable {
     });
 
     setTimeout(() => {
-      this.connection.workspace
-        .getConfiguration('grammarly')
-        .then((settings) => {
-          this.user = {
-            ...this.default,
-            ...settings,
-          };
-        });
+      this.connection.workspace.getConfiguration('grammarly').then((settings) => {
+        this.user = {
+          ...this.default,
+          ...settings,
+        };
+      });
     }, 0);
 
     return Disposable.create(() => {
@@ -55,9 +49,7 @@ export class ConfigurationService implements Registerable {
     });
   }
 
-  async getAlertSeverity(
-    uri: string
-  ): Promise<Record<string, DiagnosticSeverity>> {
+  async getAlertSeverity(uri: string): Promise<Record<string, DiagnosticSeverity>> {
     const config = await this.connection.workspace.getConfiguration({
       scopeUri: uri,
       section: 'grammarly',
@@ -70,12 +62,10 @@ export class ConfigurationService implements Registerable {
   }
 
   async getIgnoredTags(uri: string, languageId: string): Promise<string[]> {
-    const config: GrammarlySettings = await this.connection.workspace.getConfiguration(
-      {
-        scopeUri: uri,
-        section: 'grammarly',
-      }
-    );
+    const config: GrammarlySettings = await this.connection.workspace.getConfiguration({
+      scopeUri: uri,
+      section: 'grammarly',
+    });
 
     return config.diagnostics[`[${languageId}]`]?.ignore || [];
   }
@@ -106,7 +96,6 @@ export class ConfigurationService implements Registerable {
         audience: config.audience,
         dialect: config.dialect,
         domain: config.domain,
-        emotion: config.emotion,
         emotions: config.emotions,
         goals: config.goals,
         style: config.style,

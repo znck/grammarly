@@ -15,13 +15,16 @@
   "categories": [
     "Other"
   ],
+  "enableProposedApi": true,
   "activationEvents": [
+    "onUri",
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:mdx",
+    "onCommand:grammarly.login",
+    "onCommand:grammarly.logout",
+    "onCommand:grammarly.stop",
     "onCommand:grammarly.check",
-    "onCommand:grammarly.setCredentials",
-    "onCommand:grammarly.grammarly.clearCredentials",
     "onCommand:grammarly.setGoals"
   ],
   "contributes": {
@@ -52,12 +55,16 @@
           "scope": "resource",
           "enum": [
             "american",
-            "british"
+            "australian",
+            "british",
+            "canadian"
           ],
           "default": "american",
           "enumDescriptions": [
-            "English (US)",
-            "English (UK)"
+            "🇺🇸American",
+            "🇦🇺Australian",
+            "🇬🇧British",
+            "🇨🇦Canadian"
           ]
         },
         "grammarly.domain": {
@@ -160,11 +167,15 @@
                   "dialect": {
                     "enum": [
                       "american",
-                      "british"
+                      "australian",
+                      "british",
+                      "canadian"
                     ],
                     "enumDescriptions": [
-                      "English (US)",
-                      "English (UK)"
+                      "🇺🇸American",
+                      "🇦🇺Australian",
+                      "🇬🇧British",
+                      "🇨🇦Canadian"
                     ]
                   },
                   "domain": {
@@ -294,6 +305,26 @@
               "Hint"
             ]
           }
+        },
+        "grammarly.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debugging mode"
+        },
+        "grammarly.showExplanation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show alert explanation on hover"
+        },
+        "grammarly.showExamples": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show alert examples on hover"
+        },
+        "grammarly.hideUnavailablePremiumAlerts": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide premium alerts when fix is not available"
         }
       }
     },
@@ -301,22 +332,32 @@
       {
         "command": "grammarly.check",
         "title": "Check grammar errors",
-        "category": "Grammarly"
+        "category": "Grammarly",
+        "enablement": "grammarly:isSupported"
       },
       {
-        "command": "grammarly.setCredentials",
+        "command": "grammarly.stop",
+        "title": "Stop checking grammar errors",
+        "category": "Grammarly",
+        "enablement": "grammarly:isSupported && grammarly:isActive"
+      },
+      {
+        "command": "grammarly.login",
         "title": "Login to grammarly.com",
-        "category": "Grammarly"
+        "category": "Grammarly",
+        "enablement": "grammarly:isAnonymous"
       },
       {
-        "command": "grammarly.clearCredentials",
+        "command": "grammarly.logout",
         "title": "Logout of grammarly.com",
-        "category": "Grammarly"
+        "category": "Grammarly",
+        "enablement": "!grammarly:isAnonymous"
       },
       {
         "command": "grammarly.setGoals",
         "title": "Set document goals",
-        "category": "Grammarly"
+        "category": "Grammarly",
+        "enablement": "grammarly:isSupported && grammarly:isActive"
       }
     ]
   },
@@ -328,9 +369,8 @@
     "build:test": "tsc -p test/tsconfig.json",
     "build": "rollup -c",
     "watch": "rollup -c --watch",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "pretest": "npm run build:test",
-    "test": "node scripts/runTests",
+    "postinstall": "npx vscode-dts dev",
+    "test": "jest",
     "release": "standard-version"
   },
   "devDependencies": {
@@ -340,6 +380,7 @@
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@types/chai": "^4.2.11",
     "@types/debug": "^4.1.5",
+    "@types/jest": "^26.0.13",
     "@types/keytar": "^4.4.2",
     "@types/lodash.debounce": "^4.0.6",
     "@types/minimatch": "^3.0.3",
@@ -348,14 +389,14 @@
     "@types/node-fetch": "^2.5.5",
     "@types/turndown": "^5.0.0",
     "@types/ws": "^7.2.3",
-    "chai": "^4.2.0",
     "fast-glob": "^3.2.2",
+    "jest": "^26.4.2",
     "lint-staged": "^10.1.2",
-    "mocha": "^7.1.1",
     "prettier": "^2.0.4",
     "rollup": "^2.3.4",
     "rollup-plugin-typescript": "^1.0.1",
     "standard-version": "^8.0.1",
+    "ts-jest": "^26.3.0",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3",
     "vscode": "^1.1.36",
@@ -364,6 +405,7 @@
   },
   "dependencies": {
     "@flatten-js/interval-tree": "^1.0.10",
+    "@vue/reactivity": "^3.0.0-rc.10",
     "bufferutil": "^4.0.1",
     "debug": "^4.1.1",
     "html-to-md": "^0.3.2",

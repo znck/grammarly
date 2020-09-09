@@ -1,17 +1,20 @@
 import { GrammarlyClient } from '@/client';
 import { Registerable } from '@/interfaces';
 import { injectable } from 'inversify';
-import { commands, window } from 'vscode';
+import { commands, window, Disposable } from 'vscode';
 
 @injectable()
 export class CheckCommand implements Registerable {
   constructor(private readonly client: GrammarlyClient) {}
 
   register() {
-    return commands.registerCommand('grammarly.check', this.execute.bind(this));
+    return Disposable.from(
+      commands.registerCommand('grammarly.check', this.execute.bind(this)),
+      commands.registerCommand('grammarly.stop', this.execute.bind(this, true))
+    );
   }
 
-  private async execute() {
+  private async execute(stop: boolean = false) {
     if (!this.client.isReady()) return;
 
     if (!window.activeTextEditor) {
@@ -29,6 +32,10 @@ export class CheckCommand implements Registerable {
       return;
     }
 
-    await this.client.check(document.uri.toString());
+    if (stop) {
+      await this.client.check(document.uri.toString());
+    } else {
+      await this.client.check(document.uri.toString());
+    }
   }
 }

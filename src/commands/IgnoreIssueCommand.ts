@@ -8,10 +8,7 @@ export class IgnoreIssueCommand implements Registerable {
   constructor(private readonly client: GrammarlyClient) {}
 
   register() {
-    return commands.registerCommand(
-      'grammarly.ignoreIssue',
-      this.execute.bind(this)
-    );
+    return commands.registerCommand('grammarly.ignoreIssue', this.execute.bind(this));
   }
 
   private async execute(uri: string, alertId: number) {

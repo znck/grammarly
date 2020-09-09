@@ -8,10 +8,7 @@ export class AddWordCommand implements Registerable {
   constructor(private readonly client: GrammarlyClient) {}
 
   register() {
-    return commands.registerCommand(
-      'grammarly.addWord',
-      this.execute.bind(this)
-    );
+    return commands.registerCommand('grammarly.addWord', this.execute.bind(this));
   }
 
   private async execute(
@@ -68,11 +65,7 @@ async function addToFolderDictionary(uri: string, word: string) {
     words.push(word);
     words.sort();
 
-    await config.update(
-      'userWords',
-      words,
-      ConfigurationTarget.WorkspaceFolder
-    );
+    await config.update('userWords', words, ConfigurationTarget.WorkspaceFolder);
   }
 }
 

@@ -19,6 +19,11 @@ export interface GrammarlySettings extends Grammarly.DocumentContext {
     files: string[];
     config: Partial<Grammarly.DocumentContext>;
   }>;
+
+  debug: boolean;
+  showExplanation: boolean;
+  showExamples: boolean;
+  hideUnavailablePremiumAlerts: boolean;
 }
 
 export const DEFAULT: GrammarlySettings = {
@@ -58,11 +63,16 @@ export const DEFAULT: GrammarlySettings = {
   audience: Grammarly.DocumentAudience.KNOWLEDGEABLE,
   dialect: Grammarly.Dialect.AMERICAN,
   domain: Grammarly.DocumentDomain.GENERAL,
-  emotion: Grammarly.WritingTone.MILD,
   emotions: [],
   goals: [],
   style: Grammarly.WritingStyle.NEUTRAL,
 
   /** Grammarly Document Config */
   overrides: [],
+
+  /** Internal */
+  debug: false,
+  showExplanation: true,
+  showExamples: false,
+  hideUnavailablePremiumAlerts: false,
 };

@@ -1,8 +1,7 @@
+import { Logger } from '@/utils/Logger';
 import fetch from 'node-fetch';
 
-import createLogger from 'debug';
-
-const debug = createLogger('grammarly:auth');
+const LOGGER = new Logger('GrammarlyAuth');
 
 function toCookie(params: Record<string, string>) {
   return Object.entries(params)
@@ -24,7 +23,7 @@ const BROWSER_HEADERS = {
 
 function cookieToObject(cookies: string[]) {
   return cookies
-    .map(x => x.split('='))
+    .map((x) => x.split('='))
     .reduce((obj, [key, val]) => {
       obj[key as keyof AuthCookie] = val.split(';')[0];
 
@@ -60,7 +59,7 @@ async function getInitialCookie(): Promise<RawAuthCookie | null> {
     method: 'GET',
   });
 
-  if (response.ok) {
+  if (response.status < 300) {
     const cookies = response.headers.raw()['set-cookie'];
     const result = {
       raw: response.headers.get('Set-Cookie')!,
@@ -68,12 +67,16 @@ async function getInitialCookie(): Promise<RawAuthCookie | null> {
       parsed: cookieToObject(cookies),
     };
 
-    debug('initial cookie', cookies);
+    LOGGER.trace('Received container ID', result.parsed.gnar_containerId);
 
     return result;
   }
 
-  debug('no initial cookie', response);
+  try {
+    LOGGER.trace(`Cannot find container ID: ${response.status} - ${response.statusText}`, await response.text());
+  } catch {
+    LOGGER.trace(`Cannot find container ID: ${response.status} - ${response.statusText}`);
+  }
 
   return null;
 }
@@ -87,14 +90,23 @@ function generateRedirectLocation(): string {
   ).toString('base64');
 }
 
-export async function anonymous() {
-  debug('connecting annonymously');
+export interface GrammarlyAuthContext {
+  isAnonymous: boolean;
+  token: string;
+  container: string;
+  username: string;
+}
+
+export async function anonymous(): Promise<GrammarlyAuthContext> {
+  LOGGER.trace('Connecting anonymously');
   const cookie = await getInitialCookie();
-  if (!cookie) throw new Error('Authentication cannot be started.');
+  if (!cookie) {
+    LOGGER.error('Failed to get container ID');
+    throw new Error('Authentication cannot be started.');
+  }
 
   const response = await fetch(
-    'https://auth.grammarly.com/v3/user/oranonymous?app=chromeExt&containerId=' +
-      cookie.parsed.gnar_containerId,
+    'https://auth.grammarly.com/v3/user/oranonymous?app=chromeExt&containerId=' + cookie.parsed.gnar_containerId,
     {
       method: 'GET',
       headers: {
@@ -122,32 +134,40 @@ export async function anonymous() {
   if (response.ok) {
     const cookies = response.headers.raw()['set-cookie'];
 
-    return {
-      raw: response.headers.get('Set-Cookie')!,
-      headers: cookies,
-      parsed: {
-        ...cookie.parsed,
-        ...cookieToObject(cookies),
-      },
-    };
+    try {
+      const data = await response.json();
+      LOGGER.info('Authentication successful:', data);
+
+      return {
+        isAnonymous: true,
+        token: toCookie({
+          ...cookie.parsed,
+          ...cookieToObject(cookies),
+        }),
+        container: cookie.parsed.gnar_containerId,
+        username: 'anonymous',
+      };
+    } catch {}
   }
 
   try {
-    debug('anonymous connection failed', await response.json());
-  } catch {}
+    LOGGER.error(`anonymous connection failed: ${response.status} - ${response.statusText}`, await response.text());
+  } catch {
+    LOGGER.error(`anonymous connection failed: ${response.status} - ${response.statusText}`);
+  }
 
   throw new Error(response.statusText);
 }
 
-export async function authenticate(
-  username: string,
-  password: string
-): Promise<RawAuthCookie> {
-  debug('connecting as ' + username);
+export async function authenticate(username: string, password: string): Promise<GrammarlyAuthContext> {
+  LOGGER.trace('Connecting as ' + username);
 
   const cookie = await getInitialCookie();
 
-  if (!cookie) throw new Error('Authentication cannot be started.');
+  if (!cookie) {
+    LOGGER.error('Failed to get container ID');
+    throw new Error('Authentication cannot be started.');
+  }
 
   const headers = {
     accept: 'application/json',
@@ -174,39 +194,46 @@ export async function authenticate(
   });
 
   if (response.ok) {
-    const data = await response.json();
-    debug('auth resp', data);
-
     const cookies = response.headers.raw()['set-cookie'];
-    const result = {
-      raw: response.headers.get('Set-Cookie')!,
-      headers: cookies,
-      parsed: {
+
+    try {
+      const data = await response.json();
+      LOGGER.info('Authentication successful:', data);
+    } catch {}
+
+    return {
+      isAnonymous: false,
+      token: toCookie({
         ...cookie.parsed,
         ...cookieToObject(cookies),
-      },
+      }),
+      container: cookie.parsed.gnar_containerId,
+      username,
     };
-
-    return result;
   }
 
-  const result = await response.json();
+  try {
+    const contents = await response.text();
+    LOGGER.error(`anonymous connection failed: ${response.status} - ${response.statusText}`, contents);
 
-  debug(`${username} connection failed`, result);
+    const result = JSON.parse(contents);
 
-  if (result.error === 'SHOW_CAPTCHA') {
-    const error = new Error('Authentication requires captcha input.');
+    if (result.error === 'SHOW_CAPTCHA') {
+      const error = new Error('Authentication requires captcha input.');
 
-    // @ts-ignore
-    error.code = result.error;
+      // @ts-ignore
+      error.code = result.error;
 
-    throw error;
-  } else {
-    const error = new Error(response.statusText);
-
-    // @ts-ignore
-    error.code = result.error;
-
-    throw error;
+      throw error;
+    }
+  } catch {
+    LOGGER.error(`anonymous connection failed: ${response.status} - ${response.statusText}`);
   }
+
+  const error = new Error(response.statusText);
+
+  // @ts-ignore
+  error.code = result.error;
+
+  throw error;
 }

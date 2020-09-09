@@ -1,0 +1,14 @@
+{
+  "grammarly.overrides": [
+    {
+      "files": ["**/readme.md"],
+      "config": {
+        "audience": "knowledgeable",
+        "dialect": "british",
+        "domain": "general",
+        "emotions": ["neutral", "confident", "optimistic", "friendly", "analytical"],
+        "goals": ["convince"]
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { EXTENSION } from '@/constants';
 import { Registerable } from '@/interfaces';
-import { DocumentStatistics, DocumentSummary, GrammarlyServerEvents, GrammarlyServerFeatures } from '@/protocol';
+import { GrammarlyLanguageServer } from '@/protocol';
 import { inject, injectable } from 'inversify';
 import keytar from 'keytar';
 import minimatch from 'minimatch';
@@ -10,11 +10,11 @@ import { TextEdit } from 'vscode-languageserver-textdocument';
 import { getLanguageClientOptions, getLanguageServerOptions, LANGUAGES } from './options';
 
 @injectable()
-export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
-  private readonly client: LanguageClient;
+export class GrammarlyClient implements Registerable {
+  public readonly grammarly: LanguageClient;
 
   constructor(@inject(EXTENSION) context: ExtensionContext) {
-    this.client = new LanguageClient(
+    this.grammarly = new LanguageClient(
       'grammarly',
       'Grammarly',
       getLanguageServerOptions(context.asAbsolutePath('out/server.js')),
@@ -25,11 +25,11 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
   private _isReady = false;
 
   register() {
-    const disposable = this.client.start();
+    const disposable = this.grammarly.start();
 
-    this.client.onReady().then(() => {
+    this.grammarly.onReady().then(() => {
       this._isReady = true;
-      this.client.onRequest('$/credentials', async () => {
+      this.grammarly.onRequest('$/credentials', async () => {
         if (process.env.EXTENSION_TEST_MODE) return;
 
         const credentials = (await keytar.findCredentials('vscode-grammarly')) || [];
@@ -42,7 +42,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
           : undefined;
       });
 
-      this.client.onRequest('$/getCookie', async () => {
+      this.grammarly.onRequest('$/getCookie', async () => {
         if (process.env.EXTENSION_TEST_MODE) return;
 
         const content = await keytar.findPassword('vscode-grammarly-cookie');
@@ -50,7 +50,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
         if (content) return JSON.parse(content);
       });
 
-      this.client.onRequest('$/setCookie', (cookie: any) => {
+      this.grammarly.onRequest('$/setCookie', (cookie: any) => {
         if (cookie) {
           keytar.setPassword('vscode-grammarly-cookie', 'default', JSON.stringify(cookie));
         } else {
@@ -58,7 +58,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
         }
       });
 
-      this.client.onRequest('$/error', (error, buttons) => {
+      this.grammarly.onRequest('$/error', (error, buttons) => {
         const actions = Array.from(buttons).filter(Boolean).map(String);
         if (!error) return;
         return window.showErrorMessage('Grammarly: ' + error, ...actions);
@@ -69,7 +69,7 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
   }
 
   get onReady() {
-    return this.client.onReady.bind(this.client);
+    return this.grammarly.onReady.bind(this.grammarly);
   }
 
   isReady() {
@@ -82,10 +82,6 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
     return true;
   }
 
-  onEvent<Event extends keyof GrammarlyServerEvents>(event: Event, handler: GrammarlyServerEvents[Event]) {
-    return this.client.onNotification(`${event}`, handler);
-  }
-
   isIgnoredDocument(document: TextDocument) {
     const uri = document.uri.toString();
     const ignore = workspace.getConfiguration('grammarly', document.uri).get<string[]>('ignore') || [];
@@ -93,31 +89,27 @@ export class GrammarlyClient implements Registerable, GrammarlyServerFeatures {
     return isIgnored;
   }
 
-  async onCodeActionAccepted(uri: string, alertId: number, change: TextEdit) {
-    this.client.sendNotification('$/codeActionAccepted', {
-      uri,
-      alertId,
-      change,
-    });
+  async getDocumentState(uri: string) {
+    return this.grammarly.sendRequest(GrammarlyLanguageServer.Feature.getDocumentState, { uri });
+  }
+
+  async sendFeedback(method: string, params: any) {
+    await this.grammarly.sendRequest(method, params);
   }
 
   async check(uri: string) {
-    await this.client.sendRequest('$/check', [uri]);
+    await this.grammarly.sendRequest(GrammarlyLanguageServer.Feature.checkGrammar, { uri });
+  }
+
+  async stopCheck(uri: string) {
+    await this.grammarly.sendRequest(GrammarlyLanguageServer.Feature.stop, { uri });
   }
 
   async dismissAlert(uri: string, alertId: number) {
-    await this.client.sendRequest('$/dismissAlert', [uri, alertId]);
+    await this.grammarly.sendRequest('$/dismissAlert', [uri, alertId]);
   }
 
   async addToDictionary(uri: string, alertId: number) {
-    await this.client.sendRequest('$/addToDictionary', [uri, alertId]);
-  }
-
-  async getSummary(uri: string): Promise<DocumentSummary> {
-    return this.client.sendRequest('$/getSummary', [uri]);
-  }
-
-  async getStatistics(uri: string): Promise<DocumentStatistics> {
-    return this.client.sendRequest('$/getStatistics', [uri]);
+    await this.grammarly.sendRequest('$/addToDictionary', [uri, alertId]);
   }
 }

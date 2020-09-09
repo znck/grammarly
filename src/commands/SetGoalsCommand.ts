@@ -46,7 +46,6 @@ export class SetGoalsCommand implements Registerable {
       audience: config.audience,
       dialect: config.dialect,
       domain: config.domain,
-      emotion: config.emotion,
       emotions: config.emotions,
       goals: config.goals,
       style: config.style,
@@ -74,12 +73,22 @@ export class SetGoalsCommand implements Registerable {
       select('dialect', 'Dialect', [
         {
           label: 'american',
-          description: 'English (US)',
+          description: '🇺🇸American',
           picked: settings.dialect === 'american',
         },
         {
           label: 'british',
-          description: 'English (UK)',
+          description: '🇦🇺Australian',
+          picked: settings.dialect === 'british',
+        },
+        {
+          label: 'british',
+          description: '🇬🇧British',
+          picked: settings.dialect === 'british',
+        },
+        {
+          label: 'british',
+          description: '🇨🇦Canadian',
           picked: settings.dialect === 'british',
         },
       ]),
@@ -192,7 +201,6 @@ export class SetGoalsCommand implements Registerable {
     ]).run();
 
     if (result) {
-      result.emotion = Grammarly.WritingTone.MILD;
       const config = workspace.getConfiguration('grammarly', document.uri);
       const overrides = config.get<GrammarlySettings['overrides']>('overrides') || [];
       const file = workspace.asRelativePath(document.uri);

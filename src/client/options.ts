@@ -3,7 +3,7 @@ import { LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-lang
 const supportedSchemes = ['file', 'untitled', 'vue', 'gist'];
 
 export function generateDocumentSelectors(languages: string[]): LanguageClientOptions['documentSelector'] {
-  return languages.map((language) => supportedSchemes.map((scheme) => ({ language, scheme }))).flat(Infinity);
+  return languages.map((language) => supportedSchemes.map((scheme) => ({ language, scheme }))).flat(3);
 }
 
 export function getLanguageServerOptions(module: string): ServerOptions {

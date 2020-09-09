@@ -1,71 +1,42 @@
+import { RequestType, RequestType0 } from 'vscode-languageserver';
+import { AuthParams } from './interfaces';
 import { Grammarly } from '@/server/grammarly';
-import { AuthCookie } from './server/grammarly/auth';
+import { GrammarlyStatus } from '@/server/grammarly/hosts/TextGrammarCheckHost';
 
-export type DictionaryType = 'grammarly' | 'workspace' | 'folder' | 'user';
-
-export interface DocumentStatistics {
-  performance: {
+export namespace GrammarlyLanguageServer {
+  export interface DocumentState {
+    uri: string;
+    status: GrammarlyStatus;
     score: number;
-  };
-  content: {
-    characters: number;
-    words: number;
-    sentences: number;
+    scores: Partial<Grammarly.OutcomeScoresWithPlagiarism>;
+    emotions: Grammarly.Emogenie.Emotion[];
+    textInfo: Grammarly.Message.TextInfo | null;
+    totalAlertsCount: number;
+    additionalFixableAlertsCount: number;
+    premiumAlertsCount: number;
+    user: { isAnonymous: boolean; isPremium: false };
+  }
 
-    readingTime: string;
-    speakingTime: string;
-  };
-  readability: {
-    score: number;
-    message: string;
-    wordLength: number;
-    sentenceLength: number;
-  };
-  vocubulary: {
-    uniqueWords: number;
-    rareWords: number;
-  };
-}
-export enum ServiceStatus {
-  INACTIVE,
-  CONNECTING,
-  READY,
-  WAITING,
-  ERRORED,
-}
+  export interface DocumentRef {
+    uri: string;
+  }
 
-export type DocumentSummary =
-  | {
-      status: ServiceStatus.INACTIVE | ServiceStatus.CONNECTING | ServiceStatus.ERRORED;
-    }
-  | {
-      status: ServiceStatus.READY | ServiceStatus.WAITING;
-      overall: number;
-      username?: string;
-      scores: {
-        Clarity: number;
-        Correctness: number;
-        Engagement: number;
-        GeneralScore: number;
-        Tone: number;
-      };
+  export interface FeedbackAcceptAlert extends DocumentRef {
+    id: Grammarly.Alert.Id;
+    text: string;
+  }
+
+  export const Feature = {
+    stop: ('$/stop' as unknown) as RequestType<DocumentRef, void, Error>,
+    checkGrammar: ('$/checkGrammar' as unknown) as RequestType<DocumentRef, void, Error>,
+    acceptAlert: ('$/feedbackAcceptAlert' as unknown) as RequestType<FeedbackAcceptAlert, void, Error>,
+    getDocumentState: ('$/getDocumentState' as unknown) as RequestType<DocumentRef, DocumentState | null, Error>,
+  };
+
+  export namespace Client {
+    export const Feature = {
+      getCredentials: ('$/getCredentials' as unknown) as RequestType<AuthParams, void, Error>,
+      updateDocumentState: ('$/updateDocumentState' as unknown) as RequestType<DocumentState, void, Error>,
     };
-
-export interface GrammarlyServerFeatures {
-  check(resourse: string): Promise<void>;
-  dismissAlert(resource: string, alertId: number): Promise<void>;
-  addToDictionary(resource: string, alertId: number): Promise<void>;
-
-  getSummary(resource: string): Promise<DocumentSummary | null>;
-  getStatistics(resource: string): Promise<DocumentStatistics | null>;
-}
-
-export interface GrammarlyClientFeatures {
-  getCredentials(): Promise<{ username: string; password: string } | null>;
-  getCookie(): Promise<AuthCookie | null>;
-  setCookie(cookie: AuthCookie): Promise<void>;
-}
-
-export interface GrammarlyServerEvents {
-  ['$/summary'](uri: string, summary: DocumentSummary): void;
+  }
 }

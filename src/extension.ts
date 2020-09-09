@@ -2,16 +2,17 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 import { ExtensionContext, Disposable } from 'vscode';
 import { GrammarlyClient } from './client';
-import { AddWordCommand } from './commands/add-word';
-import { CheckCommand } from './commands/check';
-import { IgnoreIssueCommand } from './commands/ignore-issue';
-import { StatsCommand } from './commands/stats';
+import { AddWordCommand } from './commands/AddWordCommand';
+import { CheckCommand } from './commands/CheckGrammarCommand';
+import { IgnoreIssueCommand } from './commands/IgnoreIssueCommand';
+import { StatsCommand } from './commands/StatsCommand';
 import { EXTENSION } from './constants';
-import { StatusBarController } from './controllers/status-bar';
-import { SetCredentialsCommand } from './commands/set-credentials';
-import { PostQuickFixCommand } from './commands/post-quick-fix';
-import { SetGoalsCommand } from './commands/set-goals';
-import { ClearCredentialsCommand } from './commands/clear-credentials';
+import { StatusBarController } from './controllers/StatusBarController';
+import { AuthenticationService } from './commands/SetCredentialsCommand';
+import { ServerCallbackCommand } from './commands/ServerCallbackCommand';
+import { SetGoalsCommand } from './commands/SetGoalsCommand';
+import { ClearCredentialsCommand } from './commands/ClearCredentialsCommand';
+import vscode from 'vscode';
 
 process.env.DEBUG = 'grammarly:*';
 
@@ -29,9 +30,9 @@ export async function activate(context: ExtensionContext) {
     container.get(CheckCommand).register(),
     container.get(IgnoreIssueCommand).register(),
     container.get(StatsCommand).register(),
-    container.get(SetCredentialsCommand).register(),
+    container.get(AuthenticationService).register(),
     container.get(ClearCredentialsCommand).register(),
-    container.get(PostQuickFixCommand).register(),
+    container.get(ServerCallbackCommand).register(),
     container.get(SetGoalsCommand).register(),
     new Disposable(() => container.unbindAll())
   );

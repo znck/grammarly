@@ -29,10 +29,7 @@
       "env": {
         "DEBUG": "grammarly:*"
       },
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "${workspaceFolder}/fixtures"
-      ],
+      "args": ["--disable-extensions", "--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/fixtures"],
       "outFiles": ["${workspaceFolder}/out/*.js"],
       "preLaunchTask": "npm: watch"
     },
@@ -48,10 +45,7 @@
         "--user-data-dir='${workspaceFolder}/fixtures/user'",
         "${workspaceFolder}/fixtures/folder"
       ],
-      "outFiles": [
-        "${workspaceFolder}/out-test/**/*.js",
-        "${workspaceFolder}/out/**/*.js"
-      ],
+      "outFiles": ["${workspaceFolder}/out-test/**/*.js", "${workspaceFolder}/out/**/*.js"],
       "preLaunchTask": "npm: build:test"
     }
   ]
