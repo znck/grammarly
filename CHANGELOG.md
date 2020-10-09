@@ -250,7 +250,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-- Add git languagess ([999981f](https://github.com/znck/grammarly/commit/999981ffac44ba24447ce4b2c3a0b20090bc1997)), closes [#12](https://github.com/znck/grammarly/issues/12)
+- Add git languages ([999981f](https://github.com/znck/grammarly/commit/999981ffac44ba24447ce4b2c3a0b20090bc1997)), closes [#12](https://github.com/znck/grammarly/issues/12)
 - Add restructuredtext language ([fcbc836](https://github.com/znck/grammarly/commit/fcbc836efe5ac09e267b46a6775a08a533412c2c)), closes [#15](https://github.com/znck/grammarly/issues/15)
 - Add support for English dialect configuration ([#16](https://github.com/znck/grammarly/issues/16)) ([1f88f8c](https://github.com/znck/grammarly/commit/1f88f8c7cf8b15b7cf5e234b197d64f54d782766)), closes [#10](https://github.com/znck/grammarly/issues/10)
 - Minimal LaTeX support ([#7](https://github.com/znck/grammarly/issues/7)) ([07ff8a3](https://github.com/znck/grammarly/commit/07ff8a357523cf5a29c6682e99a63ac7be1c5417))
