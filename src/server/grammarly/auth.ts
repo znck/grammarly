@@ -160,7 +160,7 @@ export async function authenticate(
     'x-csrf-token': cookie.parsed['csrf-token'],
     'sec-fetch-site': 'same-site',
     'sec-fetch-mode': 'cors',
-    cookie: `gnar_containrId=${cookie.parsed.gnar_containerId}; grauth=${cookie.parsed.grauth}; csrf-token=${cookie.parsed['csrf-token']}`,
+    cookie: `gnar_containerId=${cookie.parsed.gnar_containerId}; grauth=${cookie.parsed.grauth}; csrf-token=${cookie.parsed['csrf-token']}`,
   };
 
   const response = await fetch('https://auth.grammarly.com/v3/api/login', {
