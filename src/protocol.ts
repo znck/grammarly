@@ -52,7 +52,7 @@ export type DocumentSummary =
     };
 
 export interface GrammarlyServerFeatures {
-  check(resourse: string): Promise<void>;
+  check(resource: string): Promise<void>;
   dismissAlert(resource: string, alertId: number): Promise<void>;
   addToDictionary(resource: string, alertId: number): Promise<void>;
 
