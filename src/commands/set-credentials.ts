@@ -13,12 +13,12 @@ export class SetCredentialsCommand implements Registerable {
   }
 
   private async execute() {
-    const credenials = await keytar.findCredentials('vscode-grammarly');
+    const credentials = await keytar.findCredentials('vscode-grammarly');
     const currentData: AuthParams = { username: '', password: '' };
 
-    if (credenials.length) {
-      currentData.username = credenials[0].account;
-      currentData.password = credenials[0].password;
+    if (credentials.length) {
+      currentData.username = credentials[0].account;
+      currentData.password = credentials[0].password;
     }
 
     const newData = await form<AuthParams>('Login to grammarly.com', [
