@@ -49,7 +49,7 @@ suite('AutoEnable', function () {
         );
       } catch (error) {
         expect(error.message).to.equal(
-          'Did not recevies any diagnostics after 10000ms.'
+          'Did not receives any diagnostics after 10000ms.'
         );
         return [];
       }

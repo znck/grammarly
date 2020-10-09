@@ -67,7 +67,7 @@ export async function getDiagnostics(
 
     time = Math.min(timeout, time * 2);
   } while (Date.now() - startedAt < timeout);
-  throw new Error(`Did not recevies any diagnostics after ${timeout}ms.`);
+  throw new Error(`Did not receives any diagnostics after ${timeout}ms.`);
 }
 
 export function resetVSCodeFolder() {
