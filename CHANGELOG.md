@@ -198,7 +198,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-- Improve synonym feching speed by listening to RECV event ([64b8403](https://github.com/znck/grammarly/commit/64b8403))
+- Improve synonym fetching speed by listening to RECV event ([64b8403](https://github.com/znck/grammarly/commit/64b8403))
 
 <a name="0.3.4"></a>
 
