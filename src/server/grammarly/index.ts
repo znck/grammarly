@@ -380,7 +380,7 @@ export namespace Grammarly {
   export interface EmotionsResponse {
     action: ResponseAction.EMOTIONS;
     hidden: boolean;
-    emotinos: Array<{
+    emotions: Array<{
       emoji: string;
       name: string;
       confidence: string;
