@@ -173,7 +173,7 @@ export class GrammarlyService implements Registerable, GrammarlyServerFeatures {
         wordLength: response.wordLength,
         sentenceLength: response.sentenceLength,
       },
-      vocubulary: {
+      vocabulary: {
         rareWords: response.rareWords,
         uniqueWords: response.uniqueWords,
       },

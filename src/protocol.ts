@@ -21,7 +21,7 @@ export interface DocumentStatistics {
     wordLength: number;
     sentenceLength: number;
   };
-  vocubulary: {
+  vocabulary: {
     uniqueWords: number;
     rareWords: number;
   };

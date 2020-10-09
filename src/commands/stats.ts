@@ -35,7 +35,7 @@ export class StatsCommand implements Registerable {
         performance,
         content,
         readability,
-        vocubulary,
+        vocabulary,
       } = await this.client.getStatistics(uri);
 
       await window.showInformationMessage(
@@ -66,8 +66,8 @@ export class StatsCommand implements Registerable {
 
         Vocabulary:
 
-        Unique words ${vocubulary.uniqueWords}%
-        Rare words ${vocubulary.rareWords}%
+        Unique words ${vocabulary.uniqueWords}%
+        Rare words ${vocabulary.rareWords}%
         `.replace(/^[ \t]+/gm, ''),
         { modal: true }
       );
