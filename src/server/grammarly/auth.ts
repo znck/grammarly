@@ -88,7 +88,7 @@ function generateRedirectLocation(): string {
 }
 
 export async function anonymous() {
-  debug('connecting annonymously');
+  debug('connecting anonymously');
   const cookie = await getInitialCookie();
   if (!cookie) throw new Error('Authentication cannot be started.');
 

@@ -90,7 +90,7 @@ export class DocumentService implements Registerable {
         if (/^(SHOW_CAPTCHA|RATE_LIMITED)$/.test(error.code || '')) {
           const result = await this.connection.sendRequest<any>('$/error', [
             error.message,
-            [{ title: 'Retry' }, { title: 'Connect Annonymously' }],
+            [{ title: 'Retry' }, { title: 'Connect Anonymously' }],
           ]);
 
           const action = result?.title;
@@ -99,7 +99,7 @@ export class DocumentService implements Registerable {
             setTimeout(() => {
               this.attachHost(document);
             }, 0);
-          } else if (action === 'Connect Annonymously') {
+          } else if (action === 'Connect Anonymously') {
             await this.connection.sendRequest('$/setCookie', null);
             const credentials = this.credentials;
             setTimeout(() => {

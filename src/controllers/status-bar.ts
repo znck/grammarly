@@ -120,7 +120,7 @@ export class StatusBarController implements Registerable {
                 `Tone: ${v(summary.scores?.Tone)}`,
               ].join('\n'),
           '',
-          summary.username ? `Connected using ${summary.username} account.` : 'Connected annonymously.',
+          summary.username ? `Connected using ${summary.username} account.` : 'Connected anonymously.',
         ].join('\n');
         this.statusBar.command = 'grammarly.stats';
         this.statusBar.color = undefined;
