@@ -127,7 +127,17 @@ export function createDiagnostic(
   alert: Grammarly.Alert,
   severityMap: Record<string, DiagnosticSeverity>
 ) {
-  const severity = severityMap[alert.category] || severityMap['_default'];
+  let severity;
+  if (severityMap.hasOwnProperty('_default')) {
+    severity = severityMap['_default'];
+  }
+  else if (severityMap.hasOwnProperty(alert.category)) {
+    severity = severityMap[alert.category];
+  }
+  else {
+    severity = DiagnosticSeverity.Error;
+  }
+
   const diagnostic: Diagnostic = {
     severity,
     message: (alert.title || '').replace(/<\/?[^>]+(>|$)/g, ''),
