@@ -29,9 +29,12 @@
       "env": {
         "DEBUG": "grammarly:*"
       },
-      "args": ["--disable-extensions", "--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/fixtures"],
-      "outFiles": ["${workspaceFolder}/out/*.js"],
-      "preLaunchTask": "npm: watch"
+      "args": [
+        "--disable-extensions",
+        "--extensionDevelopmentPath=${workspaceFolder}/extension",
+        "${workspaceFolder}/fixtures"
+      ],
+      "outFiles": ["${workspaceFolder}/extension/dist/*.js"]
     },
     {
       "name": "Extension Tests",

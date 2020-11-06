@@ -1,0 +1,5 @@
+export type AutocompleteFeedbackType =
+  | 'COMPLETION_SHOWN'
+  | 'COMPLETION_IGNORED'
+  | 'COMPLETION_ACCEPTED'
+  | 'COMPLETION_REJECTED'

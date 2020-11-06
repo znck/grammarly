@@ -26,5 +26,5 @@
   ],
   "typescript.preferences.quoteStyle": "single",
   "typescript.preferences.importModuleSpecifierEnding": "minimal",
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "cSpell.enabled": true
 }

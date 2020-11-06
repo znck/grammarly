@@ -4,7 +4,6 @@ Mispellings and grammatical errors can effect your credibility. The same goes fo
 Underlines that are blue indicate that Grammarly has spotted a sentence that is unnecessarily wordy. You’ll find suggestions that can possibly help you revise a wordy sentence in an effortless manner.
 But wait...there’s more?
 
-Grammarly Premium can give you very helpful feedback on your writing. Passive voice can be fixed by Grammarly, and it can handle classical word-choice mistakes. It can also help with inconsistencies such as switching between e-mail and email or the U.S.A. and the USA.
+Grammarly Premium can give you very helpful feedback on your writing. Passive voice can be fixed by Grammarly, and it can handle classical word-choice mistakes. It can also help with inconsistencies such as switching between Email, e-mail, and email or the U.S.A. and the USA.
 
 It can even help when you wanna refine ur slang or formality level. That’s especially useful when writing for a broad audience ranging from businessmen to friends and family, don’t you think? It’ll inspect your vocabulary carefully and suggest the best word to make sure you don’t have to analyze your writing too much.
-
