@@ -2,19 +2,19 @@
 
 Unofficial Grammarly extension.
 
-![Preview of Grammarly diagnostics](./assets/screenshot1.png)
+![Preview of Grammarly diagnostics](./extension/assets/screenshot1.png)
 
 ## Using a Paid Grammarly Account
 
 Use the `Grammarly: Login to grammarly.com` command to enter your account credentials. The command will prompt you first for username and then for a password.
 
-![set credentials screencast](./assets/set-credentials-screencast.gif)
+![set credentials screencast](./extension/assets/set-credentials-screencast.gif)
 
 ## Configuring alert severity
 
 You can assign severity levels to the Grammarly diagnostics category. To find diagnostics category name, hover on a problem in the editor. (see category name highlighted in the following example)
 
-![Grammarly diagnostic category](./assets/category.png)
+![Grammarly diagnostic category](./extension/assets/category.png)
 
 ```json
 {
@@ -106,7 +106,7 @@ Dismiss alerts.
 
 Save words to local or Grammarly dictionary.
 
-![Add to dictionary example](./assets/screenshot2.png)
+![Add to dictionary example](./extension/assets/screenshot2.png)
 
 ### Version 0.1.0
 
