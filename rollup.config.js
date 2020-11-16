@@ -77,7 +77,7 @@ const configs = [
       },
       {
         format: 'esm',
-        file: './packages/grammarly-api/dist/index.esm.js',
+        file: './packages/grammarly-language-server/dist/index.esm.js',
         sourcemap: true,
       },
     ],
