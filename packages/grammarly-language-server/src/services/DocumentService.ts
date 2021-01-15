@@ -1,6 +1,13 @@
 import { inject, injectable } from 'inversify'
-import { Connection, Disposable, ServerCapabilities, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver'
-import { CONNECTION, SERVER } from '../constants'
+import {
+  ClientCapabilities,
+  Connection,
+  Disposable,
+  ServerCapabilities,
+  TextDocuments,
+  TextDocumentSyncKind,
+} from 'vscode-languageserver'
+import { CLIENT_INFO, CONNECTION, SERVER } from '../constants'
 import { GrammarlyDocument } from '../GrammarlyDocument'
 import { GrammarlyHostFactory } from '../GrammarlyHostFactory'
 import { Registerable } from '../interfaces'
@@ -21,6 +28,7 @@ export class DocumentService implements Registerable {
   constructor(
     @inject(CONNECTION) private readonly connection: Connection,
     @inject(SERVER) private readonly capabilities: ServerCapabilities,
+    @inject(CLIENT_INFO) private readonly client: { name: string; version?: string },
     private readonly configuration: ConfigurationService,
   ) {}
 
@@ -56,7 +64,7 @@ export class DocumentService implements Registerable {
   async attachHost(document: GrammarlyDocument, force = false) {
     if (!this.configuration.settings.autoActivate && !force) return
 
-    document.attachHost(this.hostFactory)
+    document.attachHost(this.hostFactory, this.client)
     this.onDocumentOpenCbs.forEach((cb) => cb(document))
   }
 

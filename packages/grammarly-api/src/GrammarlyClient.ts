@@ -43,7 +43,7 @@ type StopEventHandler = () => void
 export interface GrammarlyClientOptions {
   documentId: string
   clientName: string
-  clientType: 'general'
+  clientType: string
   clientVersion?: string
 
   getToken: () => Promise<string> | string

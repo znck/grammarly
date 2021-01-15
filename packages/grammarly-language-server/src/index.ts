@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { Container } from 'inversify'
 import { createConnection, ProposedFeatures } from 'vscode-languageserver'
-import { CLIENT, CONNECTION, SERVER } from './constants'
+import { CLIENT, CLIENT_INFO, CONNECTION, SERVER } from './constants'
 import { ConfigurationService } from './services/ConfigurationService'
 import { DictionaryService } from './services/DictionaryService'
 import { DocumentService } from './services/DocumentService'
@@ -27,6 +27,7 @@ export function startLanguageServer(): void {
 
   connection.onInitialize((params) => {
     container.bind(CLIENT).toConstantValue(params.capabilities)
+    container.bind(CLIENT_INFO).toConstantValue(params.clientInfo ?? { name: '' })
 
     disposables.push(
       container.get(ConfigurationService).register(),

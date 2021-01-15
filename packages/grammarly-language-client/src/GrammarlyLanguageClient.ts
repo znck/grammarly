@@ -10,8 +10,8 @@ export class GrammarlyLanguageClient {
 
   constructor(private readonly serverPath: string, private readonly options: GrammarlyLanguageClientOptions) {
     this.grammarly = new LanguageClient(
-      'grammarly',
-      'Grammarly',
+      options.info?.name ?? 'unknown',
+      options.info?.name ?? 'unknown',
       getLanguageServerOptions(this.serverPath),
       getLanguageClientOptions(),
     )

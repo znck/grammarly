@@ -10,10 +10,10 @@ export class GrammarlyDocument implements TextDocument {
 
   private constructor(private internal: TextDocument) {}
 
-  attachHost(factory: GrammarlyHostFactory) {
+  attachHost(factory: GrammarlyHostFactory, clientInfo: { name: string; version?: string }) {
     this.detachHost()
 
-    this._host = factory.create(this)
+    this._host = factory.create(this, clientInfo)
   }
 
   detachHost() {

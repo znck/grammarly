@@ -18,8 +18,9 @@ export class GrammarlyHostFactory {
     private storeToken: (token: string | null) => void,
   ) {}
 
-  public create(document: GrammarlyDocument) {
+  public create(document: GrammarlyDocument, clientInfo: { name: string; version?: string }) {
     const host = new TextGrammarCheckHost(
+      clientInfo,
       document,
       () => this.getDocumentContext(document),
       () => this.getAuth(),

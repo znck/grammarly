@@ -34,14 +34,16 @@ export class SocketClient {
     this.status = value
   }
 
+  private UA: string
+
   constructor(
     public readonly id: string,
     private readonly _getToken: () => Promise<string> | string,
     private readonly _onConnection: () => void = () => {},
     private readonly _onMessage: (message: Response) => void = () => {},
-    private UA: string = '',
+    ua: string = '',
   ) {
-    this.UA = `${this.UA} ${UA}`
+    this.UA = `${ua} ${UA}`
 
     this._connect()
   }

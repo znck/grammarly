@@ -7,7 +7,7 @@ import { CheckCommand } from './commands/CheckGrammarCommand'
 import { ClearCredentialsCommand } from './commands/ClearCredentialsCommand'
 import { IgnoreIssueCommand } from './commands/IgnoreIssueCommand'
 import { ServerCallbackCommand } from './commands/ServerCallbackCommand'
-import { AuthenticationService } from './commands/SetCredentialsCommand'
+import { AuthenticationService } from './services/AuthenticationService'
 import { SetGoalsCommand } from './commands/SetGoalsCommand'
 import { StatsCommand } from './commands/StatsCommand'
 import { EXTENSION } from './constants'
@@ -20,7 +20,8 @@ export async function activate(context: ExtensionContext) {
   })
 
   container.bind(EXTENSION).toConstantValue(context)
-  container.bind(GrammarlyClient).toConstantValue(new GrammarlyClient(context))
+  container.bind(GrammarlyClient).toConstantValue(new GrammarlyClient(context, container.get(AuthenticationService)))
+
   context.subscriptions.push(
     container.get(GrammarlyClient).register(),
     container.get(StatusBarController).register(),
@@ -35,7 +36,7 @@ export async function activate(context: ExtensionContext) {
     new Disposable(() => container.unbindAll()),
   )
 
-  return container.get(GrammarlyClient).onReady()
+  return await container.get(GrammarlyClient).onReady()
 }
 
 export function deactivate() {}
