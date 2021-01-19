@@ -373,9 +373,7 @@
     "unofficial-grammarly-api": "workspace:*",
     "unofficial-grammarly-language-client": "workspace:*",
     "unofficial-grammarly-language-server": "workspace:*",
-    "vsce": "^1.84.0"
-  },
-  "dependencies": {
+    "vsce": "^1.84.0",
     "@vue/reactivity": "^3.0.2",
     "base64url": "^3.0.1",
     "inversify": "^5.0.1",
