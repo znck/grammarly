@@ -12,6 +12,7 @@ import { GrammarlyDocument } from '../GrammarlyDocument'
 import { GrammarlyHostFactory } from '../GrammarlyHostFactory'
 import { Registerable } from '../interfaces'
 import { ConfigurationService } from './ConfigurationService'
+import { GrammarlyLanguageServer } from '../protocol'
 
 @injectable()
 export class DocumentService implements Registerable {
@@ -19,18 +20,18 @@ export class DocumentService implements Registerable {
   private hostFactory = new GrammarlyHostFactory(
     async (document) => this.configuration.getDocumentSettings(document.uri),
     async () => this.getCredentials(),
-    async (token) => this.connection.sendRequest('$/storeToken', { token }),
+    async (token) => this.connection.sendRequest(GrammarlyLanguageServer.Client.Feature.storeToken, { token }),
   )
 
   private onDocumentOpenCbs: Array<(document: GrammarlyDocument) => any> = []
   private onDocumentCloseCbs: Array<(document: GrammarlyDocument) => any> = []
 
-  constructor(
+  constructor (
     @inject(CONNECTION) private readonly connection: Connection,
     @inject(SERVER) private readonly capabilities: ServerCapabilities,
     @inject(CLIENT_INFO) private readonly client: { name: string; version?: string },
     private readonly configuration: ConfigurationService,
-  ) {}
+  ) { }
 
   register() {
     this.capabilities.textDocumentSync = {
@@ -70,11 +71,13 @@ export class DocumentService implements Registerable {
 
   private async getCredentials() {
     try {
-      const result = await this.connection.sendRequest<{ token: string }>('$/token')
-      if (result) return result.token
-    } catch {}
+      const result = await this.connection.sendRequest(GrammarlyLanguageServer.Client.Feature.getToken)
+      if (result) return JSON.stringify(result)
+    } catch (error) {
+      console.error(error)
+    }
 
-    return this.connection.sendRequest<{ username: string; password: string }>('$/credentials')
+    return this.connection.sendRequest(GrammarlyLanguageServer.Client.Feature.getCredentials)
   }
 
   private async handleClose(document: GrammarlyDocument) {

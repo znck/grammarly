@@ -12,11 +12,11 @@ import { TextGrammarCheckHost } from './hosts/TextGrammarCheckHost'
 export class GrammarlyHostFactory {
   private auth: GrammarlyAuthContext | null = null
 
-  constructor(
+  constructor (
     private getDocumentContext: (document: GrammarlyDocument) => Promise<DocumentContext>,
     private getCredentials: () => Promise<{ username: string; password: string } | string>,
     private storeToken: (token: string | null) => void,
-  ) {}
+  ) { }
 
   public create(document: GrammarlyDocument, clientInfo: { name: string; version?: string }) {
     const host = new TextGrammarCheckHost(
@@ -42,8 +42,8 @@ export class GrammarlyHostFactory {
     if (!this.auth) {
       try {
         this.auth = await this.asUser()
-      } catch {
-        // Ignore for now.
+      } catch (error) {
+        console.error(error)
       }
     }
 

@@ -7,7 +7,7 @@
     "build:server": "ncc build -o extension/dist/server extension/src/server.ts",
     "watch": "run-p -l watch:*",
     "watch:packages": "rollup -c --watch",
-    "watch:extension": "ncc build --watch -o extension/dist/extension extension/src/extension.ts",
+    "watch:extension": "ncc build -s --watch -o extension/dist/extension extension/src/extension.ts",
     "watch:server": "ncc build --watch -o extension/dist/server extension/src/server.ts",
     "test": "jest"
   },

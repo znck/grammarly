@@ -345,13 +345,13 @@
         "command": "grammarly.login",
         "title": "Login to grammarly.com",
         "category": "Grammarly",
-        "enablement": "grammarly:isAnonymous"
+        "enablement": "!grammarly:isAuthenticated"
       },
       {
         "command": "grammarly.logout",
         "title": "Logout of grammarly.com",
         "category": "Grammarly",
-        "enablement": "!grammarly:isAnonymous"
+        "enablement": "grammarly:isAuthenticated"
       },
       {
         "command": "grammarly.setGoals",
@@ -370,14 +370,16 @@
     "@types/minimatch": "^3.0.3",
     "@types/vscode": "^1.51.0",
     "typescript": "^4.0.5",
-    "unofficial-grammarly-api": "workspace:^0.0.0",
-    "unofficial-grammarly-language-client": "workspace:^0.0.0",
-    "unofficial-grammarly-language-server": "workspace:^0.0.0"
+    "unofficial-grammarly-api": "workspace:*",
+    "unofficial-grammarly-language-client": "workspace:*",
+    "unofficial-grammarly-language-server": "workspace:*"
   },
   "dependencies": {
     "@vue/reactivity": "^3.0.2",
+    "base64url": "^3.0.1",
     "inversify": "^5.0.1",
     "minimatch": "^3.0.4",
+    "node-fetch": "^2.6.1",
     "reflect-metadata": "^0.1.13"
   }
 }

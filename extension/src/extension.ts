@@ -36,7 +36,7 @@ export async function activate(context: ExtensionContext) {
     new Disposable(() => container.unbindAll()),
   )
 
-  return await container.get(GrammarlyClient).onReady()
+  await container.get(GrammarlyClient).onReady()
 }
 
-export function deactivate() {}
+export function deactivate() { }

@@ -41,7 +41,7 @@ export class TextGrammarCheckHost {
   private remoteRevision!: IdRevision
 
   public alerts = ref(new Map<IdAlert, AlertEvent>())
-  public user = ref<{ isAnonymous: boolean; isPremium: boolean }>({ isAnonymous: true, isPremium: false })
+  public user = ref<{ isAnonymous: boolean; isPremium: boolean, username: string }>({ isAnonymous: true, isPremium: false, username: 'anonymous' })
 
   public score = ref(-1)
   public generalScore = ref(-1)
@@ -69,6 +69,14 @@ export class TextGrammarCheckHost {
       documentId: this.id,
       getToken: async () => {
         this.auth = await this.getTokenInfo()
+
+        if (this.auth != null) {
+          this.user.value = {
+            username: this.auth.username,
+            isAnonymous: this.auth.isAnonymous,
+            isPremium: this.auth.isPremium ?? false,
+          }
+        }
 
         return this.auth.token
       },
@@ -126,7 +134,7 @@ export class TextGrammarCheckHost {
   }
 
   public get context(): Omit<GrammarlyAuthContext, 'token'> {
-    return this.auth || { username: 'anonymous', isAnonymous: true, container: '' } // TODO: Get user info from API.
+    return this.auth || { username: 'anonymous', isAnonymous: true, container: '' }
   }
 
   public on<T extends ResponseKindType>(action: T, callback: (message: ResponseTypeToResponseMapping[T]) => void) {

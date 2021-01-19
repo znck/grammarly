@@ -93,12 +93,13 @@ function generateRedirectLocation(): string {
 
 export interface GrammarlyAuthContext {
   isAnonymous: boolean
+  isPremium?: boolean
   token: string
   container: string
   username: string
 }
 
-export async function anonymous(): Promise<GrammarlyAuthContext> {
+export async function anonymous(client?: string, version?: string): Promise<GrammarlyAuthContext> {
   if (__DEV__) LOGGER?.trace('Connecting anonymously')
   const cookie = await getInitialCookie()
   if (!cookie) {
@@ -113,8 +114,8 @@ export async function anonymous(): Promise<GrammarlyAuthContext> {
       headers: {
         ...BROWSER_HEADERS,
         Accept: 'application/json',
-        'X-Client-Type': 'extension-chrome',
-        'X-Client-Version': '1.2.390-SNAPSHOT',
+        'X-Client-Type': client ?? 'extension-chrome',
+        'X-Client-Version': version ?? '1.2.390-SNAPSHOT',
         'X-Container-ID': cookie.parsed.gnar_containerId,
         'x-csrf-token': cookie.parsed['csrf-token'],
         'Sec-Fetch-Mode': 'cors',
@@ -148,7 +149,7 @@ export async function anonymous(): Promise<GrammarlyAuthContext> {
         container: cookie.parsed.gnar_containerId,
         username: 'anonymous',
       }
-    } catch {}
+    } catch { }
   }
 
   try {
@@ -201,7 +202,7 @@ export async function authenticate(username: string, password: string): Promise<
     try {
       const data = await response.json()
       if (__DEV__) LOGGER?.info('Authentication successful:', data)
-    } catch {}
+    } catch { }
 
     return {
       isAnonymous: false,
