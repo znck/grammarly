@@ -1,0 +1,63 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  pull_request:
+  release:
+    types:
+      - released
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - 'samples/**'
+      - '.github/**'
+      - '!.github/workflows/ci.yaml'
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: test
+    if: |
+      github.ref == 'refs/heads/main' && 
+      github.event_name == 'release' &&
+      github.event.action == 'released'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14.14.0'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 5.5.4
+          run_install: |
+            - args: [--frozen-lockfile, --silent]
+
+      - name: Build Packages
+        run: |
+          pnpm build
+
+      - name: Publish Extension
+        run: |
+          pnpm recursive --filter ./extension run release
+        env:
+          VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+
+      - name: Publish Packages
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+          pnpm recursive --filter ./packages publish --tag latest --access public --no-git-checks
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

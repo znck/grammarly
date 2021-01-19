@@ -364,7 +364,7 @@
   "license": "MIT",
   "main": "./dist/extension/index.js",
   "scripts": {
-    "release": ""
+    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}"
   },
   "devDependencies": {
     "@types/minimatch": "^3.0.3",
