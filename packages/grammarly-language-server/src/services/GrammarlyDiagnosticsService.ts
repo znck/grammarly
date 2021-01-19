@@ -44,7 +44,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
   private diagnostics = new Map<string, Map<IdAlert, DiagnosticWithPosition[]>>()
   private histories = new Map<string, Array<{ rev: IdRevision; changes: TextChange[] }>>()
 
-  constructor(
+  constructor (
     @inject(CONNECTION)
     private readonly connection: Connection,
 
@@ -54,7 +54,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
     private readonly documents: DocumentService,
 
     private readonly config: ConfigurationService,
-  ) {}
+  ) { }
 
   public register() {
     this.capabilities.hoverProvider = true
@@ -131,10 +131,10 @@ export class GrammarlyDiagnosticsService implements Registerable {
         showDetails: this.config.settings.showExplanation,
         showExamples: this.config.settings.showExamples,
         cta: document.host!.user.value.isAnonymous
-          ? '> 👉 [Login](https://www.grammarly.com/upgrade) to get automated fix for this issue.'
+          ? '> 👉 [Login](https://www.grammarly.com/login) to get automated fix for this issue.'
           : document.host!.user.value.isPremium
-          ? ''
-          : '> ⏫ [Upgrade](https://www.grammarly.com/upgrade) to get automated fix for this issue.',
+            ? ''
+            : '> ⏫ [Upgrade](https://www.grammarly.com/upgrade) to get automated fix for this issue.',
       }
 
       unique(diagnostics.map((diagnostic) => diagnostic.id))
@@ -192,7 +192,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
       this.LOGGER.trace(`CodeAction in ${textDocument.uri}`, diagnostics)
       const actions: CodeAction[] = []
 
-      if (diagnostics.length === 1 && document?.host) {
+      if (diagnostics.length >= 1 && document?.host) {
         const diagnostic = diagnostics[0]
         const alert = document.host.getAlert(diagnostic.code as IdAlert)
 
@@ -249,7 +249,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
 
     this.LOGGER.trace('Registering diagnostics service for Grammarly')
 
-    return Disposable.create(() => {})
+    return Disposable.create(() => { })
   }
 
   private findDiagnosticsAt(uri: string, position: Position) {

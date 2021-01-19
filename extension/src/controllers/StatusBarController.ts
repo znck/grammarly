@@ -17,7 +17,7 @@ export class StatusBarController implements Registerable {
   private state = ref<State | null>(null)
   private document = ref<{ uri: string } | null>(null)
 
-  constructor(private readonly client: GrammarlyClient) {
+  constructor (private readonly client: GrammarlyClient) {
     this.statusBar.text = '$(globe) Enable Grammarly'
     this.statusBar.tooltip = 'Check grammar with Grammarly'
     this.statusBar.color = new ThemeColor('statusBar.foreground')
@@ -25,9 +25,9 @@ export class StatusBarController implements Registerable {
 
   register() {
     this.client.onReady().then(() => {
-      this.client.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.updateDocumentState, (state) => {
+      this.client.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.updateDocumentState, async (state) => {
         if (this.document.value?.uri === state?.uri) {
-          this.state.value = state
+          this.state.value = await this.client.getDocumentState(state.uri)
           this.document.value = { uri: state.uri }
         }
       })
@@ -56,10 +56,10 @@ export class StatusBarController implements Registerable {
       const prefix = state.emotions.length ? state.emotions[0].emoji : ``
 
       this.statusBar.command = 'grammarly.stop'
-      this.statusBar.text = state.status === 'CHECKING' ? '$(loading~spin)' : '$(globe)'
-      this.statusBar.tooltip = `${
-        state.status === 'IDLE' ? 'Grammarly is checking for grammar errors.\n\n' : ''
-      }Click to disconnect Grammarly.`
+      this.statusBar.text = `${state.status === 'CHECKING' ? '$(loading~spin)' : '$(debug-disconnect)'} ${state.user.username}`
+
+      this.statusBar.tooltip = `${state.status === 'IDLE' ? 'Grammarly is checking for grammar errors.\n\n' : ''
+        }Click to disconnect Grammarly.`
 
       this.goalsBar.command = 'grammarly.setGoals'
       this.goalsBar.text = `${prefix} ${state.score > 0 ? `${state.score} overall score` : ''}`
@@ -93,24 +93,33 @@ export class StatusBarController implements Registerable {
   private getUpgradeTooltip(state: GrammarlyLanguageServer.DocumentState): string {
     return state != null && 'status' in state
       ? formatLines(
-          (state.totalAlertsCount - state.premiumAlertsCount
-            ? `There are ${state.totalAlertsCount - state.premiumAlertsCount} (of ${
-                state.totalAlertsCount
-              }) auto-fixable ${choose(state.totalAlertsCount - state.premiumAlertsCount, 'issue', 'issues')}. `
-            : '') + this.getUpgradeMessage(state),
-          35,
-        )
+        (state.totalAlertsCount - state.premiumAlertsCount
+          ? `There are ${state.totalAlertsCount - state.premiumAlertsCount} (of ${state.totalAlertsCount
+          }) auto-fixable ${choose(state.totalAlertsCount - state.premiumAlertsCount, 'issue', 'issues')}. `
+          : '') + this.getUpgradeMessage(state),
+        35,
+      )
       : ''
   }
 
   private getUpgradeMessage(state: GrammarlyLanguageServer.DocumentState): string {
-    return state != null && 'status' in state && !state.user.isPremium && state.premiumAlertsCount
-      ? `${state.user.isAnonymous ? 'Login' : 'Upgrade'} to fix ${state.premiumAlertsCount} premium ${choose(
-          state.premiumAlertsCount,
-          'issue',
-          'issues',
-        )}.${state.user.isAnonymous ? ' Run command - "Grammarly: Login"' : ''}`
-      : ''
+    if (state == null || !('status' in state)) return ''
+    if (state.premiumAlertsCount == 0) return ''
+    if (state.user.isPremium === true) return ''
+
+    if (state.user.isAnonymous) {
+      return `Login to fix ${state.premiumAlertsCount} premium ${choose(
+        state.premiumAlertsCount,
+        'issue',
+        'issues',
+      )}. Run command - "Grammarly: Login to grammarly.com"`
+    } else {
+      return `Upgrade your Grammarly account to fix ${state.premiumAlertsCount} premium ${choose(
+        state.premiumAlertsCount,
+        'issue',
+        'issues',
+      )}.`
+    }
   }
 
   private getScoreSummary(state: GrammarlyLanguageServer.DocumentState): string {
@@ -119,10 +128,10 @@ export class StatusBarController implements Registerable {
         `Overall score ${state.score}\n`,
         formatLines(
           `This score represents the quality of writing in this document. ` +
-            (state.score < 100
-              ? (state.textInfo?.messages?.assistantHeader ? state.textInfo?.messages?.assistantHeader + '. ' : '') +
-                `You can increase it by addressing Grammarly's suggestions.`
-              : ''),
+          (state.score < 100
+            ? (state.textInfo?.messages?.assistantHeader ? state.textInfo?.messages?.assistantHeader + '. ' : '') +
+            `You can increase it by addressing Grammarly's suggestions.`
+            : ''),
           35,
         ),
       ].join('\n')
@@ -134,13 +143,13 @@ export class StatusBarController implements Registerable {
   private getEmotions(state: GrammarlyLanguageServer.DocumentState) {
     return state != null && 'status' in state && state.emotions.length > 0
       ? [
-          `\nHere’s how your text sounds:`,
-          state.emotions.map(
-            (emotion) => ` ${emotion.emoji} ${capitalize(emotion.name)} ${~~(emotion.confidence * 100)}%`,
-          ),
-        ]
-          .flat()
-          .join('\n')
+        `\nHere’s how your text sounds:`,
+        state.emotions.map(
+          (emotion) => ` ${emotion.emoji} ${capitalize(emotion.name)} ${~~(emotion.confidence * 100)}%`,
+        ),
+      ]
+        .flat()
+        .join('\n')
       : ''
   }
 
@@ -153,12 +162,12 @@ export class StatusBarController implements Registerable {
   private getTextStatesAsMessages(state: GrammarlyLanguageServer.DocumentState): string[] {
     return state != null && 'status' in state && state.textInfo != null
       ? [
-          `${state.textInfo.wordsCount} ${choose(state.textInfo.wordsCount, 'word', 'words')}`,
-          `${state.textInfo.charsCount} ${choose(state.textInfo.wordsCount, 'character', 'characters')}`,
-          `${calculateTime(state.textInfo.wordsCount, 250)} reading time`,
-          `${calculateTime(state.textInfo.wordsCount, 130)} speaking time`,
-          `${state.textInfo.readabilityScore} readability score`,
-        ]
+        `${state.textInfo.wordsCount} ${choose(state.textInfo.wordsCount, 'word', 'words')}`,
+        `${state.textInfo.charsCount} ${choose(state.textInfo.wordsCount, 'character', 'characters')}`,
+        `${calculateTime(state.textInfo.wordsCount, 250)} reading time`,
+        `${calculateTime(state.textInfo.wordsCount, 130)} speaking time`,
+        `${state.textInfo.readabilityScore} readability score`,
+      ]
       : []
   }
 
@@ -167,9 +176,9 @@ export class StatusBarController implements Registerable {
       const scores = Array.from(Object.entries(state.scores))
       return scores.length > 0
         ? [
-            '\nOutcomes:',
-            ...scores.map(([key, value]) => ` ‣ ${key.replace(/[A-Z]/g, (w) => ' ' + w).trim()} — ${~~(value! * 100)}`),
-          ].join('\n')
+          '\nOutcomes:',
+          ...scores.map(([key, value]) => ` ‣ ${key.replace(/[A-Z]/g, (w) => ' ' + w).trim()} — ${~~(value! * 100)}`),
+        ].join('\n')
         : ''
     }
 

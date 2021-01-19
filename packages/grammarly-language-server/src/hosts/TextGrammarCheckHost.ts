@@ -21,6 +21,16 @@ import { TextDocument } from 'vscode-languageserver-textdocument'
 import { DevLogger } from '../DevLogger'
 import { CheckHostStatus } from './CheckHostStatus'
 
+function parseClientName(name: string): { name: string; type: string } {
+  if (name.includes(':')) {
+    const parts = name.split(':')
+
+    return { name: parts[0], type: parts[1] }
+  }
+
+  return { name, type: 'general' }
+}
+
 export class TextGrammarCheckHost {
   private id: string
   private api: GrammarlyClient
@@ -31,7 +41,7 @@ export class TextGrammarCheckHost {
   private remoteRevision!: IdRevision
 
   public alerts = ref(new Map<IdAlert, AlertEvent>())
-  public user = ref<{ isAnonymous: boolean; isPremium: boolean }>({ isAnonymous: true, isPremium: false })
+  public user = ref<{ isAnonymous: boolean; isPremium: boolean, username: string }>({ isAnonymous: true, isPremium: false, username: 'anonymous' })
 
   public score = ref(-1)
   public generalScore = ref(-1)
@@ -42,7 +52,8 @@ export class TextGrammarCheckHost {
 
   private disposables: Array<() => void> = []
 
-  public constructor(
+  public constructor (
+    private readonly clientInfo: { name: string; version?: string },
     private readonly document: TextDocument,
     public readonly getDocumentContext: () => Promise<DocumentContext>,
     public readonly getTokenInfo: () => Promise<GrammarlyAuthContext>,
@@ -50,12 +61,22 @@ export class TextGrammarCheckHost {
   ) {
     this.id = Buffer.from(this.document.uri).toString('hex')
     this.LOGGER = __DEV__ ? new DevLogger(TextGrammarCheckHost.name, this.id) : null
+    const { name, type } = parseClientName(clientInfo.name ?? 'unofficial-grammarly-language-server')
     this.api = new GrammarlyClient({
-      clientName: 'unofficial-grammarly-language-server',
-      clientType: 'general',
+      clientName: name,
+      clientType: type,
+      clientVersion: clientInfo.version,
       documentId: this.id,
       getToken: async () => {
         this.auth = await this.getTokenInfo()
+
+        if (this.auth != null) {
+          this.user.value = {
+            username: this.auth.username,
+            isAnonymous: this.auth.isAnonymous,
+            isPremium: this.auth.isPremium ?? false,
+          }
+        }
 
         return this.auth.token
       },
@@ -113,7 +134,7 @@ export class TextGrammarCheckHost {
   }
 
   public get context(): Omit<GrammarlyAuthContext, 'token'> {
-    return this.auth || { username: 'anonymous', isAnonymous: true, container: '' } // TODO: Get user info from API.
+    return this.auth || { username: 'anonymous', isAnonymous: true, container: '' }
   }
 
   public on<T extends ResponseKindType>(action: T, callback: (message: ResponseTypeToResponseMapping[T]) => void) {
@@ -147,7 +168,7 @@ export class TextGrammarCheckHost {
     this.disposables.forEach((dispose) => {
       try {
         dispose()
-      } catch {}
+      } catch { }
     })
     this.api.dispose()
     this.events.removeAllListeners()

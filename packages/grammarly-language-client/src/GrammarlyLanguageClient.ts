@@ -8,10 +8,10 @@ import { getLanguageClientOptions, getLanguageServerOptions, LANGUAGES } from '.
 export class GrammarlyLanguageClient {
   public readonly grammarly: LanguageClient
 
-  constructor(private readonly serverPath: string, private readonly options: GrammarlyLanguageClientOptions) {
+  constructor (private readonly serverPath: string, private readonly options: GrammarlyLanguageClientOptions) {
     this.grammarly = new LanguageClient(
-      'grammarly',
-      'Grammarly',
+      options.info?.name ?? 'unknown',
+      options.info?.name ?? 'unknown',
       getLanguageServerOptions(this.serverPath),
       getLanguageClientOptions(),
     )
@@ -24,25 +24,24 @@ export class GrammarlyLanguageClient {
 
     this.grammarly.onReady().then(() => {
       this._isReady = true
-
-      this.grammarly.onRequest('$/credentials', this.options.getCredentials)
-      this.grammarly.onRequest('$/getCookie', async () => {
+      this.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.getCredentials, this.options.getCredentials)
+      this.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.getToken, async () => {
         const content = this.options.loadToken != null ? await this.options.loadToken() : null
 
         if (content != null) return JSON.parse(content)
       })
 
-      this.grammarly.onRequest('$/setCookie', async (cookie: any) => {
+      this.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.storeToken, async (cookie: any) => {
         if (this.options.saveToken != null) await this.options.saveToken(cookie != null ? JSON.stringify(cookie) : null)
       })
 
-      this.grammarly.onRequest('$/error', (error: string, buttons: string[]) => {
+      this.grammarly.onRequest(GrammarlyLanguageServer.Client.Feature.showError, ({ message, buttons }: { message: string, buttons: string[] }) => {
         const actions = Array.from(buttons).filter(Boolean).map(String)
         if (this.options.onError != null) {
-          return this.options.onError(error, actions)
+          return this.options.onError(message, actions)
         } else {
-          console.error(error)
-          return
+          console.error(message)
+          return null
         }
       })
     })
@@ -86,10 +85,10 @@ export class GrammarlyLanguageClient {
   }
 
   async dismissAlert(uri: string, alertId: number): Promise<void> {
-    await this.grammarly.sendRequest('$/dismissAlert', [uri, alertId])
+    await this.grammarly.sendRequest(GrammarlyLanguageServer.Feature.dismissAlert, { uri, id: alertId })
   }
 
   async addToDictionary(uri: string, alertId: number): Promise<void> {
-    await this.grammarly.sendRequest('$/addToDictionary', [uri, alertId])
+    await this.grammarly.sendRequest(GrammarlyLanguageServer.Feature.addToDictionary, { uri, id: alertId })
   }
 }

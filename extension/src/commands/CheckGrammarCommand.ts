@@ -5,7 +5,7 @@ import { Registerable } from '../interfaces'
 
 @injectable()
 export class CheckCommand implements Registerable {
-  constructor(private readonly client: GrammarlyClient) {}
+  constructor (private readonly client: GrammarlyClient) { }
 
   register() {
     return Disposable.from(
