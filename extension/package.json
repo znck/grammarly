@@ -372,7 +372,8 @@
     "typescript": "^4.0.5",
     "unofficial-grammarly-api": "workspace:*",
     "unofficial-grammarly-language-client": "workspace:*",
-    "unofficial-grammarly-language-server": "workspace:*"
+    "unofficial-grammarly-language-server": "workspace:*",
+    "vsce": "^1.84.0"
   },
   "dependencies": {
     "@vue/reactivity": "^3.0.2",
