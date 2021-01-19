@@ -1,5 +1,6 @@
 **
 !dist/
+!assets/
 !package.json
 !readme.md
 !CHANGELOG.md
