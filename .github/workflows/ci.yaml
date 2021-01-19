@@ -2,6 +2,10 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        description: Should publish packages and extensions?
+        default: 'no'
   pull_request:
   release:
     types:
@@ -31,9 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     if: |
-      github.ref == 'refs/heads/main' && 
-      github.event_name == 'release' &&
-      github.event.action == 'released'
+      (
+        github.ref == 'refs/heads/main' && 
+        github.event_name == 'release' &&
+        github.event.action == 'released'
+      ) || (
+        github.event.inputs.release == 'yes'
+      )
     steps:
       - name: Checkout
         uses: actions/checkout@v2
