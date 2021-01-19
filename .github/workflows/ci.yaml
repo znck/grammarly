@@ -24,9 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "${{ github.ref }}";
-          echo "${{ github.event_name }}";
-          echo "${{ github.event.action }}";
+          echo "ref: ${{ github.ref }}, event: ${{ github.event_name }}, action: ${{ github.event.action }}"
 
   release:
     name: Release
