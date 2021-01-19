@@ -36,7 +36,6 @@ jobs:
     environment: Production
     if: |
       (
-        github.ref == 'refs/heads/main' && 
         github.event_name == 'release' &&
         github.event.action == 'released'
       ) || (
