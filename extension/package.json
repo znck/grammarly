@@ -4,7 +4,7 @@
   "publisher": "znck",
   "displayName": "Grammarly (unofficial)",
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
-  "version": "0.12.5",
+  "version": "0.13.0",
   "icon": "assets/logo.png",
   "engines": {
     "vscode": "^1.41.0"

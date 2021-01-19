@@ -24,7 +24,6 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     environment: Production
-    needs: test
     if: |
       github.ref == 'refs/heads/main' && 
       github.event_name == 'release' &&

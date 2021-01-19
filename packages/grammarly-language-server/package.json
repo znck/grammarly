@@ -1,6 +1,6 @@
 {
   "name": "unofficial-grammarly-language-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "LSP server implementation for Grammarly",
   "author": "Rahul Kadyan <hey@znck.me>",
   "main": "dist/index.cjs.js",
