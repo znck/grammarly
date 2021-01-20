@@ -131,7 +131,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
         showDetails: this.config.settings.showExplanation,
         showExamples: this.config.settings.showExamples,
         cta: document.host!.user.value.isAnonymous
-          ? '> 👉 [Login](https://www.grammarly.com/login) to get automated fix for this issue.'
+          ? '> 👉 [Login](https://www.grammarly.com/signin) to get automated fix for this issue.'
           : document.host!.user.value.isPremium
             ? ''
             : '> ⏫ [Upgrade](https://www.grammarly.com/upgrade) to get automated fix for this issue.',
