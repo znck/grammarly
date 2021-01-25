@@ -8,7 +8,7 @@ import { Logger } from '../utils/Logger'
 export class ServerCallbackCommand implements Registerable {
   private LOGGER = new Logger(ServerCallbackCommand.name)
 
-  constructor(private readonly client: GrammarlyClient) {}
+  constructor (private readonly client: GrammarlyClient) { }
 
   register() {
     this.LOGGER.trace('Registering grammarly.callback command')
@@ -17,7 +17,6 @@ export class ServerCallbackCommand implements Registerable {
   }
 
   private async execute(options: { method: string; params: any }) {
-    this.LOGGER.trace('Executed with', options)
     if (!this.client.isReady()) {
       await this.client.onReady()
     }

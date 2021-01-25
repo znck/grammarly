@@ -1,9 +1,10 @@
 import { ref } from '@vue/reactivity'
 import { injectable } from 'inversify'
 import { GrammarlyLanguageServer } from 'unofficial-grammarly-language-server'
-import { Disposable, StatusBarAlignment, StatusBarItem, TextEditor, ThemeColor, window } from 'vscode'
+import { Disposable, StatusBarAlignment, StatusBarItem, TextEditor, ThemeColor, Uri, window, workspace } from 'vscode'
 import { GrammarlyClient } from '../client'
 import { Registerable } from '../interfaces'
+import { DEFAULT, GrammarlySettings } from '../settings'
 import { asText, calculateTime, capitalize, choose, formatLines } from '../utils/string'
 import { watchEffect } from '../utils/watch'
 
@@ -39,6 +40,11 @@ export class StatusBarController implements Registerable {
       this.statusBar,
       this.goalsBar,
       window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor.bind(this)),
+      workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('grammarly')) {
+          this.update()
+        }
+      }),
       {
         dispose: watchEffect(() => {
           this.update()
@@ -47,19 +53,26 @@ export class StatusBarController implements Registerable {
     )
   }
 
+  private getSettings(): GrammarlySettings {
+    const uri = this.document.value != null ? Uri.parse(this.document.value.uri) : undefined
+    const config = workspace.getConfiguration(undefined, uri)
+
+    return config.get<GrammarlySettings>('grammarly') ?? DEFAULT
+  }
+
   private update() {
-    console.log('Calling watch effect...')
     const state = this.state.value
     const document = this.document.value
 
     if (state != null && 'status' in state) {
       const prefix = state.emotions.length ? state.emotions[0].emoji : ``
 
+      const settings = this.getSettings()
       this.statusBar.command = 'grammarly.stop'
-      this.statusBar.text = `${state.status === 'CHECKING' ? '$(loading~spin)' : '$(debug-disconnect)'} ${state.user.username}`
+      this.statusBar.text = `${state.status === 'CHECKING' ? '$(loading~spin)' : '$(debug-disconnect)'}${settings.showUsernameInStatusBar ? ` ${state.user.username}` : ''}`
 
       this.statusBar.tooltip = `${state.status === 'IDLE' ? 'Grammarly is checking for grammar errors.\n\n' : ''
-        }Click to disconnect Grammarly.`
+        }Connected as ${state.user.username}, click to disconnect.`
 
       this.goalsBar.command = 'grammarly.setGoals'
       this.goalsBar.text = `${prefix} ${state.score > 0 ? `${state.score} overall score` : ''}`

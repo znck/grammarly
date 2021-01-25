@@ -1,46 +1,23 @@
+import QuillDelta from 'quill-delta'
 import { Delta } from './Delta'
 import { Op } from './Op'
-import { del, ins, TextChange } from './TextChange'
 
 export class ChangeSet {
-  private ops: Op[] = []
-  private deltas: Delta[] = []
-  private changes: TextChange[] = []
+  private prev = new QuillDelta()
+  private next = new QuillDelta()
+  private delta: QuillDelta
 
-  constructor(private callback: (deltas: Delta[], changes: TextChange[]) => Promise<void>) {}
-
-  insertText(position: number, text: string) {
-    if (position) this.ops.push({ retain: position })
-    this.ops.push({ insert: text })
-    this.changes.push(ins(position, text))
-
-    return this
+  constructor (prevText: string, nextText: string) {
+    this.prev.insert(prevText)
+    this.next.insert(nextText)
+    this.delta = this.prev.diff(this.next)
   }
 
-  deleteText(position: number, length: number) {
-    if (position) this.ops.push({ retain: position })
-    this.ops.push({ delete: length })
-    this.changes.push(del(position, length))
-
-    return this
+  diff(): Delta[] {
+    return [{ ops: this.delta.ops as Op[] }]
   }
 
-  setText(text: string) {
-    this.ops.push({ insert: text })
-
-    return this
-  }
-
-  commit() {
-    if (this.ops.length) {
-      this.deltas.push({ ops: this.ops })
-      this.ops = []
-    }
-
-    return this
-  }
-
-  apply(): Promise<void> {
-    return this.commit().callback(this.deltas, this.changes)
+  reposition(offset: number): number {
+    return this.delta.transformPosition(offset)
   }
 }

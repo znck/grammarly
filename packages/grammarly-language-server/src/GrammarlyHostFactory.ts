@@ -8,6 +8,20 @@ import {
 } from 'unofficial-grammarly-api'
 import { GrammarlyDocument } from './GrammarlyDocument'
 import { TextGrammarCheckHost } from './hosts/TextGrammarCheckHost'
+import { version } from '../package.json'
+
+const knownClients: Record<string, { name: string, type: string, version: string }> = {
+  'vscode': {
+    name: 'extension_vscode',
+    type: 'general',
+    version: version
+  },
+  'vscode-insiders': {
+    name: 'extension_vscode',
+    type: 'insiders',
+    version: version
+  },
+}
 
 export class GrammarlyHostFactory {
   private auth: GrammarlyAuthContext | null = null
@@ -20,7 +34,7 @@ export class GrammarlyHostFactory {
 
   public create(document: GrammarlyDocument, clientInfo: { name: string; version?: string }) {
     const host = new TextGrammarCheckHost(
-      clientInfo,
+      knownClients[clientInfo.name] ?? clientInfo,
       document,
       () => this.getDocumentContext(document),
       () => this.getAuth(),

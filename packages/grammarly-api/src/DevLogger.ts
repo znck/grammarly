@@ -1,12 +1,21 @@
 import { inspect } from 'util'
 
 export const enum LoggerLevel {
-  TRACE = 'TRACE',
-  DEBUG = 'DEBUG',
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-  NONE = 'NONE',
+  TRACE,
+  DEBUG,
+  INFO,
+  WARN,
+  ERROR,
+  NONE,
+}
+
+const displayLevel = {
+  [LoggerLevel.TRACE]: 'TRACE',
+  [LoggerLevel.DEBUG]: 'DEBUG',
+  [LoggerLevel.INFO]: 'INFO',
+  [LoggerLevel.WARN]: 'WARN',
+  [LoggerLevel.ERROR]: 'ERROR',
+  [LoggerLevel.NONE]: 'NONE',
 }
 
 function isString(value: any): value is string {
@@ -17,13 +26,13 @@ function isError(value: any): value is Error {
   return value instanceof Error
 }
 
-export class DevLogger {
+export class Logger {
   static options = {
     enabled: new Set(['*']),
-    level: LoggerLevel.TRACE,
+    level: LoggerLevel.DEBUG,
   }
 
-  constructor(public readonly name: string, public readonly defaultContext: string = '') {}
+  constructor (public readonly name: string, public readonly defaultContext: string = '') { }
 
   trace(msg: string, ...args: any[]): void
   trace(context: string, msg: string, ...args: any[]): void
@@ -34,19 +43,19 @@ export class DevLogger {
   debug(msg: string, ...args: any[]): void
   debug(context: string, msg: string, ...args: any[]): void
   debug(...args: any[]) {
-    this.write(LoggerLevel.TRACE, args)
+    this.write(LoggerLevel.DEBUG, args)
   }
 
   info(msg: string, ...args: any[]): void
   info(context: string, msg: string, ...args: any[]): void
   info(...args: any[]) {
-    this.write(LoggerLevel.TRACE, args)
+    this.write(LoggerLevel.INFO, args)
   }
 
   warn(msg: string, ...args: any[]): void
   warn(context: string, msg: string, ...args: any[]): void
   warn(...args: any[]) {
-    this.write(LoggerLevel.TRACE, args)
+    this.write(LoggerLevel.WARN, args)
   }
 
   error(msg: string, ...args: any[]): void
@@ -54,20 +63,20 @@ export class DevLogger {
   error(context: string, msg: string, ...args: any[]): void
   error(context: string, msg: Error, ...args: any[]): void
   error(...args: any[]) {
-    this.write(LoggerLevel.TRACE, args)
+    this.write(LoggerLevel.ERROR, args)
   }
 
   private write(level: LoggerLevel, args: any[]) {
     if (
-      level >= DevLogger.options.level &&
-      (DevLogger.options.enabled.has('*') || DevLogger.options.enabled.has(this.name))
+      level >= Logger.options.level &&
+      (Logger.options.enabled.has('*') || Logger.options.enabled.has(this.name))
     ) {
       const context =
         args.length >= 2 && isString(args[0]) && (isString(args[1]) || isError(args[1]))
           ? args.shift()
           : this.defaultContext
 
-      const message = `${Date.now()} ${level}  [${this.name}]${context ? ' (' + context + ')' : ''} ${this.inspect(
+      const message = `${Date.now()} ${displayLevel[level]}  [${this.name}]${context ? ' (' + context + ')' : ''} ${this.inspect(
         args,
       )}`
 
@@ -89,3 +98,5 @@ export class DevLogger {
     return args.map((arg) => (typeof arg === 'object' && arg ? inspect(arg, true, null) : arg)).join(' ')
   }
 }
+
+export class DevLogger extends Logger { }

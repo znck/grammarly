@@ -21,6 +21,8 @@ export interface GrammarlySettings extends DocumentContext {
   }>
 
   debug: boolean
+  showUsernameInStatusBar: boolean
+  showDeletedTextInQuickFix: boolean
   showExplanation: boolean
   showExamples: boolean
   hideUnavailablePremiumAlerts: boolean
@@ -72,6 +74,8 @@ export const DEFAULT: GrammarlySettings = {
 
   /** Internal */
   debug: false,
+  showUsernameInStatusBar: true,
+  showDeletedTextInQuickFix: true,
   showExplanation: true,
   showExamples: false,
   hideUnavailablePremiumAlerts: false,

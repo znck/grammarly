@@ -52,12 +52,12 @@ export interface GrammarlyClientOptions {
   onError?: (error: Error) => void
 }
 
-function noop(): any {}
+function noop(): any { }
 
 export class GrammarlyClient extends SocketClient {
   private handlers = new Set<(event: Event) => void>()
 
-  constructor(private readonly options: GrammarlyClientOptions) {
+  constructor (private readonly options: GrammarlyClientOptions) {
     super(
       options.documentId,
       options.getToken,
@@ -74,6 +74,10 @@ export class GrammarlyClient extends SocketClient {
         }
       },
       `Client: ${options.clientName} (${options.clientType}) v${options.clientVersion ?? '0.0.0'}`,
+      {
+        'X-Client-Type': options.clientName,
+        'X-Client-Version': options.clientVersion ?? '0.0.0',
+      }
     )
   }
 

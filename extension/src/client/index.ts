@@ -16,7 +16,6 @@ export class GrammarlyClient extends GrammarlyLanguageClient implements Register
         return null
       },
       loadToken: async () => {
-        console.log('Get token...')
         if (process.env.EXTENSION_TEST_MODE) return null
 
         return await this.auth.getCookie()

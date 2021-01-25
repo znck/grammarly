@@ -15,7 +15,7 @@ export class ConfigurationService implements Registerable {
   private perDocumentSettings = new Map<string, DocumentContext>()
   private wip = new Map<string, Promise<DocumentContext>>()
 
-  constructor(@inject(CONNECTION) private readonly connection: Connection) {}
+  constructor (@inject(CONNECTION) private readonly connection: Connection) { }
 
   public get settings(): Readonly<GrammarlySettings> {
     return this.user
@@ -23,7 +23,6 @@ export class ConfigurationService implements Registerable {
 
   register() {
     this.connection.onDidChangeConfiguration(({ settings }) => {
-      console.log(settings)
       if ('grammarly' in settings) {
         this.user = {
           ...this.default,

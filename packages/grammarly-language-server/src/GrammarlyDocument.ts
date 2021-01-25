@@ -8,7 +8,7 @@ export class GrammarlyDocument implements TextDocument {
   private isDirty = true
   private rangeToIdentifierFn?: (interval: [number, number]) => string[]
 
-  private constructor(private internal: TextDocument) {}
+  private constructor (private internal: TextDocument) { }
 
   attachHost(factory: GrammarlyHostFactory, clientInfo: { name: string; version?: string }) {
     this.detachHost()
@@ -30,7 +30,7 @@ export class GrammarlyDocument implements TextDocument {
 
       try {
         if (parser) this.rangeToIdentifierFn = parser.parse(this.getText())
-      } catch {}
+      } catch { }
     }
 
     if (this.rangeToIdentifierFn) {
@@ -89,31 +89,10 @@ export class GrammarlyDocument implements TextDocument {
   ): GrammarlyDocument {
     document.isDirty = true
 
-    if (document._host) {
-      const editor = document._host.edit(document.internal.getText().length, version)
-      changes.forEach((change) => {
-        if ('range' in change) {
-          const start = document.offsetAt(change.range.start)
-          const end = document.offsetAt(change.range.end)
-          const deleteLength = end - start
-
-          if (deleteLength) {
-            editor.deleteText(start, deleteLength)
-            if (change.text.length) editor.setText(change.text)
-          } else if (change.text.length) {
-            editor.insertText(start, change.text)
-          }
-        } else {
-          editor.setText(change.text)
-        }
-
-        editor.commit()
-      })
-
-      editor.commit().apply()
-    }
-
     document.internal = TextDocument.update(document.internal, changes, version)
+    if (document._host) {
+      document._host.setText(document.getText())
+    }
 
     return document
   }

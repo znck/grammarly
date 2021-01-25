@@ -325,6 +325,16 @@
           "type": "boolean",
           "default": false,
           "description": "Hide premium alerts when fix is not available"
+        },
+        "grammarly.showDeletedTextInQuickFix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show replaced text in quick-fix option."
+        },
+        "grammarly.showUsernameInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show signed in user in status bar."
         }
       }
     },
@@ -332,14 +342,13 @@
       {
         "command": "grammarly.check",
         "title": "Check grammar errors",
-        "category": "Grammarly",
-        "enablement": "grammarly:isSupported"
+        "category": "Grammarly"
       },
       {
         "command": "grammarly.stop",
         "title": "Stop checking grammar errors",
         "category": "Grammarly",
-        "enablement": "grammarly:isSupported && grammarly:isActive"
+        "enablement": "grammarly:isActive"
       },
       {
         "command": "grammarly.login",
@@ -357,7 +366,7 @@
         "command": "grammarly.setGoals",
         "title": "Set document goals",
         "category": "Grammarly",
-        "enablement": "grammarly:isSupported && grammarly:isActive"
+        "enablement": "grammarly:isActive"
       }
     ]
   },
