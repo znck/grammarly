@@ -1,6 +1,6 @@
 {
 	"name": "unofficial-grammarly-language-client",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "LSP client implementation for Grammarly",
 	"author": "Rahul Kadyan <hey@znck.me>",
 	"main": "dist/index.cjs.js",
@@ -13,7 +13,7 @@
 	],
 	"dependencies": {
 		"minimatch": "^3.0.4",
-		"unofficial-grammarly-api": "0.1.0",
+		"unofficial-grammarly-api": "0.2.0",
 		"vscode-jsonrpc": "^5.0.1",
 		"vscode-languageclient": "^6.1.3",
 		"vscode-languageserver-textdocument": "^1.0.1"
