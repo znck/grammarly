@@ -1,6 +1,5 @@
 {
   "private": true,
-  "name": "grammarly-workspace",
   "scripts": {
     "build": "run-s -l build:*",
     "build:packages": "rollup -c",

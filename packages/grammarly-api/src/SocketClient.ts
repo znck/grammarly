@@ -10,10 +10,10 @@ import { RequestKind } from './transport/RequestKind'
 import { isAckResponse, isResponseType, Response, ResponseOf } from './transport/Response'
 import { ResponseKind } from './transport/ResponseKind'
 
-const UA = `${name} v${version} (NodeJS v${process.version})`
+const UA = `${name} v${version} (NodeJS ${process.version})`
 
 export class SocketClient {
-  private LOGGER = __DEV__ ? new DevLogger(SocketClient.name, this.id) : null
+  private LOGGER = __DEV__ ? new DevLogger(SocketClient.name, this.id.substr(0, 6)) : null
   private _socket: WebSocket | null = null
   private _canReconnect = true
 
@@ -36,12 +36,13 @@ export class SocketClient {
 
   private UA: string
 
-  constructor(
+  constructor (
     public readonly id: string,
     private readonly _getToken: () => Promise<string> | string,
-    private readonly _onConnection: () => void = () => {},
-    private readonly _onMessage: (message: Response) => void = () => {},
+    private readonly _onConnection: () => void = () => { },
+    private readonly _onMessage: (message: Response) => void = () => { },
     ua: string = '',
+    private readonly additionalHeaders: Record<string, string> = {}
   ) {
     this.UA = `${ua} ${UA}`
 
@@ -95,12 +96,14 @@ export class SocketClient {
     this._setStatus('connecting')
     this._statusCode = null
     this._statusMessage = null
+
+    const headers = { ...this.additionalHeaders, 'User-Agent': this.UA, Accept: 'application/json', Cookie: cookies }
     this._socket = new WebSocket('wss://capi.grammarly.com/freews', {
-      headers: { 'User-Agent': this.UA, Accept: 'application/json', Cookie: cookies },
+      headers: headers,
     })
 
     if (__DEV__)
-      this.LOGGER?.trace('Send Headers: ', { 'User-Agent': this.UA, Accept: 'application/json', Cookie: cookies })
+      this.LOGGER?.trace('Send Headers: ', headers)
 
     this._socket.onopen = () => {
       if (__DEV__) this.LOGGER?.trace('WebSocket: Connection established.')
@@ -157,7 +160,7 @@ export class SocketClient {
   }
 
   private _queueOrSend(message: Request, priority: boolean) {
-    if (__DEV__) this.LOGGER?.debug(`WebSocket: Send(${message.id}): ${message.action}`)
+    if (__DEV__) this.LOGGER?.trace(`WebSocket: Send(${message.id}): ${message.action}`)
     if (!this._socket) {
       this._connect()
       this._queueMessage(message)
@@ -197,7 +200,7 @@ export class SocketClient {
 
   private _sendToSocket(message: Request): void {
     if (!this._socket) throw new Error(`InternalError: sending before connection is established.`)
-    if (__DEV__) this.LOGGER?.debug(`CAPI: Send(${message.id}) — ${message.action}`, message)
+    if (__DEV__) this.LOGGER?.trace(`CAPI: Send(${message.id}) — ${message.action}`, message)
     this._socket.send(JSON.stringify(message))
     this._pendingResponses += 1
   }
@@ -216,21 +219,21 @@ export class SocketClient {
     }
 
     if (isAckResponse(response)) {
-      if (__DEV__) this.LOGGER?.debug(`CAPI: Ack(${response.id}) — ${response.action}`, response)
+      if (__DEV__) this.LOGGER?.trace(`CAPI: Ack(${response.id}) — ${response.action}`, response)
       this._pendingResponses -= 1
       const callback = this._callbacks.get(response.id)!
       try {
         callback(response)
-      } catch {}
+      } catch { }
 
       this._callbacks.delete(response.id)
     } else {
-      if (__DEV__) this.LOGGER?.debug(`CAPI: Recv() — ${response.action}`, response)
+      if (__DEV__) this.LOGGER?.trace(`CAPI: Recv() — ${response.action}`, response)
     }
 
     try {
       this._onMessage(response)
-    } catch {}
+    } catch { }
 
     if (isAckResponse(response)) this._flushQueue()
   }

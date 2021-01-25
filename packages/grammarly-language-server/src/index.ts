@@ -28,7 +28,6 @@ export function startLanguageServer(): void {
   connection.onInitialize((params) => {
     container.bind(CLIENT).toConstantValue(params.capabilities)
     container.bind(CLIENT_INFO).toConstantValue(params.clientInfo ?? { name: '' })
-
     disposables.push(
       container.get(ConfigurationService).register(),
       container.get(DocumentService).register(),

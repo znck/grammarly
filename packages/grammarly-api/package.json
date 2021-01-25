@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "node-fetch": "^2.6.1",
+    "quill-delta": "^4.2.2",
     "ws": "^7.3.1"
   },
   "devDependencies": {

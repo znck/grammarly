@@ -2,11 +2,13 @@
   "$schema": "https://unpkg.com/@changesets/config@1.4.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "linked": [],
+  "linked": [
+    [
+      "unofficial-grammarly-language-client",
+      "unofficial-grammarly-language-server"
+    ]
+  ],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": [
-    "grammarly-workspace"
-  ]
+  "updateInternalDependencies": "patch"
 }
