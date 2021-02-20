@@ -1,8 +1,8 @@
 {
   "name": "unofficial-grammarly-api-2",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Grammarly API client",
-  "author": "Rahul Kadyan <hey@znck.me>",
+  "author": "jcs090218@gmail.com",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
