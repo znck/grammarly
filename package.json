@@ -35,5 +35,8 @@
   },
   "lint-staged": {
     "*.{js,ts,json,yml}": "prettier --write"
+  },
+  "dependencies": {
+    "pnpm": "^5.17.2"
   }
 }
