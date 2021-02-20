@@ -114,9 +114,9 @@ export async function anonymous(client?: string, version?: string): Promise<Gram
       headers: {
         ...BROWSER_HEADERS,
         Accept: 'application/json',
-        'X-Client-Type': client ?? 'extension-chrome',
-        'X-Client-Version': version ?? '1.2.390-SNAPSHOT',
-        'X-Container-ID': cookie.parsed.gnar_containerId,
+        'x-client-type': client ?? 'extension-chrome',
+        'x-client-version': version ?? '1.2.390-SNAPSHOT',
+        'x-container-id': cookie.parsed.gnar_containerId,
         'x-csrf-token': cookie.parsed['csrf-token'],
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-site',
