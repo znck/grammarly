@@ -75,8 +75,8 @@ export class GrammarlyClient extends SocketClient {
       },
       `Client: ${options.clientName} (${options.clientType}) v${options.clientVersion ?? '0.0.0'}`,
       {
-        'X-Client-Type': options.clientName,
-        'X-Client-Version': options.clientVersion ?? '0.0.0',
+        'x-client-type': options.clientName,
+        'x-client-version': options.clientVersion ?? '0.0.0',
       }
     )
   }

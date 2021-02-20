@@ -108,8 +108,8 @@ export class AuthenticationService implements Registerable, UriHandler {
             const auth = await fetch(`https://auth.grammarly.com/v3/user/oranonymous?app=${clientId}`, {
               method: 'GET',
               headers: {
-                'X-Client-Type': clientId,
-                'X-Client-Version': '0.0.0',
+                'x-client-type': clientId,
+                'x-client-version': '0.0.0',
               }
             })
             const anonymousCookie = parseSetCookieHeaders(auth.headers.raw()['set-cookie'])
@@ -118,10 +118,10 @@ export class AuthenticationService implements Registerable, UriHandler {
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'X-Client-Type': clientId,
-                'X-Client-Version': '0.0.0',
-                'X-CSRF-Token': anonymousCookie['csrf-token'],
-                'X-Container-Id': anonymousCookie['gnar_containerId'],
+                'x-client-type': clientId,
+                'x-client-version': '0.0.0',
+                'x-csrf-token': anonymousCookie['csrf-token'],
+                'x-container-id': anonymousCookie['gnar_containerId'],
                 'cookie': `grauth=${anonymousCookie['grauth']}; csrf-token=${anonymousCookie['csrf-token']}`,
               },
               body: JSON.stringify({
