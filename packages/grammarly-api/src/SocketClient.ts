@@ -97,7 +97,9 @@ export class SocketClient {
     this._statusCode = null
     this._statusMessage = null
 
-    const headers = { ...this.additionalHeaders, 'User-Agent': this.UA, Accept: 'application/json', Cookie: cookies }
+    const headers = { ...this.additionalHeaders,
+                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+                      Accept: 'application/json', Cookie: cookies }
     this._socket = new WebSocket('wss://capi.grammarly.com/freews', {
       headers: headers,
     })
