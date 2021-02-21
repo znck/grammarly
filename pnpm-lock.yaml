@@ -47,7 +47,7 @@ importers:
       node-fetch: 2.6.1
       reflect-metadata: 0.1.13
       typescript: 4.0.5
-      unofficial-grammarly-api: link:../packages/grammarly-api
+      unofficial-grammarly-api-2: link:../packages/grammarly-api
       unofficial-grammarly-language-client: link:../packages/grammarly-language-client
       unofficial-grammarly-language-server: link:../packages/grammarly-language-server
       vsce: 1.84.0
@@ -61,7 +61,7 @@ importers:
       node-fetch: ^2.6.1
       reflect-metadata: ^0.1.13
       typescript: ^4.0.5
-      unofficial-grammarly-api: workspace:*
+      unofficial-grammarly-api-2: workspace:*
       unofficial-grammarly-language-client: workspace:*
       unofficial-grammarly-language-server: workspace:*
       vsce: ^1.84.0
@@ -82,7 +82,7 @@ importers:
   packages/grammarly-language-client:
     dependencies:
       minimatch: 3.0.4
-      unofficial-grammarly-api: link:../grammarly-api
+      unofficial-grammarly-api-2: link:../grammarly-api
       vscode-jsonrpc: 5.0.1
       vscode-languageclient: 6.1.3
       vscode-languageserver-textdocument: 1.0.1
@@ -91,7 +91,7 @@ importers:
     specifiers:
       '@types/minimatch': ^3.0.3
       minimatch: ^3.0.4
-      unofficial-grammarly-api: 0.2.0
+      unofficial-grammarly-api-2: 0.2.0
       vscode-jsonrpc: ^5.0.1
       vscode-languageclient: ^6.1.3
       vscode-languageserver-textdocument: ^1.0.1
@@ -103,7 +103,7 @@ importers:
       minimatch: 3.0.4
       reflect-metadata: 0.1.13
       remark: 13.0.0
-      unofficial-grammarly-api: link:../grammarly-api
+      unofficial-grammarly-api-2: link:../grammarly-api
       vscode-jsonrpc: 5.0.1
       vscode-languageserver: 6.1.1
       vscode-languageserver-textdocument: 1.0.1
@@ -114,7 +114,7 @@ importers:
       minimatch: ^3.0.4
       reflect-metadata: ^0.1.13
       remark: ^13.0.0
-      unofficial-grammarly-api: workspace:*
+      unofficial-grammarly-api-2: workspace:*
       vscode-jsonrpc: ^5.0.1
       vscode-languageserver: ^6.1.1
       vscode-languageserver-textdocument: ^1.0.1

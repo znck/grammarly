@@ -1,4 +1,4 @@
-import { AlertEvent } from 'unofficial-grammarly-api'
+import { AlertEvent } from 'unofficial-grammarly-api-2'
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, DiagnosticTag, Range } from 'vscode-languageserver'
 import { TextDocument } from 'vscode-languageserver-textdocument'
 

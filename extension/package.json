@@ -379,7 +379,7 @@
     "@types/minimatch": "^3.0.3",
     "@types/vscode": "^1.51.0",
     "typescript": "^4.0.5",
-    "unofficial-grammarly-api": "workspace:*",
+    "unofficial-grammarly-api-2": "workspace:*",
     "unofficial-grammarly-language-client": "workspace:*",
     "unofficial-grammarly-language-server": "workspace:*",
     "vsce": "^1.84.0",

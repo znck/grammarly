@@ -5,7 +5,7 @@ import {
   GrammarlyAuthContext,
   SocketError,
   SocketErrorCode,
-} from 'unofficial-grammarly-api'
+} from 'unofficial-grammarly-api-2'
 import { GrammarlyDocument } from './GrammarlyDocument'
 import { TextGrammarCheckHost } from './hosts/TextGrammarCheckHost'
 import { version } from '../package.json'

@@ -18,7 +18,7 @@ import {
   SynonymsGroup,
   TextInfoEvent,
   TextStatsResponse
-} from 'unofficial-grammarly-api'
+} from 'unofficial-grammarly-api-2'
 import { TextDocument } from 'vscode-languageserver-textdocument'
 import { DevLogger } from '../DevLogger'
 import { CheckHostStatus } from './CheckHostStatus'

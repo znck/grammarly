@@ -1,6 +1,6 @@
 import { injectable } from 'inversify'
 import minimatch from 'minimatch'
-import { DocumentContext } from 'unofficial-grammarly-api'
+import { DocumentContext } from 'unofficial-grammarly-api-2'
 import { commands, ConfigurationTarget, window, workspace } from 'vscode'
 import { GrammarlyClient } from '../client'
 import { form, select } from '../form'

@@ -6,7 +6,7 @@ import qs from 'querystring'
 import { commands, Disposable, env, Uri, UriHandler, window } from 'vscode'
 import { Registerable } from '../interfaces'
 import { getKeyTar } from '../keytar'
-import { GrammarlyAuthContext } from 'unofficial-grammarly-api'
+import { GrammarlyAuthContext } from 'unofficial-grammarly-api-2'
 
 const COOKIE_KEY = 'vscode-grammarly-cookie'
 const CLIENTS: Record<string, string> = {

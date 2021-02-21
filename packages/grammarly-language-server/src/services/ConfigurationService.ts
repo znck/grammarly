@@ -1,6 +1,6 @@
 import minimatch from 'minimatch'
 import { inject, injectable } from 'inversify'
-import { DocumentContext } from 'unofficial-grammarly-api'
+import { DocumentContext } from 'unofficial-grammarly-api-2'
 import { Connection, DiagnosticSeverity, Disposable } from 'vscode-languageserver'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces'

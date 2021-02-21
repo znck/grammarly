@@ -1,4 +1,4 @@
-import { DocumentContext } from 'unofficial-grammarly-api'
+import { DocumentContext } from 'unofficial-grammarly-api-2'
 import { DiagnosticSeverity } from 'vscode'
 
 export interface GrammarlySettings extends DocumentContext {
