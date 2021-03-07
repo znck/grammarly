@@ -6,6 +6,7 @@ import {
   SocketError,
   SocketErrorCode,
 } from 'unofficial-grammarly-api-2'
+import { DevLogger } from './DevLogger'
 import { GrammarlyDocument } from './GrammarlyDocument'
 import { TextGrammarCheckHost } from './hosts/TextGrammarCheckHost'
 import { version } from '../package.json'
@@ -24,9 +25,10 @@ const knownClients: Record<string, { name: string, type: string, version: string
 }
 
 export class GrammarlyHostFactory {
+  private LOGGER = new DevLogger(GrammarlyHostFactory.name)
   private auth: GrammarlyAuthContext | null = null
 
-  constructor (
+  constructor(
     private getDocumentContext: (document: GrammarlyDocument) => Promise<DocumentContext>,
     private getCredentials: () => Promise<{ username: string; password: string } | string>,
     private storeToken: (token: string | null) => void,

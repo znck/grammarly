@@ -60,7 +60,7 @@ export class TextGrammarCheckHost {
 
   private disposables: Array<() => void> = []
 
-  public constructor (
+  public constructor(
     private readonly clientInfo: { name: string; type?: string, version?: string },
     private readonly document: TextDocument,
     public readonly getDocumentContext: () => Promise<DocumentContext>,
@@ -69,7 +69,7 @@ export class TextGrammarCheckHost {
   ) {
     this.id = Buffer.from(this.document.uri).toString('hex')
     this.LOGGER = __DEV__ ? new DevLogger(TextGrammarCheckHost.name, this.id.substr(0, 6)) : null
-    const { name, type } = parseClientName(this.clientInfo.name ?? 'unofficial-grammarly-language-server')
+    const { name, type } = parseClientName(this.clientInfo.name ?? 'unofficial-grammarly-language-server-2')
     this.api = new GrammarlyClient({
       clientName: name,
       clientType: type,

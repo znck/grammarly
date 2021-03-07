@@ -13,9 +13,11 @@ import { GrammarlyHostFactory } from '../GrammarlyHostFactory'
 import { Registerable } from '../interfaces'
 import { ConfigurationService } from './ConfigurationService'
 import { GrammarlyLanguageServer } from '../protocol'
+import { DevLogger } from '../DevLogger'
 
 @injectable()
 export class DocumentService implements Registerable {
+  private LOGGER = new DevLogger(DocumentService.name)
   private documents = new TextDocuments(GrammarlyDocument)
   private hostFactory = new GrammarlyHostFactory(
     async (document) => this.configuration.getDocumentSettings(document.uri),
@@ -26,7 +28,7 @@ export class DocumentService implements Registerable {
   private onDocumentOpenCbs: Array<(document: GrammarlyDocument) => any> = []
   private onDocumentCloseCbs: Array<(document: GrammarlyDocument) => any> = []
 
-  constructor (
+  constructor(
     @inject(CONNECTION) private readonly connection: Connection,
     @inject(SERVER) private readonly capabilities: ServerCapabilities,
     @inject(CLIENT_INFO) private readonly client: { name: string; version?: string },

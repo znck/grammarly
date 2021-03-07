@@ -43,7 +43,7 @@ export class GrammarlyDiagnosticsService implements Registerable {
   private LOGGER = new DevLogger(GrammarlyDiagnosticsService.name)
   private diagnostics = new Map<string, Map<IdAlert, DiagnosticWithPosition[]>>()
 
-  constructor (
+  constructor(
     @inject(CONNECTION)
     private readonly connection: Connection,
 
