@@ -96,7 +96,7 @@ export function form<T extends {}>(label: string, fields: FormField<T, InputBox 
         input.totalSteps = fields.length;
         disposables.push(input);
         const exec = () =>
-          new Promise((resolve, reject) => {
+          new Promise<void>((resolve, reject) => {
             if (index > 1) {
               input.buttons = [QuickInputButtons.Back];
             }
