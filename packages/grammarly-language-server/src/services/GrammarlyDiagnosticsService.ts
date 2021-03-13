@@ -5,7 +5,7 @@ import {
   IdRevision,
   ResponseKind,
   applyDelta
-} from 'unofficial-grammarly-api-2'
+} from '@emacs-grammarly/unofficial-grammarly-api'
 import {
   CodeAction,
   CodeActionKind,

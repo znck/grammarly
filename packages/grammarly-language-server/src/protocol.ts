@@ -1,4 +1,4 @@
-import type { Emotion, Event, IdAlert, OutcomeScoresWithPlagiarism, TextInfoEvent } from 'unofficial-grammarly-api-2'
+import type { Emotion, Event, IdAlert, OutcomeScoresWithPlagiarism, TextInfoEvent } from '@emacs-grammarly/unofficial-grammarly-api'
 import type { CheckHostStatus } from './hosts/CheckHostStatus'
 import type { AuthParams } from './interfaces'
 

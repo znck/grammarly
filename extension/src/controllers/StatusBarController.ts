@@ -1,6 +1,6 @@
 import { ref } from '@vue/reactivity'
 import { injectable } from 'inversify'
-import { GrammarlyLanguageServer } from 'unofficial-grammarly-language-server'
+import { GrammarlyLanguageServer } from '@emacs-grammarly/unofficial-grammarly-language-server'
 import { Disposable, StatusBarAlignment, StatusBarItem, TextEditor, ThemeColor, Uri, window, workspace } from 'vscode'
 import { GrammarlyClient } from '../client'
 import { Registerable } from '../interfaces'
@@ -18,7 +18,7 @@ export class StatusBarController implements Registerable {
   private state = ref<State | null>(null)
   private document = ref<{ uri: string } | null>(null)
 
-  constructor (private readonly client: GrammarlyClient) {
+  constructor(private readonly client: GrammarlyClient) {
     this.statusBar.text = '$(globe) Enable Grammarly'
     this.statusBar.tooltip = 'Check grammar with Grammarly'
     this.statusBar.color = new ThemeColor('statusBar.foreground')

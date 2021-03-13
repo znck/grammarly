@@ -1,4 +1,4 @@
-import { AlertEvent } from 'unofficial-grammarly-api-2'
+import { AlertEvent } from '@emacs-grammarly/unofficial-grammarly-api'
 import { CodeAction, CodeActionKind, Diagnostic, DiagnosticSeverity, DiagnosticTag, Range } from 'vscode-languageserver'
 import { TextDocument } from 'vscode-languageserver-textdocument'
 
@@ -94,10 +94,9 @@ export function toMarkdown(source: string) {
 export function getMarkdownDescription(alert: AlertEvent) {
   return alert.explanation || alert.details || alert.examples
     ? toMarkdown(
-        `### ${alert.title}${alert.explanation ? `\n\n${alert.explanation}` : ''}${
-          alert.details ? `\n\n${alert.details}` : ''
-        }${alert.examples ? `\n\n### Examples\n\n${alert.examples}` : ''}`,
-      )
+      `### ${alert.title}${alert.explanation ? `\n\n${alert.explanation}` : ''}${alert.details ? `\n\n${alert.details}` : ''
+      }${alert.examples ? `\n\n### Examples\n\n${alert.examples}` : ''}`,
+    )
     : ''
 }
 export function isSpellingAlert(alert: AlertEvent) {

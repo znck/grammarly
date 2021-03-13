@@ -2,6 +2,15 @@
 # yarn lockfile v1
 
 
+"@emacs-grammarly/unofficial-grammarly-api@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@emacs-grammarly/unofficial-grammarly-api/-/unofficial-grammarly-api-0.2.2.tgz#79c74c1fe3c97d087b2c059eed671fff367cf8fc"
+  integrity sha512-GKv/FrBSpHcAwLbuNV97uUgFBA8UiUxnYD2HkgCLDdFf+s7NadDI9OGwi5mMWaEjlim8WD/AOmx/gH39SbnI9g==
+  dependencies:
+    node-fetch "^2.6.1"
+    quill-delta "^4.2.2"
+    ws "^7.3.1"
+
 "@types/minimatch@^3.0.3":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
@@ -65,15 +74,6 @@ semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
-
-unofficial-grammarly-api-2@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-api-2/-/unofficial-grammarly-api-2-0.2.4.tgz#5b707a45a950381b4d2c2ca54dcf796393582333"
-  integrity sha512-lLIHCOzzSuIgotVUi2GWZ/qcYxwfHl41Jmgz2kdJZ5k3EUze+H5M5FLrIcO9+Y3KaYZ1+cThCcdVOZrKJZkmyw==
-  dependencies:
-    node-fetch "^2.6.1"
-    quill-delta "^4.2.2"
-    ws "^7.3.1"
 
 vscode-jsonrpc@^5.0.1:
   version "5.0.1"

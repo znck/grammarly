@@ -18,7 +18,7 @@ import {
   SynonymsGroup,
   TextInfoEvent,
   TextStatsResponse
-} from 'unofficial-grammarly-api-2'
+} from '@emacs-grammarly/unofficial-grammarly-api'
 import { TextDocument } from 'vscode-languageserver-textdocument'
 import { DevLogger } from '../DevLogger'
 import { CheckHostStatus } from './CheckHostStatus'
@@ -69,7 +69,7 @@ export class TextGrammarCheckHost {
   ) {
     this.id = Buffer.from(this.document.uri).toString('hex')
     this.LOGGER = __DEV__ ? new DevLogger(TextGrammarCheckHost.name, this.id.substr(0, 6)) : null
-    const { name, type } = parseClientName(this.clientInfo.name ?? 'unofficial-grammarly-language-server-2')
+    const { name, type } = parseClientName(this.clientInfo.name ?? '@emacs-grammarly/unofficial-grammarly-language-server')
     this.api = new GrammarlyClient({
       clientName: name,
       clientType: type,

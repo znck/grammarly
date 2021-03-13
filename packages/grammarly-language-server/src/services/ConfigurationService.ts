@@ -1,6 +1,6 @@
 import minimatch from 'minimatch'
 import { inject, injectable } from 'inversify'
-import { DocumentContext } from 'unofficial-grammarly-api-2'
+import { DocumentContext } from '@emacs-grammarly/unofficial-grammarly-api'
 import { Connection, DiagnosticSeverity, Disposable } from 'vscode-languageserver'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces'
@@ -15,7 +15,7 @@ export class ConfigurationService implements Registerable {
   private perDocumentSettings = new Map<string, DocumentContext>()
   private wip = new Map<string, Promise<DocumentContext>>()
 
-  constructor (@inject(CONNECTION) private readonly connection: Connection) { }
+  constructor(@inject(CONNECTION) private readonly connection: Connection) { }
 
   public get settings(): Readonly<GrammarlySettings> {
     return this.user

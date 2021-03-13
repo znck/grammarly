@@ -469,6 +469,15 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@emacs-grammarly/unofficial-grammarly-api@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@emacs-grammarly/unofficial-grammarly-api/-/unofficial-grammarly-api-0.2.2.tgz#79c74c1fe3c97d087b2c059eed671fff367cf8fc"
+  integrity sha512-GKv/FrBSpHcAwLbuNV97uUgFBA8UiUxnYD2HkgCLDdFf+s7NadDI9OGwi5mMWaEjlim8WD/AOmx/gH39SbnI9g==
+  dependencies:
+    node-fetch "^2.6.1"
+    quill-delta "^4.2.2"
+    ws "^7.3.1"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -5675,15 +5684,6 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
-
-unofficial-grammarly-api-2@^0.2.2:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-api-2/-/unofficial-grammarly-api-2-0.2.4.tgz#5b707a45a950381b4d2c2ca54dcf796393582333"
-  integrity sha512-lLIHCOzzSuIgotVUi2GWZ/qcYxwfHl41Jmgz2kdJZ5k3EUze+H5M5FLrIcO9+Y3KaYZ1+cThCcdVOZrKJZkmyw==
-  dependencies:
-    node-fetch "^2.6.1"
-    quill-delta "^4.2.2"
-    ws "^7.3.1"
 
 unset-value@^1.0.0:
   version "1.0.0"

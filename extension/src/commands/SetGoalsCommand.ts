@@ -1,6 +1,6 @@
 import { injectable } from 'inversify'
 import minimatch from 'minimatch'
-import { DocumentContext } from 'unofficial-grammarly-api-2'
+import { DocumentContext } from '@emacs-grammarly/unofficial-grammarly-api'
 import { commands, ConfigurationTarget, window, workspace } from 'vscode'
 import { GrammarlyClient } from '../client'
 import { form, select } from '../form'
@@ -10,7 +10,7 @@ import { toArray } from '../utils/toArray'
 
 @injectable()
 export class SetGoalsCommand implements Registerable {
-  constructor(private readonly client: GrammarlyClient) {}
+  constructor(private readonly client: GrammarlyClient) { }
 
   register() {
     return commands.registerCommand('grammarly.setGoals', this.execute.bind(this))

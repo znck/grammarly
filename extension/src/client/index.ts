@@ -1,10 +1,10 @@
-import { GrammarlyLanguageClient } from 'unofficial-grammarly-language-client'
+import { GrammarlyLanguageClient } from '@emacs-grammarly/unofficial-grammarly-language-client'
 import { Disposable, ExtensionContext, Uri, workspace } from 'vscode'
 import { AuthenticationService } from '../services/AuthenticationService'
 import { Registerable } from '../interfaces'
 
 export class GrammarlyClient extends GrammarlyLanguageClient implements Registerable {
-  constructor (context: ExtensionContext, private readonly auth: AuthenticationService) {
+  constructor(context: ExtensionContext, private readonly auth: AuthenticationService) {
 
     super(context.asAbsolutePath('dist/server/index.js'), {
       info: {

@@ -5,7 +5,7 @@ import {
   GrammarlyAuthContext,
   SocketError,
   SocketErrorCode,
-} from 'unofficial-grammarly-api-2'
+} from '@emacs-grammarly/unofficial-grammarly-api'
 import { DevLogger } from './DevLogger'
 import { GrammarlyDocument } from './GrammarlyDocument'
 import { TextGrammarCheckHost } from './hosts/TextGrammarCheckHost'

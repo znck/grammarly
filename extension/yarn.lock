@@ -2,6 +2,42 @@
 # yarn lockfile v1
 
 
+"@emacs-grammarly/unofficial-grammarly-api@0.2.2", "@emacs-grammarly/unofficial-grammarly-api@^0.2.2", "@emacs-grammarly/unofficial-grammarly-api@workspace:*":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@emacs-grammarly/unofficial-grammarly-api/-/unofficial-grammarly-api-0.2.2.tgz#79c74c1fe3c97d087b2c059eed671fff367cf8fc"
+  integrity sha512-GKv/FrBSpHcAwLbuNV97uUgFBA8UiUxnYD2HkgCLDdFf+s7NadDI9OGwi5mMWaEjlim8WD/AOmx/gH39SbnI9g==
+  dependencies:
+    node-fetch "^2.6.1"
+    quill-delta "^4.2.2"
+    ws "^7.3.1"
+
+"@emacs-grammarly/unofficial-grammarly-language-client@workspace:*":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@emacs-grammarly/unofficial-grammarly-language-client/-/unofficial-grammarly-language-client-0.2.2.tgz#2e9153526c9f58ac72ef5d3c66a0963a604e86c1"
+  integrity sha512-rng20O9HwSRcSdKiOCfXq2N9rLW0omq8wkXqtHyuIj8qo7wOuVBbl4h19Sw5V5J6+0PuI5VNrTbJ0czDEx6L4w==
+  dependencies:
+    "@emacs-grammarly/unofficial-grammarly-api" "0.2.2"
+    minimatch "^3.0.4"
+    vscode-jsonrpc "^5.0.1"
+    vscode-languageclient "^6.1.3"
+    vscode-languageserver-textdocument "^1.0.1"
+
+"@emacs-grammarly/unofficial-grammarly-language-server@workspace:*":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@emacs-grammarly/unofficial-grammarly-language-server/-/unofficial-grammarly-language-server-0.2.2.tgz#acd072d30f797147a3acdb3d94175dfd77efdef8"
+  integrity sha512-ZRfz5O+LGl6Fn8gm0xfBk07mDz+NSa+82ev4Gi7qcDLKJ+IG2aDuia1CLZiQCDxo2U+XqZZWvnb9Zdsa5BEREg==
+  dependencies:
+    "@emacs-grammarly/unofficial-grammarly-api" "^0.2.2"
+    "@flatten-js/interval-tree" "^1.0.13"
+    "@vue/reactivity" "^3.0.2"
+    inversify "^5.0.1"
+    minimatch "^3.0.4"
+    reflect-metadata "^0.1.13"
+    remark "^13.0.0"
+    vscode-jsonrpc "^5.0.1"
+    vscode-languageserver "^6.1.1"
+    vscode-languageserver-textdocument "^1.0.1"
+
 "@flatten-js/interval-tree@^1.0.13":
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/@flatten-js/interval-tree/-/interval-tree-1.0.13.tgz#68e862f3f997d215e9a857c8b061af201ed9bf07"
@@ -218,9 +254,9 @@ domhandler@^4.0.0:
     domelementtype "^2.1.0"
 
 domutils@^2.4.3, domutils@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/domutils/-/domutils-2.4.4.tgz#282739c4b150d022d34699797369aad8d19bbbd3"
-  integrity sha512-jBC0vOsECI4OMdD0GC9mGn7NXPLb+Qt6KW1YDQzeQYRUFKmNG8lh7mO5HiELfr+lLQE7loDVI4QcAxV80HS+RA==
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/domutils/-/domutils-2.5.0.tgz#42f49cffdabb92ad243278b331fd761c1c2d3039"
+  integrity sha512-Ho16rzNMOFk2fPwChGh3D2D9OEHAfG19HgmRR2l+WLSsIstNsAYBzePH412bL0y5T44ejABIVfTHQ8nqi/tBCg==
   dependencies:
     dom-serializer "^1.0.1"
     domelementtype "^2.0.1"
@@ -286,9 +322,9 @@ has-flag@^3.0.0:
   integrity sha1-tdRU3CGZriJWmfNGfloH87lVuv0=
 
 htmlparser2@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-6.0.0.tgz#c2da005030390908ca4c91e5629e418e0665ac01"
-  integrity sha512-numTQtDZMoh78zJpaNdJ9MXb2cv5G3jwUoe3dMQODubZvLoGvTE/Ofp6sHvH8OGKcN/8A47pGLi/k58xHP/Tfw==
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-6.0.1.tgz#422521231ef6d42e56bd411da8ba40aa36e91446"
+  integrity sha512-GDKPd+vk4jvSuvCbyuzx/unmXkk090Azec7LovXP8as1Hn8q9p3hbjmDGbUqqhknw0ajwit6LiiWqfiTUPMK7w==
   dependencies:
     domelementtype "^2.0.1"
     domhandler "^4.0.0"
@@ -665,51 +701,6 @@ unist-util-stringify-position@^2.0.0:
   dependencies:
     "@types/unist" "^2.0.2"
 
-"unofficial-grammarly-api-2@workspace:*":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-api-2/-/unofficial-grammarly-api-2-0.2.4.tgz#5b707a45a950381b4d2c2ca54dcf796393582333"
-  integrity sha512-lLIHCOzzSuIgotVUi2GWZ/qcYxwfHl41Jmgz2kdJZ5k3EUze+H5M5FLrIcO9+Y3KaYZ1+cThCcdVOZrKJZkmyw==
-  dependencies:
-    node-fetch "^2.6.1"
-    quill-delta "^4.2.2"
-    ws "^7.3.1"
-
-unofficial-grammarly-api@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-api/-/unofficial-grammarly-api-0.2.0.tgz#3ae236ece9825566b85c70b5dbb120338c2d71b0"
-  integrity sha512-FK+j5zzpa5mfIy4Bri1m5H+j34AqTS9dWoy2cm3YVLKeIYWjsDsqm4Ot6J0rk5lYCZELcKFSs6xSYDNNwUJwpQ==
-  dependencies:
-    node-fetch "^2.6.1"
-    quill-delta "^4.2.2"
-    ws "^7.3.1"
-
-"unofficial-grammarly-language-client@workspace:*":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-language-client/-/unofficial-grammarly-language-client-0.2.0.tgz#897daa3b5ed2966e7682458ed5eb975b9ad8e146"
-  integrity sha512-TyOwB3fJ/sB3WGfUfNlQyrIKutnOapJ7XgVL8gE5qEBPATdd1jaYCWiXUo/L8jL2qbOYXhhGZKhAWuZq06oxYg==
-  dependencies:
-    minimatch "^3.0.4"
-    unofficial-grammarly-api "0.2.0"
-    vscode-jsonrpc "^5.0.1"
-    vscode-languageclient "^6.1.3"
-    vscode-languageserver-textdocument "^1.0.1"
-
-"unofficial-grammarly-language-server@workspace:*":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/unofficial-grammarly-language-server/-/unofficial-grammarly-language-server-0.2.0.tgz#7ec01847534d5f2d7d98f376856be53976e9f6aa"
-  integrity sha512-iFwSHwaXre/A2UzAEWE1ErgqLcTI/lBCu0H87eec7JCBvehW7NbWqb+tbs0uax5QH+XPi0RbHi84Ew7ncVl0Cg==
-  dependencies:
-    "@flatten-js/interval-tree" "^1.0.13"
-    "@vue/reactivity" "^3.0.2"
-    inversify "^5.0.1"
-    minimatch "^3.0.4"
-    reflect-metadata "^0.1.13"
-    remark "^13.0.0"
-    unofficial-grammarly-api "0.2.0"
-    vscode-jsonrpc "^5.0.1"
-    vscode-languageserver "^6.1.1"
-    vscode-languageserver-textdocument "^1.0.1"
-
 url-join@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/url-join/-/url-join-1.1.0.tgz#741c6c2f4596c4830d6718460920d0c92202dc78"
@@ -734,9 +725,9 @@ vfile@^4.0.0:
     vfile-message "^2.0.0"
 
 vsce@^1.84.0:
-  version "1.85.1"
-  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.85.1.tgz#e232563a7aaf0b12af5c2e8ec5df5cac78799b55"
-  integrity sha512-IdfH8OCK+FgQGmihFoh6/17KBl4Ad3q4Sw3NFNI9T9KX6KdMR5az2/GO512cC9IqCjbgJl12CA7X84vYoc0ifg==
+  version "1.87.0"
+  resolved "https://registry.yarnpkg.com/vsce/-/vsce-1.87.0.tgz#d592142c8781c984bc49dec60be940f9d26528e6"
+  integrity sha512-7Ow05XxIM4gHBq/Ho3hefdmiZG0fddHtu0M0XJ1sojyZBvxPxTHaMuBsRnfnMzgCqxDTFI5iLr94AgiwQnhOMQ==
   dependencies:
     azure-devops-node-api "^7.2.0"
     chalk "^2.4.2"
