@@ -32,6 +32,7 @@ export const LANGUAGES = [
   'mdx',
   'plaintext',
   'restructuredtext',
+  'org',
 ]
 
 export function getLanguageClientOptions(): LanguageClientOptions {
