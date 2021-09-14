@@ -1,5 +1,7 @@
 # Grammarly
 
+> Update: Grammarly API is released, so this project will switch to official API. See https://github.com/znck/grammarly/issues/206
+
 Unofficial Grammarly extension.
 
 ![Preview of Grammarly diagnostics](./extension/assets/screenshot1.png)
