@@ -21,6 +21,7 @@
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:mdx",
+    "onLanguage:rmarkdown",
     "onCommand:grammarly.login",
     "onCommand:grammarly.logout",
     "onCommand:grammarly.stop",
