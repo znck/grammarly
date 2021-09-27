@@ -1,6 +1,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Release](https://img.shields.io/github/release/emacs-grammarly/unofficial-grammarly-language-server.svg?logo=github)](https://github.com/emacs-grammarly/unofficial-grammarly-language-server/releases/latest)
 
 # Grammarly
+
+[![CI/CD](https://github.com/emacs-grammarly/unofficial-grammarly-language-server/actions/workflows/ci.yaml/badge.svg)](https://github.com/emacs-grammarly/unofficial-grammarly-language-server/actions/workflows/ci.yaml)
 
 Unofficial Grammarly extension.
 
