@@ -4,12 +4,10 @@
 
 # Grammarly
 
-<<<<<<< HEAD
 [![CI/CD](https://github.com/emacs-grammarly/unofficial-grammarly-language-server/actions/workflows/ci.yaml/badge.svg)](https://github.com/emacs-grammarly/unofficial-grammarly-language-server/actions/workflows/ci.yaml)
 [![dependencies Status](https://status.david-dm.org/gh/emacs-grammarly/unofficial-grammarly-language-server.svg)](https://david-dm.org/emacs-grammarly/unofficial-grammarly-language-server)
-=======
+
 > Update: Grammarly API is released, so this project will switch to official API. See https://github.com/znck/grammarly/issues/206
->>>>>>> 2b5cdc087f4e376f40e0ccc28e0b328ff52e5039
 
 Unofficial Grammarly extension.
 
