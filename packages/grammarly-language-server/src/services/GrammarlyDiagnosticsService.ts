@@ -327,20 +327,25 @@ export class GrammarlyDiagnosticsService implements Registerable {
     }
   }
 
-  private setupDiagnostics(document: GrammarlyDocument) {
+  private async setupDiagnostics(document: GrammarlyDocument) {
     this.diagnostics.set(document.uri, new Map())
 
     const diagnostics = this.diagnostics.get(document.uri)!
+    const ignoredTags = await this.config.getIgnoredTags(document.uri, document.languageId);
 
     document.host!.onDispose(
       watch(document.host!.alerts, (alerts) => {
         diagnostics.clear()
 
         alerts.forEach((alert) => {
-          diagnostics.set(
-            alert.id,
-            this.toDiagnostics(alert, document)
-          )
+          if (document.inIgnoredRange([alert.begin, alert.end], ignoredTags)) {
+            document.host!.dismissAlert(alert.id);
+          } else {
+            diagnostics.set(
+              alert.id,
+              this.toDiagnostics(alert, document)
+            )
+          }
         })
 
         this.sendDiagnostics(document, true)
