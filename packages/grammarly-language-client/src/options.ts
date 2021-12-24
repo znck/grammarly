@@ -27,6 +27,7 @@ export const LANGUAGES = [
   'git-commit',
   'git-rebase',
   'json',
+  'yaml',
   'latex',
   'markdown',
   'mdx',
