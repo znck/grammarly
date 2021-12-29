@@ -20,6 +20,7 @@
     "onUri",
     "onLanguage:plaintext",
     "onLanguage:markdown",
+    "onLanguage:rmd",
     "onLanguage:mdx",
     "onCommand:grammarly.login",
     "onCommand:grammarly.logout",

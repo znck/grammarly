@@ -56,6 +56,9 @@ export const DEFAULT: GrammarlySettings = {
     '[markdown]': {
       ignore: ['code'],
     },
+    '[rmd]': {
+      ignore: ['code'],
+    },
     '[mdx]': {
       ignore: ['code'],
     },

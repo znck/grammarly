@@ -29,6 +29,7 @@ export const LANGUAGES = [
   'json',
   'latex',
   'markdown',
+  'rmd',
   'mdx',
   'plaintext',
   'restructuredtext',
