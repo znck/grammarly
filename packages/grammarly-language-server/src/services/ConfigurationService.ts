@@ -1,10 +1,9 @@
-import { EditorConfig } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
 import { Connection, Disposable } from 'vscode-languageserver/node'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 
-type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestions'>
+type DocumentConfig = {}
 
 @injectable()
 export class ConfigurationService implements Registerable {

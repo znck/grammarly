@@ -68,7 +68,9 @@
   "browser": "./dist/extension/index.browser.js",
   "buildConfig": {
     "external": [
-      "vscode"
+      "vscode",
+      "tree-sitter-markdown.wasm",
+      "tree-sitter-html.wasm"
     ],
     "useMain": false,
     "sources": {

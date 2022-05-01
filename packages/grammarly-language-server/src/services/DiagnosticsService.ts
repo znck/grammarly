@@ -130,7 +130,7 @@ export function toMarkdown(markup: Markup): string {
       case 'li':
         return ' '.repeat(indent - 2) + `- ${node.children.map(stringify).join('')}`
       case 'del':
-        return `~~${node.children.map(stringify).join('')}~~`
+        return ` ~~${node.children.map(stringify).join('')}~~ `
       case 'em':
         return `_${node.children.map(stringify).join('')}_`
       case 'strong':

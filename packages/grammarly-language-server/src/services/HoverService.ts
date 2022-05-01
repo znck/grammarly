@@ -39,11 +39,15 @@ export class HoverService implements Registerable {
         range: diagnostic.diagnostic.range,
         contents: {
           kind: 'markdown',
-          value: `### ${diagnostic.suggestion.title.trim()}\n${toMarkdown(
+          value: `**${diagnostic.suggestion.title.trim()}**\n\n${toMarkdown(
             diagnostic.suggestion.description,
-          ).trim()}\n#### Suggested alternatives\n${diagnostic.suggestion.replacements
-            .map((replacement) => `1. …${toMarkdown(replacement.preview).trim()}…\n`)
-            .join('')}`,
+          ).trim()}\n\n\n${
+            diagnostic.suggestion.replacements.length === 1
+              ? `…${toMarkdown(diagnostic.suggestion.replacements[0].preview).trim()}…`
+              : diagnostic.suggestion.replacements
+                  .map((replacement) => `1. …${toMarkdown(replacement.preview).trim()}…\n`)
+                  .join('')
+          }`,
         },
       }
     })

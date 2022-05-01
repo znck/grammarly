@@ -20,10 +20,12 @@ function getLanguageServerOptions(module: string): ServerOptions {
   return {
     run: {
       module,
+      runtime: '/Users/znck/.n/bin/node',
       transport: TransportKind.ipc,
     },
     debug: {
       module,
+      runtime: '/Users/znck/.n/bin/node',
       transport: TransportKind.ipc,
       options: {
         execArgv: ['--nolazy', '--inspect=6009'],

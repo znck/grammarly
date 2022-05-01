@@ -35,14 +35,16 @@ export class GrammarlyClient implements Registerable {
             return 2
           },
           closed() {
-            return 2
+            return 1
           },
         },
       },
     )
 
-    client.onNotification('openOAuthUrl', (url: string) => {
-      env.openExternal(Uri.parse(url))
+    client.onReady().then(() => {
+      client.onNotification('openOAuthUrl', (url: string) => {
+        env.openExternal(Uri.parse(url))
+      })
     })
 
     return client
