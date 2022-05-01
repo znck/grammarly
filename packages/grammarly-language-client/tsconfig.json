@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["src", "../grammarly-language-server/src/protocol.ts"]
+  "include": ["src/index.ts"]
 }

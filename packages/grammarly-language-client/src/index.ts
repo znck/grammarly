@@ -1,2 +1,1 @@
-export * from './GrammarlyLanguageClient'
-export * from './GrammarlyLanguageClientOptions'
+export { GrammarlyLanguageClient, GrammarlyLanguageClientOptions } from './GrammarlyLanguageClient'
