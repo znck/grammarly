@@ -1,5 +1,5 @@
 {
-  "name": "unofficial-grammarly-language-server",
+  "name": "grammarly-languageserver",
   "version": "0.2.0",
   "description": "LSP server implementation for Grammarly",
   "author": "Rahul Kadyan <hey@znck.me>",
@@ -32,11 +32,11 @@
   ],
   "dependencies": {
     "@grammarly/sdk": "^1.7.2",
+    "grammarly-languageserver-transformers": "workspace:*",
     "inversify": "^6.0.1",
     "isomorphic-fetch": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "vscode-languageserver": "^7.0.0",
-    "vscode-languageserver-textdocument": "^1.0.4",
-    "grammarly-language-server-transformers": "workspace:*"
+    "vscode-languageserver-textdocument": "^1.0.4"
   }
 }

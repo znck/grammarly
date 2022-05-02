@@ -11,6 +11,8 @@
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
     "@rollup/plugin-alias": "^3.1.9",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-typescript": "^8.3.2",
     "@vuedx/monorepo-tools": "^0.2.1",
     "husky": "^7.0.4",
@@ -21,7 +23,8 @@
     "rollup-plugin-copy": "^3.4.0",
     "ts-jest": "^27.1.4",
     "tslib": "^2.4.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "vsce": "^2.7.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

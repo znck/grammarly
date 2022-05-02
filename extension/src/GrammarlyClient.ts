@@ -1,5 +1,5 @@
-import { GrammarlyLanguageClient } from 'unofficial-grammarly-language-client'
-import { commands, Disposable, env, ExtensionContext, Uri, window, workspace } from 'vscode'
+import { GrammarlyLanguageClient } from 'grammarly-languageclient'
+import { Disposable, env, ExtensionContext, Uri, window, workspace } from 'vscode'
 import { Registerable } from './interfaces'
 
 export class GrammarlyClient implements Registerable {

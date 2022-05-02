@@ -1,15 +1,16 @@
 import alias from '@rollup/plugin-alias'
+import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import { generateRollupOptions } from '@vuedx/monorepo-tools'
-import copy from 'rollup-plugin-copy'
 import Path from 'path'
+import copy from 'rollup-plugin-copy'
 
 export default generateRollupOptions({
   extend(kind, info) {
     if (kind === 'dts') return info.rollupOptions
     const options = info.rollupOptions
 
-    options.plugins.push(typescript({ tsconfig: info.tsconfig.configFile }))
+    options.plugins.push(resolve(), typescript({ tsconfig: info.tsconfig.configFile }))
     const entries = [
       'vscode-jsonrpc',
       'vscode-languageclient',
@@ -31,7 +32,7 @@ export default generateRollupOptions({
 
         if (
           info.packageJson.name === 'grammarly' ||
-          info.packageJson.name === 'grammarly-language-server-transformers'
+          info.packageJson.name === 'grammarly-languageserver-transformers'
         ) {
           plugins.push(
             copy({
@@ -39,13 +40,21 @@ export default generateRollupOptions({
                 {
                   src: Path.resolve(
                     __dirname,
-                    'packages/grammarly-language-server-transformers/node_modules/tree-sitter-wasm-prebuilt/lib/tree-sitter-{html,markdown}.wasm',
+                    'packages/grammarly-languageserver-transformers/node_modules/tree-sitter-wasm-prebuilt/lib/tree-sitter-{html,markdown}.wasm',
                   ),
                   dest: Path.dirname(output.file),
                 },
               ],
             }),
           )
+        }
+        if (info.packageJson.name === 'grammarly') {
+          plugins.push({
+            id: 'resolve',
+            resolveId(id) {
+              if (id.startsWith('node:')) return { id: id.substring(5), external: true }
+            },
+          })
         }
 
         return {
@@ -56,11 +65,11 @@ export default generateRollupOptions({
             alias({
               entries: [
                 ...entries.map((find) => ({ find: new RegExp(`^${find}(/node)?$`), replacement: `${find}/browser` })),
-                { find: new RegExp('^@grammarly/sdk$'), replacement: '@grammarly/sdk/lib/index.esm.js' },
-                {
-                  find: new RegExp('^grammarly-language-server-transformers$'),
-                  replacement: 'grammarly-language-server-transformers/dist/index.browser.js',
-                },
+                // { find: new RegExp('^@grammarly/sdk$'), replacement: '@grammarly/sdk/lib/index.esm.js' },
+                // {
+                //   find: new RegExp('^grammarly-languageserver-transformers$'),
+                //   replacement: 'grammarly-languageserver-transformers/dist/index.browser.js',
+                // },
               ],
             }),
             {

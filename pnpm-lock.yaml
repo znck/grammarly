@@ -6,6 +6,8 @@ importers:
     specifiers:
       '@changesets/cli': ^2.22.0
       '@rollup/plugin-alias': ^3.1.9
+      '@rollup/plugin-commonjs': ^22.0.0
+      '@rollup/plugin-node-resolve': ^13.2.1
       '@rollup/plugin-typescript': ^8.3.2
       '@vuedx/monorepo-tools': ^0.2.1
       husky: ^7.0.4
@@ -17,9 +19,12 @@ importers:
       ts-jest: ^27.1.4
       tslib: ^2.4.0
       typescript: ^4.6.4
+      vsce: ^2.7.0
     devDependencies:
       '@changesets/cli': 2.22.0
       '@rollup/plugin-alias': 3.1.9_rollup@2.71.1
+      '@rollup/plugin-commonjs': 22.0.0_rollup@2.71.1
+      '@rollup/plugin-node-resolve': 13.2.1_rollup@2.71.1
       '@rollup/plugin-typescript': 8.3.2_720a6ef9590eb3341203a9177a2b9e25
       '@vuedx/monorepo-tools': 0.2.1_rollup@2.71.1+typescript@4.6.4
       husky: 7.0.4
@@ -31,36 +36,29 @@ importers:
       ts-jest: 27.1.4_jest@27.5.1+typescript@4.6.4
       tslib: 2.4.0
       typescript: 4.6.4
+      vsce: 2.7.0
 
   extension:
     specifiers:
       '@types/vscode': ^1.66.0
-      inversify: ^6.0.1
-      reflect-metadata: ^0.1.13
-      typescript: ^4.6.4
-      unofficial-grammarly-language-client: workspace:*
-      unofficial-grammarly-language-server: workspace:*
-      vsce: ^2.7.0
+      grammarly-languageclient: workspace:*
+      grammarly-languageserver: workspace:*
     dependencies:
-      inversify: 6.0.1
-      reflect-metadata: 0.1.13
-      unofficial-grammarly-language-client: link:../packages/grammarly-language-client
-      unofficial-grammarly-language-server: link:../packages/grammarly-language-server
+      grammarly-languageclient: link:../packages/grammarly-languageclient
+      grammarly-languageserver: link:../packages/grammarly-languageserver
     devDependencies:
       '@types/vscode': 1.66.0
-      typescript: 4.6.4
-      vsce: 2.7.0
 
-  packages/grammarly-language-client:
+  packages/grammarly-languageclient:
     specifiers:
       vscode-languageclient: ^7.0.0
     dependencies:
       vscode-languageclient: 7.0.0
 
-  packages/grammarly-language-server:
+  packages/grammarly-languageserver:
     specifiers:
       '@grammarly/sdk': ^1.7.2
-      grammarly-language-server-transformers: workspace:*
+      grammarly-languageserver-transformers: workspace:*
       inversify: ^6.0.1
       isomorphic-fetch: ^3.0.0
       reflect-metadata: ^0.1.13
@@ -68,14 +66,14 @@ importers:
       vscode-languageserver-textdocument: ^1.0.4
     dependencies:
       '@grammarly/sdk': 1.7.2
-      grammarly-language-server-transformers: link:../grammarly-language-server-transformers
+      grammarly-languageserver-transformers: link:../grammarly-languageserver-transformers
       inversify: 6.0.1
       isomorphic-fetch: 3.0.0
       reflect-metadata: 0.1.13
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.4
 
-  packages/grammarly-language-server-transformers:
+  packages/grammarly-languageserver-transformers:
     specifiers:
       '@grammarly/sdk': ^1.7.2
       tree-sitter: ^0.20.0
@@ -896,12 +894,43 @@ packages:
       slash: 3.0.0
     dev: true
 
+  /@rollup/plugin-commonjs/22.0.0_rollup@2.71.1:
+    resolution: {integrity: sha512-Ktvf2j+bAO+30awhbYoCaXpBcyPmJbaEUYClQns/+6SNCYFURbvBiNbWgHITEsIgDDWCDUclWRKEuf8cwZCFoQ==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      rollup: ^2.68.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.71.1
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      glob: 7.2.0
+      is-reference: 1.2.1
+      magic-string: 0.25.9
+      resolve: 1.22.0
+      rollup: 2.71.1
+    dev: true
+
   /@rollup/plugin-json/4.1.0_rollup@2.71.1:
     resolution: {integrity: sha512-yfLbTdNS6amI/2OpmbiBoW12vngr5NW2jCJVZSBEz+H5KfUJZ2M7sDjk0U6GOOdCWFVScShte29o9NezJ53TPw==}
     peerDependencies:
       rollup: ^1.20.0 || ^2.0.0
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.71.1
+      rollup: 2.71.1
+    dev: true
+
+  /@rollup/plugin-node-resolve/13.2.1_rollup@2.71.1:
+    resolution: {integrity: sha512-btX7kzGvp1JwShQI9V6IM841YKNPYjKCvUbNrQ2EcVYbULtUd/GH6wZ/qdqH13j9pOHBER+EZXNN2L8RSJhVRA==}
+    engines: {node: '>= 10.0.0'}
+    peerDependencies:
+      rollup: ^2.42.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.71.1
+      '@types/resolve': 1.17.1
+      builtin-modules: 3.2.0
+      deepmerge: 4.2.2
+      is-module: 1.0.0
+      resolve: 1.22.0
       rollup: 2.71.1
     dev: true
 
@@ -1045,6 +1074,12 @@ packages:
 
   /@types/prettier/2.6.0:
     resolution: {integrity: sha512-G/AdOadiZhnJp0jXCaBQU449W2h716OW/EoXeYkCytxKL06X1WCXB4DZpp8TpZ8eyIJVS1cw4lrlkkSYU21cDw==}
+    dev: true
+
+  /@types/resolve/1.17.1:
+    resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
+    dependencies:
+      '@types/node': 17.0.30
     dev: true
 
   /@types/semver/6.2.3:
@@ -1392,6 +1427,11 @@ packages:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
+  /builtin-modules/3.2.0:
+    resolution: {integrity: sha512-lGzLKcioL90C7wMczpkY0n/oART3MbBa8R9OFGE1rJxoVI86u4WAGfEk8Wjv10eKSyTHVGkSo3bvBylCEtk7LA==}
+    engines: {node: '>=6'}
+    dev: true
+
   /builtins/4.1.0:
     resolution: {integrity: sha512-1bPRZQtmKaO6h7qV1YHXNtr6nCK28k0Zo95KM4dXfILcZZwoHJBN1m3lfLv9LPkcOZlrSr+J1bzMaZFO98Yq0w==}
     dependencies:
@@ -1607,6 +1647,10 @@ packages:
   /commander/8.3.0:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
+    dev: true
+
+  /commondir/1.0.1:
+    resolution: {integrity: sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=}
     dev: true
 
   /concat-map/0.0.1:
@@ -1949,6 +1993,10 @@ packages:
 
   /estree-walker/1.0.1:
     resolution: {integrity: sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==}
+    dev: true
+
+  /estree-walker/2.0.2:
+    resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
     dev: true
 
   /esutils/2.0.3:
@@ -2413,6 +2461,10 @@ packages:
       is-extglob: 2.1.1
     dev: true
 
+  /is-module/1.0.0:
+    resolution: {integrity: sha1-Mlj7afeMFNW4FdZkM2tM/7ZEFZE=}
+    dev: true
+
   /is-number/7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -2430,6 +2482,12 @@ packages:
 
   /is-potential-custom-element-name/1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
+    dev: true
+
+  /is-reference/1.2.1:
+    resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
+    dependencies:
+      '@types/estree': 0.0.39
     dev: true
 
   /is-stream/2.0.1:

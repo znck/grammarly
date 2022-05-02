@@ -1,5 +1,5 @@
 {
-  "name": "grammarly-language-server-transformers",
+  "name": "grammarly-languageserver-transformers",
   "types": "src/index.d.ts",
   "browser": "./dist/index.browser.js",
   "module": "./dist/index.node.js",

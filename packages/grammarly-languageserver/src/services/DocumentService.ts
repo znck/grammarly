@@ -1,5 +1,5 @@
 import type { RichText, SDK, Session } from '@grammarly/sdk'
-import type { Parser, SourceMap, Transformer } from 'grammarly-language-server-transformers'
+import type { Parser, SourceMap, Transformer } from 'grammarly-languageserver-transformers'
 import { inject, injectable } from 'inversify'
 import type { Range, TextDocumentContentChangeEvent } from 'vscode-languageserver-textdocument'
 import { TextDocument } from 'vscode-languageserver-textdocument'
@@ -158,7 +158,7 @@ export class GrammarlyDocument {
     switch (language) {
       case 'html':
       case 'markdown':
-        const { transformers, createParser } = await import('grammarly-language-server-transformers')
+        const { transformers, createParser } = await import('grammarly-languageserver-transformers')
         const parser = await createParser(language)
         const transformer = transformers[language]
         const tree = parser.parse(this.original.getText())
