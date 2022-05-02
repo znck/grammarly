@@ -6,8 +6,9 @@
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
   "version": "0.14.0",
   "icon": "assets/logo.png",
+  "preview": true,
   "engines": {
-    "vscode": "^1.51.0"
+    "vscode": "^1.66.0"
   },
   "repository": {
     "type": "git",
@@ -15,6 +16,13 @@
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "Grammarly",
+    "grammar",
+    "spellcheck",
+    "writing assistant",
+    "writing"
   ],
   "activationEvents": [
     "onLanguage:plaintext",
@@ -26,7 +34,7 @@
       "properties": {
         "grammarly.patterns": {
           "type": "array",
-          "description": "A glob pattern, like `*.{md,txt}`.",
+          "description": "A glob pattern, like `*.{md,txt}` for file scheme.",
           "items": {
             "type": "string"
           },
@@ -108,7 +116,14 @@
       ]
     }
   },
+  "files": [
+    "./dist/",
+    "./README.md",
+    "./CHANGELOG.md",
+    "./LICENSE"
+  ],
   "scripts": {
+    "build": "vsce package --no-dependencies --out grammarly.vsix",
     "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}"
   },
   "dependencies": {

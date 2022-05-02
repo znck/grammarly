@@ -104,7 +104,9 @@ export class GrammarlyDocument {
     const index = binarySearchLowerBound(0, map.length - 1, (index) => map[index][1] <= offset)
     const node = map[index]
     if (node == null) return 0
-    return node[0] + (offset - node[1])
+    const original = node[0] + (offset - node[1])
+
+    return original
   }
 
   public findOriginalRange(start: number, end: number): Range {
@@ -122,7 +124,6 @@ export class GrammarlyDocument {
     const context = this.#context
     if (context == null) {
       TextDocument.update(this.original, changes, version)
-      this.#sync()
     } else if (changes.every((change) => 'range' in change)) {
       const _changes = changes as Array<{ range: Range; text: string }>
       const offsets = _changes.map((change) => ({
@@ -147,6 +148,8 @@ export class GrammarlyDocument {
       TextDocument.update(this.original, changes, version)
       context.tree = context.parser.parse(this.original.getText())
     }
+
+    this.#sync()
   }
 
   async #createTree() {
@@ -166,7 +169,6 @@ export class GrammarlyDocument {
 
   #sync(): void {
     if (this.#context != null) {
-      console.log('Using encoder', this.original.uri)
       const [text, map] = this.#context.transformer.encode(this.#context.tree)
       this.session.setText(text)
       this.#context.sourcemap = map
@@ -178,13 +180,13 @@ export class GrammarlyDocument {
 
 function binarySearchLowerBound(lo: number, hi: number, isValid: (mid: number) => boolean): number {
   while (lo < hi) {
-    const mid = Math.ceil(lo + (hi - lo) / 2)
-    if (!isValid(mid)) {
-      hi = mid - 1
-    } else {
+    const mid = Math.ceil((hi + lo) / 2)
+    if (isValid(mid)) {
       lo = mid
+    } else {
+      hi = mid - 1
     }
   }
 
-  return Math.min(hi, lo)
+  return hi
 }

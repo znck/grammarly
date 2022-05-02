@@ -14,7 +14,7 @@ export class GrammarlyClient implements Registerable {
     const config = workspace.getConfiguration('grammarly')
 
     const documentSelector = [
-      ...(config.get<string[]>('patterns')?.map((pattern) => ({ pattern })) ?? []),
+      ...(config.get<string[]>('patterns')?.map((pattern) => ({ scheme: 'file', pattern })) ?? []),
       ...(config.get<any[]>('selectors')?.filter((item) => Object.keys(item).length > 0) ?? []),
     ]
 

@@ -51,7 +51,6 @@ export class DiagnosticsService implements Registerable {
     const sendDiagnostics = (): void => {
       this.#connection.sendDiagnostics({
         uri: document.original.uri,
-        version: document.original.version,
         diagnostics: Array.from(diagnostics.values()).map((item) => item.diagnostic),
       })
     }
@@ -73,7 +72,12 @@ export class DiagnosticsService implements Registerable {
       console.log(event.detail, document.original.uri)
       switch (event.detail) {
         case 'idle':
+          diagnostics.clear()
+          document.session.suggestions.forEach((suggestion) => {
+            diagnostics.set(suggestion.id, { suggestion, diagnostic: this.#toDiagnostic(document, suggestion) })
+          })
           sendDiagnostics()
+          break
       }
     })
   }

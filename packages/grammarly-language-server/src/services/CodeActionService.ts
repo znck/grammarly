@@ -47,7 +47,8 @@ export class CodeActionService implements Registerable {
                 suggestionId: suggestion.id,
                 replacementId: replacement.id,
               })
-
+              const range = document.findOriginalRange(edit.range.start, edit.range.end)
+              const newText = document.toText(edit.content)
               return {
                 title: replacement.label ?? suggestion.title,
                 kind: CodeActionKind.QuickFix,
@@ -55,12 +56,7 @@ export class CodeActionService implements Registerable {
                 isPreferred: index === 0,
                 edit: {
                   changes: {
-                    [uri]: [
-                      {
-                        range: document.findOriginalRange(edit.range.start, edit.range.end),
-                        newText: document.toText(edit.content),
-                      },
-                    ],
+                    [uri]: [{ range, newText }],
                   },
                 },
               }

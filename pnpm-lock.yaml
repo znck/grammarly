@@ -6,9 +6,7 @@ importers:
     specifiers:
       '@changesets/cli': ^2.22.0
       '@rollup/plugin-alias': ^3.1.9
-      '@rollup/plugin-node-resolve': ^13.2.1
       '@rollup/plugin-typescript': ^8.3.2
-      '@rollup/plugin-wasm': ^5.2.0
       '@vuedx/monorepo-tools': ^0.2.1
       husky: ^7.0.4
       jest: ^27.0.0
@@ -22,9 +20,7 @@ importers:
     devDependencies:
       '@changesets/cli': 2.22.0
       '@rollup/plugin-alias': 3.1.9_rollup@2.71.1
-      '@rollup/plugin-node-resolve': 13.2.1_rollup@2.71.1
       '@rollup/plugin-typescript': 8.3.2_720a6ef9590eb3341203a9177a2b9e25
-      '@rollup/plugin-wasm': 5.2.0_rollup@2.71.1
       '@vuedx/monorepo-tools': 0.2.1_rollup@2.71.1+typescript@4.6.4
       husky: 7.0.4
       jest: 27.5.1
@@ -909,21 +905,6 @@ packages:
       rollup: 2.71.1
     dev: true
 
-  /@rollup/plugin-node-resolve/13.2.1_rollup@2.71.1:
-    resolution: {integrity: sha512-btX7kzGvp1JwShQI9V6IM841YKNPYjKCvUbNrQ2EcVYbULtUd/GH6wZ/qdqH13j9pOHBER+EZXNN2L8RSJhVRA==}
-    engines: {node: '>= 10.0.0'}
-    peerDependencies:
-      rollup: ^2.42.0
-    dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.71.1
-      '@types/resolve': 1.17.1
-      builtin-modules: 3.2.0
-      deepmerge: 4.2.2
-      is-module: 1.0.0
-      resolve: 1.22.0
-      rollup: 2.71.1
-    dev: true
-
   /@rollup/plugin-typescript/8.3.2_720a6ef9590eb3341203a9177a2b9e25:
     resolution: {integrity: sha512-MtgyR5LNHZr3GyN0tM7gNO9D0CS+Y+vflS4v/PHmrX17JCkHUYKvQ5jN5o3cz1YKllM3duXUqu3yOHwMPUxhDg==}
     engines: {node: '>=8.0.0'}
@@ -937,15 +918,6 @@ packages:
       rollup: 2.71.1
       tslib: 2.4.0
       typescript: 4.6.4
-    dev: true
-
-  /@rollup/plugin-wasm/5.2.0_rollup@2.71.1:
-    resolution: {integrity: sha512-PR3ff67ls2Kr9H04pZ24wJYPZq0YV+UHySpk7OuAJxyc7o5Q8NHFdwi4pfMtJkJkqfN1/QY/nq46SoRDoDvK2w==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0 || ^2.0.0
-    dependencies:
-      rollup: 2.71.1
     dev: true
 
   /@rollup/pluginutils/3.1.0_rollup@2.71.1:
@@ -1073,12 +1045,6 @@ packages:
 
   /@types/prettier/2.6.0:
     resolution: {integrity: sha512-G/AdOadiZhnJp0jXCaBQU449W2h716OW/EoXeYkCytxKL06X1WCXB4DZpp8TpZ8eyIJVS1cw4lrlkkSYU21cDw==}
-    dev: true
-
-  /@types/resolve/1.17.1:
-    resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
-    dependencies:
-      '@types/node': 17.0.30
     dev: true
 
   /@types/semver/6.2.3:
@@ -1425,11 +1391,6 @@ packages:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
-
-  /builtin-modules/3.2.0:
-    resolution: {integrity: sha512-lGzLKcioL90C7wMczpkY0n/oART3MbBa8R9OFGE1rJxoVI86u4WAGfEk8Wjv10eKSyTHVGkSo3bvBylCEtk7LA==}
-    engines: {node: '>=6'}
-    dev: true
 
   /builtins/4.1.0:
     resolution: {integrity: sha512-1bPRZQtmKaO6h7qV1YHXNtr6nCK28k0Zo95KM4dXfILcZZwoHJBN1m3lfLv9LPkcOZlrSr+J1bzMaZFO98Yq0w==}
@@ -2450,10 +2411,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
-    dev: true
-
-  /is-module/1.0.0:
-    resolution: {integrity: sha1-Mlj7afeMFNW4FdZkM2tM/7ZEFZE=}
     dev: true
 
   /is-number/7.0.0:

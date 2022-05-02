@@ -11,9 +11,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
     "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-typescript": "^8.3.2",
-    "@rollup/plugin-wasm": "^5.2.0",
     "@vuedx/monorepo-tools": "^0.2.1",
     "husky": "^7.0.4",
     "jest": "^27.0.0",
