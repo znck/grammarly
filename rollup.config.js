@@ -31,7 +31,7 @@ export default generateRollupOptions({
         const plugins = options.plugins.slice()
 
         if (
-          info.packageJson.name === 'grammarly' ||
+          options.input === 'grammarly/src/server.ts' ||
           info.packageJson.name === 'grammarly-languageserver-transformers'
         ) {
           plugins.push(
@@ -65,21 +65,16 @@ export default generateRollupOptions({
             alias({
               entries: [
                 ...entries.map((find) => ({ find: new RegExp(`^${find}(/node)?$`), replacement: `${find}/browser` })),
-                // { find: new RegExp('^@grammarly/sdk$'), replacement: '@grammarly/sdk/lib/index.esm.js' },
-                // {
-                //   find: new RegExp('^grammarly-languageserver-transformers$'),
-                //   replacement: 'grammarly-languageserver-transformers/dist/index.browser.js',
-                // },
               ],
             }),
             {
               id: 'resolve',
               resolveId(id, file) {
                 if (id === 'path' && file.includes('/node_modules/minimatch/'))
-                  return `${__dirname}/scripts/minimatch-path.js`
+                  return `${__dirname}/polyfills/minimatch-path.js`
                 if (['path', 'fs'].includes(id) && file.includes('/node_modules/web-tree-sitter/'))
-                  return `${__dirname}/scripts/web-tree-sitter-path.js`
-                if (id === 'isomorphic-fetch') return `${__dirname}/scripts/fetch.js`
+                  return `${__dirname}/polyfills/web-tree-sitter-path.js`
+                if (id === 'isomorphic-fetch') return `${__dirname}/polyfills/fetch.js`
               },
             },
             ...plugins,

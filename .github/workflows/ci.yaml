@@ -98,9 +98,9 @@ jobs:
           path: .
       - name: Publish Pre-release Extension
         run: >
-          pnpm recursive --filter ./extensions run build
+          pnpm recursive --filter ./extension run build
 
-          pnpm recursive --filter ./extensions run pre-release
+          pnpm recursive --filter ./extension run pre-release
         env:
           RELEASE_CHANNEL: pre-release
           VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
@@ -123,17 +123,11 @@ jobs:
           prerelease: true
           files: |
             extension/*.vsix
-  check_release:
-    name: Check Release
-    runs-on: ubuntu-latest
-    needs: build
-    if: startsWith(github.event.ref, 'refs/tags/v')
-    steps:
-      - run: echo 'ok'
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: check_release
+    needs: build
+    if: startsWith(github.event.ref, 'refs/tags/v')
     concurrency:
       group: release
       cancel-in-progress: false

@@ -2,5 +2,6 @@
 !dist/
 !assets/
 !package.json
-!readme.md
+!README.md
 !CHANGELOG.md
+!LICENSE.txt

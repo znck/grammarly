@@ -124,14 +124,13 @@
     }
   },
   "files": [
-    "./dist/",
-    "./README.md",
-    "./CHANGELOG.md",
-    "./LICENSE.txt"
+    "./dist",
+    "./assets"
   ],
   "scripts": {
-    "build": "vsce package --no-dependencies --out grammarly.vsix",
-    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}"
+    "build": "node ../scripts/build-extension.mjs",
+    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}",
+    "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN}"
   },
   "dependencies": {
     "grammarly-languageclient": "workspace:*",
