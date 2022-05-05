@@ -26,7 +26,8 @@
   ],
   "activationEvents": [
     "onLanguage:plaintext",
-    "onLanguage:markdown"
+    "onLanguage:markdown",
+    "onLanguage:html"
   ],
   "contributes": {
     "configuration": {
@@ -67,6 +68,194 @@
           },
           "default": [],
           "required": true
+        },
+        "grammarly.config.documentDialect": {
+          "markdownDescription": "Specific variety of English being written. See [this article](https://support.grammarly.com/hc/en-us/articles/115000089992-Select-between-British-English-American-English-Canadian-English-and-Australian-English) for differences.",
+          "enum": [
+            "american",
+            "australian",
+            "british",
+            "canadian",
+            "auto-text"
+          ],
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            "",
+            "An appropriate value based on the text."
+          ],
+          "default": "auto-text"
+        },
+        "grammarly.config.documentDomain": {
+          "markdownDescription": "The style or type of writing to be checked. See [What is domain/document type](https://support.grammarly.com/hc/en-us/articles/115000091472-What-is-domain-document-type-)?",
+          "enum": [
+            "academic",
+            "business",
+            "general",
+            "mail",
+            "casual",
+            "creative"
+          ],
+          "enumDescriptions": [
+            "Academic is the strictest style of writing. On top of catching grammar and punctuation issues, Grammarly will make suggestions around passive voice, contractions, and informal pronouns (I, you), and will point out unclear antecedents (e.g., sentences starting with “This is…”).",
+            "The business style setting checks the text against formal writing criteria. However, unlike the Academic domain, it allows the use of some informal expressions, informal pronouns, and unclear antecedents.",
+            "This is the default style and uses a medium level of strictness.",
+            "The email genre is similar to the General domain and helps ensure that your email communication is engaging. In addition to catching grammar, spelling, and punctuation mistakes, Grammarly also points out the use of overly direct language that may sound harsh to a reader.",
+            "Casual is designed for informal types of writing and ignores most style issues. It does not flag contractions, passive voice, informal pronouns, who-versus-whom usage, split infinitives, or run-on sentences. This style is suitable for personal communication.",
+            "This is the most permissive style. It catches grammar, punctuation, and spelling mistakes but allows some leeway for those who want to intentionally bend grammar rules to achieve certain effects. Creative doesn’t flag sentence fragments (missing subjects or verbs), wordy sentences, colloquialisms, informal pronouns, passive voice, incomplete comparisons, or run-on sentences."
+          ],
+          "default": "general"
+        },
+        "grammarly.config.suggestions.ConjunctionAtStartOfSentence": {
+          "description": "Flags use of conjunctions such as 'but' and 'and' at the beginning of sentences.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.Fluency": {
+          "description": "Suggests ways to sound more natural and fluent.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.InformalPronounsAcademic": {
+          "description": "Flags use of personal pronouns such as 'I' and 'you' in academic writing.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.MissingSpaces": {
+          "description": "Suggests adding missing spacing after a numeral when writing times.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NounStrings": {
+          "description": "Flags a series of nouns that modify a final noun.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NumbersBeginningSentences": {
+          "description": "Suggests spelling out numbers at the beginning of sentences.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NumbersZeroThroughTen": {
+          "description": "Suggests spelling out numbers zero through ten.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.OxfordComma": {
+          "description": "Suggests adding the Oxford comma after the second-to-last item in a list of things.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PassiveVoice": {
+          "description": "Flags use of passive voice.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PersonFirstLanguage": {
+          "description": "Suggests using person-first language to refer respectfully to an individual with a disability.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageAgeRelated": {
+          "description": "Suggests alternatives to potentially biased language related to older adults.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageDisabilityRelated": {
+          "description": "Suggests alternatives to potentially ableist language.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageFamilyRelated": {
+          "description": "Suggests alternatives to potentially biased language related to parenting and family systems.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageGenderRelated": {
+          "description": "Suggests alternatives to potentially gender-biased and non-inclusive phrasing.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRights": {
+          "description": "Suggests alternatives to language related to human slavery.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRightsRelated": {
+          "description": "Suggests alternatives to terms with origins in the institution of slavery.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageLgbtqiaRelated": {
+          "description": "Flags LGBTQIA+-related terms that may be seen as biased, outdated, or disrespectful in some contexts.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageRaceEthnicityRelated": {
+          "description": "Suggests alternatives to potentially biased language related to race and ethnicity.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyPoliticallyIncorrectLanguage": {
+          "description": "Suggests alternatives to language that may be considered politically incorrect.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PrepositionAtTheEndOfSentence": {
+          "description": "Flags use of prepositions such as 'with' and 'in' at the end of sentences.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PunctuationWithQuotation": {
+          "description": "Suggests placing punctuation before closing quotation marks.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.ReadabilityFillerwords": {
+          "description": "Flags long, complicated sentences that could potentially confuse your reader.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.ReadabilityTransforms": {
+          "description": "Suggests splitting long, complicated sentences that could potentially confuse your reader.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SentenceVariety": {
+          "description": "Flags series of sentences that follow the same pattern.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SpacesSurroundingSlash": {
+          "description": "Suggests removing extra spaces surrounding a slash.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SplitInfinitive": {
+          "description": "Suggests rewriting split infinitives so that an adverb doesn't come between 'to' and the verb.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.StylisticFragments": {
+          "description": "Suggests completing all incomplete sentences, including stylistic sentence fragments that may be intentional.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.UnnecessaryEllipses": {
+          "description": "Flags unnecessary use of ellipses (...).",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.Variety": {
+          "description": "Suggests alternatives to words that occur frequently in the same paragraph.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.Vocabulary": {
+          "description": "Suggests alternatives to bland and overused words such as 'good' and 'nice'.",
+          "type": "boolean",
+          "default": true
         }
       }
     }
@@ -108,8 +297,33 @@
           "file": "dist/server/index.node.js",
           "bundle": {
             "platform": "node",
+            "conditions": [
+              "node",
+              "import"
+            ],
             "external": [
-              "encoding"
+              "buffer",
+              "bufferutil",
+              "encoding",
+              "node:buffer",
+              "node:crypto",
+              "node:events",
+              "node:fs",
+              "node:http",
+              "node:https",
+              "node:net",
+              "node:path",
+              "node:perf_hooks",
+              "node:process",
+              "node:stream",
+              "node:stream/web",
+              "node:tls",
+              "node:url",
+              "node:util",
+              "node:vm",
+              "node:zlib",
+              "worker_threads",
+              "utf-8-validate"
             ]
           }
         },

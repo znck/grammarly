@@ -1,5 +1,4 @@
 import type { RichText, SDK, Session } from '@grammarly/sdk'
-import type { Parser, SourceMap, Transformer } from 'grammarly-languageserver-transformers'
 import { inject, injectable } from 'inversify'
 import type { Range, TextDocumentContentChangeEvent } from 'vscode-languageserver-textdocument'
 import { TextDocument } from 'vscode-languageserver-textdocument'
@@ -10,8 +9,13 @@ import {
   TextDocuments,
   TextDocumentSyncKind,
 } from 'vscode-languageserver/node'
+import Parser from 'web-tree-sitter'
 import { CONNECTION, GRAMMARLY_SDK, SERVER } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
+import { SourceMap } from '../interfaces/SourceMap'
+import { Transformer } from '../interfaces/Transformer'
+import { createParser, transformers } from '../languages'
+import { ConfigurationService } from './ConfigurationService'
 
 @injectable()
 export class DocumentService implements Registerable {
@@ -23,10 +27,13 @@ export class DocumentService implements Registerable {
     @inject(CONNECTION) private readonly connection: Connection,
     @inject(SERVER) private readonly capabilities: ServerCapabilities,
     @inject(GRAMMARLY_SDK) sdk: SDK,
+    config: ConfigurationService,
   ) {
     this.#documents = new TextDocuments({
       create(uri, languageId, version, content) {
-        return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), sdk.withText({ ops: [] }))
+        return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () =>
+          sdk.withText({ ops: [] }, await config.getDocumentSettings(uri)),
+        )
       },
       update(document, changes, version) {
         document.update(changes, version)
@@ -46,6 +53,11 @@ export class DocumentService implements Registerable {
       this.#documents.onDidOpen(async ({ document }) => {
         console.log('open', document.original.uri)
         await document.isReady()
+        this.connection.sendNotification('$/grammarlyCheckingStatus', {
+          uri: document.original.uri,
+          status: document.session.status,
+        })
+        this.connection.sendNotification('$/grammarlyUserType', document.session.userType)
         this.#onDocumentOpenCbs.forEach((cb) => cb(document))
       }),
       this.#documents.onDidClose(({ document }) => {
@@ -77,8 +89,9 @@ export class DocumentService implements Registerable {
 }
 
 export class GrammarlyDocument {
-  public readonly original: TextDocument
-  public readonly session: Session<RichText>
+  public original: TextDocument
+  public session!: Session<RichText>
+  private readonly createSession: () => Promise<Session<RichText>>
 
   #context: {
     parser: Parser
@@ -87,14 +100,14 @@ export class GrammarlyDocument {
     sourcemap: SourceMap
   } | null = null
 
-  constructor(original: TextDocument, session: Session<RichText>) {
+  constructor(original: TextDocument, createSession: () => Promise<Session<RichText>>) {
     this.original = original
-    this.session = session
+    this.createSession = createSession
   }
 
   public async isReady(): Promise<void> {
+    this.session = await this.createSession()
     await this.#createTree()
-
     this.#sync()
   }
 
@@ -158,7 +171,6 @@ export class GrammarlyDocument {
     switch (language) {
       case 'html':
       case 'markdown':
-        const { transformers, createParser } = await import('grammarly-languageserver-transformers')
         const parser = await createParser(language)
         const transformer = transformers[language]
         const tree = parser.parse(this.original.getText())

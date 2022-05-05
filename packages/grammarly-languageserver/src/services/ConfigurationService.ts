@@ -2,8 +2,9 @@ import { inject, injectable } from 'inversify'
 import { Connection, Disposable } from 'vscode-languageserver/node'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
+import { EditorConfig } from '@grammarly/sdk'
 
-type DocumentConfig = {}
+type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestions'>
 
 @injectable()
 export class ConfigurationService implements Registerable {

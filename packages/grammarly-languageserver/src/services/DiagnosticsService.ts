@@ -70,6 +70,11 @@ export class DiagnosticsService implements Registerable {
     })
     document.session.addEventListener('status', (event) => {
       console.log(event.detail, document.original.uri)
+      this.#connection.sendNotification('$/grammarlyCheckingStatus', {
+        uri: document.original.uri,
+        status: event.detail,
+      })
+
       switch (event.detail) {
         case 'idle':
           diagnostics.clear()

@@ -10,7 +10,7 @@ export default generateRollupOptions({
     if (kind === 'dts') return info.rollupOptions
     const options = info.rollupOptions
 
-    options.plugins.push(resolve(), typescript({ tsconfig: info.tsconfig.configFile }))
+    options.plugins.push(typescript({ tsconfig: info.tsconfig.configFile }))
     const entries = [
       'vscode-jsonrpc',
       'vscode-languageclient',
@@ -21,40 +21,40 @@ export default generateRollupOptions({
     return options.output
       .map((output) => {
         const isBrowser = output.file.includes('.browser.')
-        if (!isBrowser)
+        if (!isBrowser) {
           return {
             ...options,
             output,
-            plugins: [...options.plugins],
+            plugins: [
+              resolve({ exportConditions: ['node', 'import', 'require'], preferBuiltins: true }),
+              ...options.plugins,
+            ],
           }
+        }
 
         const plugins = options.plugins.slice()
 
-        if (
-          options.input === 'grammarly/src/server.ts' ||
-          info.packageJson.name === 'grammarly-languageserver-transformers'
-        ) {
-          plugins.push(
-            copy({
-              targets: [
-                {
-                  src: Path.resolve(
-                    __dirname,
-                    'packages/grammarly-languageserver-transformers/node_modules/tree-sitter-wasm-prebuilt/lib/tree-sitter-{html,markdown}.wasm',
-                  ),
-                  dest: Path.dirname(output.file),
-                },
-              ],
-            }),
-          )
+        if (info.packageJson.name === 'grammarly-languageserver') {
+          plugins.push(wasm(output.file))
         }
+
         if (info.packageJson.name === 'grammarly') {
-          plugins.push({
-            id: 'resolve',
-            resolveId(id) {
-              if (id.startsWith('node:')) return { id: id.substring(5), external: true }
-            },
-          })
+          if (Path.basename(options.input) === 'server.ts') {
+            plugins.push(
+              wasm(output.file),
+              copy({
+                targets: [
+                  {
+                    src: Path.resolve(
+                      __dirname,
+                      'packages/grammarly-languageserver/node_modules/web-tree-sitter/tree-sitter.wasm',
+                    ),
+                    dest: Path.dirname(output.file),
+                  },
+                ],
+              }),
+            )
+          }
         }
 
         return {
@@ -67,16 +67,8 @@ export default generateRollupOptions({
                 ...entries.map((find) => ({ find: new RegExp(`^${find}(/node)?$`), replacement: `${find}/browser` })),
               ],
             }),
-            {
-              id: 'resolve',
-              resolveId(id, file) {
-                if (id === 'path' && file.includes('/node_modules/minimatch/'))
-                  return `${__dirname}/polyfills/minimatch-path.js`
-                if (['path', 'fs'].includes(id) && file.includes('/node_modules/web-tree-sitter/'))
-                  return `${__dirname}/polyfills/web-tree-sitter-path.js`
-                if (id === 'isomorphic-fetch') return `${__dirname}/polyfills/fetch.js`
-              },
-            },
+            patch(),
+            resolve(),
             ...plugins,
           ],
         }
@@ -84,3 +76,33 @@ export default generateRollupOptions({
       .filter(Boolean)
   },
 })
+
+function patch() {
+  return {
+    id: 'patch',
+    resolveId(id, file) {
+      if (id === 'path' && file.includes('/node_modules/minimatch/')) {
+        return `${__dirname}/polyfills/minimatch-path.js`
+      }
+
+      if (['path', 'fs'].includes(id) && file.includes('/node_modules/web-tree-sitter/')) {
+        return `${__dirname}/polyfills/web-tree-sitter-path.js`
+      }
+
+      if (id === 'node-fetch') {
+        return `${__dirname}/polyfills/fetch.js`
+      }
+    },
+  }
+}
+
+function wasm(file) {
+  return copy({
+    targets: [
+      {
+        src: Path.resolve(__dirname, 'tree-sitter/tree-sitter-{html,markdown}.wasm'),
+        dest: Path.dirname(file),
+      },
+    ],
+  })
+}

@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import 'isomorphic-fetch'
+import './polyfill-fetch'
 import { init } from '@grammarly/sdk'
 import { Container } from 'inversify'
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node'
@@ -31,9 +31,13 @@ export function startLanguageServer(): void {
     if (options?.clientId == null) throw new Error('clientId is required')
     const sdk = await init(options.clientId)
 
-    function onHandleOAuthUrl(url: string): void {
-      connection.sendNotification('openOAuthUrl', url)
+    globalThis.open = (url) => {
+      connection.sendNotification('$/openOAuthUrl', url)
+      return null
     }
+    connection.onNotification('$/handleOAuthUrl', (url: string) => {
+      sdk.handleOAuthCallback(url)
+    })
 
     container.bind(CLIENT).toConstantValue(params.capabilities)
     container.bind(CLIENT_INFO).toConstantValue({ ...params.clientInfo, id: options.clientId })

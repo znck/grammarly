@@ -5,6 +5,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "build:wasm": "node scripts/build-wasm.mjs",
     "watch": "rollup --watch -c",
     "test": "jest"
   },
@@ -13,6 +14,7 @@
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@vuedx/monorepo-tools": "^0.2.1",
     "husky": "^7.0.4",
@@ -23,6 +25,9 @@
     "rollup": "^2.71.1",
     "rollup-plugin-copy": "^3.4.0",
     "semver": "^7.3.7",
+    "tree-sitter-cli": "^0.20.6",
+    "tree-sitter-html": "^0.19.0",
+    "tree-sitter-markdown": "^0.7.1",
     "ts-jest": "^27.1.4",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
