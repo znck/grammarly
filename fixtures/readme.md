@@ -8,7 +8,7 @@ also showed you how to correctly write the sentence.
 _Typical highlights works_ well when writing but they are a bit lmpty .
 Underlines **that are** blue indicate that Grammarly has spotted an unnecessarily wordy sentence. You’ll find suggestions that
 can possibly help you revise a wordy **sentence** in
-an effortless manner.
+an [effortless](https://example.com) manner.
 But wait...there’s more?
 
 Grammarly Premium can give you very helpful feedback on your writing. Passive voice can be fixed by Grammarly, and it can handle classical word-choice mistakes. It can also help with inconsistencies such as switching between Email, e-mail, and email or the U.S.A. and the USA.
