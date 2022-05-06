@@ -3,10 +3,11 @@
     "module": "ESNext",
     "target": "ES2019",
     "moduleResolution": "node",
-
     "lib": ["ES2019"],
-    "sourceMap": true,
+
     "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noImplicitReturns": true,

@@ -1,0 +1,42 @@
+{
+  "name": "grammarly-languageserver",
+  "version": "0.0.0",
+  "description": "LSP server implementation for Grammarly",
+  "author": "Rahul Kadyan <hey@znck.me>",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.browser.js",
+  "bin": "bin/server.js",
+  "types": "src/index.ts",
+  "publishConfig": {
+    "types": "dist/index.d.ts"
+  },
+  "buildConfig": {
+    "external": [
+      "vscode-languageserver/browser",
+      "vscode-languageserver/node"
+    ],
+    "sources": {
+      "src/index.ts": [
+        {
+          "format": "esm",
+          "file": "dist/index.browser.js"
+        }
+      ]
+    }
+  },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "dependencies": {
+    "@grammarly/sdk": "^1.7.3",
+    "inversify": "^6.0.1",
+    "node-fetch": "^3.2.4",
+    "reflect-metadata": "^0.1.13",
+    "vscode-languageserver": "^7.0.0",
+    "vscode-languageserver-textdocument": "^1.0.4",
+    "web-tree-sitter": "0.20.5"
+  }
+}

@@ -1,75 +1,189 @@
 name: CI/CD
-
-on:
-  workflow_dispatch:
-    inputs:
-      release:
-        description: Should publish packages and extensions?
-        default: 'no'
+"on":
   pull_request:
-  release:
-    types:
-      - released
-  push:
-    paths-ignore:
-      - 'docs/**'
-      - 'samples/**'
-      - '.github/**'
-      - '!.github/workflows/ci.yaml'
     branches:
       - main
-
-defaults:
-  run:
-    shell: bash
-
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
-  debug:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "ref: ${{ github.ref }}, event: ${{ github.event_name }}, action: ${{ github.event.action }}"
-
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    environment: Production
-    if: |
-      (
-        github.event_name == 'release' &&
-        github.event.action == 'released'
-      ) || (
-        github.event.inputs.release == 'yes'
-      )
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v2-beta
-        with:
-          node-version: '14.14.0'
-
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v1.2.1
-        with:
-          version: 5.5.4
-          run_install: |
-            - args: [--frozen-lockfile, --silent]
-
-      - name: Build Packages
-        run: |
-          pnpm build
-
-      - name: Publish Extension
-        run: |
-          pnpm recursive --filter ./extension run release
+      - name: Cache node packages
+        uses: actions/cache@v2
         env:
-          VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          cache-name: pnpm-modules
+        with:
+          key: >-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{
+            hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.2.5
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+      - name: Build
+        run: pnpm run build
+      - name: Upload build artefact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artefact
+          retention-days: 30
+          path: |
+            ./packages/*/dist
+            ./extension/dist
+  pre-release:
+    name: Pre-release
+    runs-on: ubuntu-latest
+    needs: build
+    concurrency:
+      group: pre-release
+      cancel-in-progress: true
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache node packages
+        uses: actions/cache@v2
+        env:
+          cache-name: pnpm-modules
+        with:
+          key: >-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{
+            hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.2.5
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+      - name: Download build artefact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artefact
+          path: .
+      - name: Publish Pre-release Extension
+        run: >
+          pnpm recursive --filter ./extension run build
 
-      - name: Publish Packages
-        run: |
-          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
-          pnpm recursive --filter ./packages publish --tag latest --access public --no-git-checks
+          pnpm recursive --filter ./extension run pre-release
+        env:
+          RELEASE_CHANNEL: pre-release
+          VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          # OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
+      - name: Publish Pre-release Packages
+        run: >
+          pnpm recursive exec -- pnpm version prerelease --preid=next-$(date
+          +%s) --no-commit-hooks --no-git-tag-version
+
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+
+          pnpm recursive publish --tag next --access public --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          title: Development Build
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: true
+          files: |
+            extension/*.vsix
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache node packages
+        uses: actions/cache@v2
+        env:
+          cache-name: pnpm-modules
+        with:
+          key: >-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{
+            hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.2.5
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+      - name: Download build artefact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artefact
+          path: .
+      - name: Publish Extension
+        run: >
+          pnpm recursive --filter ./extension run build
+
+          pnpm recursive --filter ./extension run release
+
+        env:
+          VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          # OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
+        continue-on-error: true
+      - name: Publish Packages
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+          pnpm recursive publish --tag latest --access public --no-git-checks
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          files: |
+            extension/*.vsix

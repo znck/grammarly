@@ -2,12 +2,13 @@
   "private": true,
   "name": "grammarly",
   "publisher": "znck",
-  "displayName": "Grammarly (unofficial)",
+  "displayName": "Grammarly",
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
   "version": "0.14.0",
   "icon": "assets/logo.png",
+  "preview": true,
   "engines": {
-    "vscode": "^1.51.0"
+    "vscode": "^1.66.0"
   },
   "repository": {
     "type": "git",
@@ -16,378 +17,340 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "Grammarly",
+    "grammar",
+    "spellcheck",
+    "writing assistant",
+    "writing"
+  ],
   "activationEvents": [
-    "onUri",
     "onLanguage:plaintext",
     "onLanguage:markdown",
-    "onLanguage:mdx",
-    "onCommand:grammarly.login",
-    "onCommand:grammarly.logout",
-    "onCommand:grammarly.stop",
-    "onCommand:grammarly.check",
-    "onCommand:grammarly.setGoals"
+    "onLanguage:html"
   ],
   "contributes": {
     "configuration": {
       "title": "Grammarly",
       "properties": {
-        "grammarly.autoActivate": {
-          "scope": "resource",
-          "type": "boolean",
-          "description": "Enable Grammarly service when a supported document is opened.",
-          "default": true
-        },
-        "grammarly.audience": {
-          "scope": "resource",
-          "enum": [
-            "general",
-            "knowledgeable",
-            "expert"
-          ],
-          "default": "knowledgeable",
-          "enumDescriptions": [
-            "Easy for anyone to read with minimal effort.",
-            "Requires focus to read and understand.",
-            "May require rereading to understand."
-          ]
-        },
-        "grammarly.dialect": {
-          "scope": "resource",
-          "enum": [
-            "american",
-            "australian",
-            "british",
-            "canadian"
-          ],
-          "default": "american",
-          "enumDescriptions": [
-            "🇺🇸American",
-            "🇦🇺Australian",
-            "🇬🇧British",
-            "🇨🇦Canadian"
-          ]
-        },
-        "grammarly.domain": {
-          "scope": "resource",
-          "enum": [
-            "academic",
-            "business",
-            "general",
-            "technical",
-            "casual",
-            "creative"
-          ],
-          "default": "general",
-          "enumDescriptions": [
-            "Strictly applies all rules and formal writing conventions.",
-            "Applies almost all rules, but allow some informal expressions.",
-            "Applies most rules and conventions with medium strictness.",
-            "Applies almost all rules, plus technical writing conventions.",
-            "Applies most rules, but allow stylistic flexibility.",
-            "Allows some intentional bending of rules and conventions."
-          ]
-        },
-        "grammarly.emotions": {
-          "markdownDescription": "**Experimental.** How do you want to sound?",
-          "scope": "resource",
+        "grammarly.patterns": {
           "type": "array",
-          "items": {
-            "enum": [
-              "neutral",
-              "confident",
-              "joyful",
-              "optimistic",
-              "respectful",
-              "urgent",
-              "friendly",
-              "analytical"
-            ],
-            "enumDescriptions": [
-              "😐 Neutral",
-              "🤝 Confident",
-              "🙂 Joyful",
-              "✌️ Optimistic",
-              "🙌 Respectful",
-              "⏰ Urgent",
-              "🤗 Friendly",
-              "📊 Analytical"
-            ]
-          },
-          "default": []
-        },
-        "grammarly.goals": {
-          "markdownDescription": "**Experimental.** What are you trying to do?",
-          "scope": "resource",
-          "type": "array",
-          "items": {
-            "enum": [
-              "inform",
-              "describe",
-              "convince",
-              "tellStory"
-            ],
-            "enumDescriptions": [
-              "Inform",
-              "Describe",
-              "Convince",
-              "Tell A Story"
-            ]
-          },
-          "default": []
-        },
-        "grammarly.overrides": {
-          "description": "Per document override for audience, dialect, domain, emotions and goals.",
-          "scope": "resource",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "files": {
-                "description": "List of files or glob patterns.",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "config": {
-                "type": "object",
-                "properties": {
-                  "audience": {
-                    "enum": [
-                      "general",
-                      "knowledgeable",
-                      "expert"
-                    ],
-                    "enumDescriptions": [
-                      "Easy for anyone to read with minimal effort.",
-                      "Requires focus to read and understand.",
-                      "May require rereading to understand."
-                    ]
-                  },
-                  "dialect": {
-                    "enum": [
-                      "american",
-                      "australian",
-                      "british",
-                      "canadian"
-                    ],
-                    "enumDescriptions": [
-                      "🇺🇸American",
-                      "🇦🇺Australian",
-                      "🇬🇧British",
-                      "🇨🇦Canadian"
-                    ]
-                  },
-                  "domain": {
-                    "enum": [
-                      "academic",
-                      "business",
-                      "general",
-                      "technical",
-                      "casual",
-                      "creative"
-                    ],
-                    "enumDescriptions": [
-                      "Strictly applies all rules and formal writing conventions.",
-                      "Applies almost all rules, but allow some informal expressions.",
-                      "Applies most rules and conventions with medium strictness.",
-                      "Applies almost all rules, plus technical writing conventions.",
-                      "Applies most rules, but allow stylistic flexibility.",
-                      "Allows some intentional bending of rules and conventions."
-                    ]
-                  },
-                  "emotions": {
-                    "markdownDescription": "**Experimental.** How do you want to sound? This helps us build new suggestions and won't affect your feedback today.",
-                    "type": "array",
-                    "items": {
-                      "enum": [
-                        "neutral",
-                        "confident",
-                        "joyful",
-                        "optimistic",
-                        "respectful",
-                        "urgent",
-                        "friendly",
-                        "analytical"
-                      ],
-                      "enumDescriptions": [
-                        "😐 Neutral",
-                        "🤝 Confident",
-                        "🙂 Joyful",
-                        "✌️ Optimistic",
-                        "🤗 Friendly",
-                        "⏰ Urgent",
-                        "📊 Analytical",
-                        "🙌 Respectful"
-                      ]
-                    }
-                  },
-                  "goals": {
-                    "markdownDescription": "**Experimental.** What are you trying to do? This helps us build new suggestions and won't affect your feedback today.",
-                    "type": "array",
-                    "items": {
-                      "enum": [
-                        "inform",
-                        "describe",
-                        "convince",
-                        "tellStory"
-                      ],
-                      "enumDescriptions": [
-                        "Inform",
-                        "Describe",
-                        "Convince",
-                        "Tell A Story"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "grammarly.ignore": {
-          "scope": "resource",
-          "description": "Ignored files.",
-          "type": "array",
+          "description": "A glob pattern, like `*.{md,txt}` for file scheme.",
           "items": {
             "type": "string"
           },
           "default": [
-            "**/node_modules/**/*"
-          ]
+            "**/readme.md",
+            "**/README.md",
+            "**/*.txt"
+          ],
+          "required": true
         },
-        "grammarly.userWords": {
-          "description": "A list of words as a local dictionary.",
-          "scope": "resource",
+        "grammarly.selectors": {
           "type": "array",
+          "description": "Filter documents to be checked with Grammarly.",
           "items": {
-            "type": "string"
-          }
-        },
-        "grammarly.diagnostics": {
-          "type": "object",
-          "properties": {
-            "[markdown]": {
-              "type": "object",
-              "properties": {
-                "ignore": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
+            "type": "object",
+            "properties": {
+              "scheme": {
+                "type": "string",
+                "description": "A Uri scheme, like `file` or `untitled`."
+              },
+              "language": {
+                "type": "string",
+                "description": "A language id, like `typescript`."
+              },
+              "pattern": {
+                "type": "string",
+                "description": "A glob pattern, like `*.{md,txt}`."
               }
             }
           },
-          "default": {
-            "[markdown]": {
-              "ignore": [
-                "code"
-              ]
-            }
-          }
+          "default": [],
+          "required": true
         },
-        "grammarly.severity": {
-          "type": "object",
-          "scope": "resource",
-          "description": "A mapping from Grammarly alert categories to VS Code diagnostics severity.",
-          "additionalProperties": {
-            "enum": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "enumDescriptions": [
-              "Error",
-              "Warning",
-              "Info",
-              "Hint"
+        "grammarly.config.documentDialect": {
+          "markdownDescription": "Specific variety of English being written. See [this article](https://support.grammarly.com/hc/en-us/articles/115000089992-Select-between-British-English-American-English-Canadian-English-and-Australian-English) for differences.",
+          "enum": [
+            "american",
+            "australian",
+            "british",
+            "canadian",
+            "auto-text"
+          ],
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            "",
+            "An appropriate value based on the text."
+          ],
+          "default": "auto-text"
+        },
+        "grammarly.config.documentDomain": {
+          "markdownDescription": "The style or type of writing to be checked. See [What is domain/document type](https://support.grammarly.com/hc/en-us/articles/115000091472-What-is-domain-document-type-)?",
+          "enum": [
+            "academic",
+            "business",
+            "general",
+            "mail",
+            "casual",
+            "creative"
+          ],
+          "enumDescriptions": [
+            "Academic is the strictest style of writing. On top of catching grammar and punctuation issues, Grammarly will make suggestions around passive voice, contractions, and informal pronouns (I, you), and will point out unclear antecedents (e.g., sentences starting with “This is…”).",
+            "The business style setting checks the text against formal writing criteria. However, unlike the Academic domain, it allows the use of some informal expressions, informal pronouns, and unclear antecedents.",
+            "This is the default style and uses a medium level of strictness.",
+            "The email genre is similar to the General domain and helps ensure that your email communication is engaging. In addition to catching grammar, spelling, and punctuation mistakes, Grammarly also points out the use of overly direct language that may sound harsh to a reader.",
+            "Casual is designed for informal types of writing and ignores most style issues. It does not flag contractions, passive voice, informal pronouns, who-versus-whom usage, split infinitives, or run-on sentences. This style is suitable for personal communication.",
+            "This is the most permissive style. It catches grammar, punctuation, and spelling mistakes but allows some leeway for those who want to intentionally bend grammar rules to achieve certain effects. Creative doesn’t flag sentence fragments (missing subjects or verbs), wordy sentences, colloquialisms, informal pronouns, passive voice, incomplete comparisons, or run-on sentences."
+          ],
+          "default": "general"
+        },
+        "grammarly.config.suggestions.ConjunctionAtStartOfSentence": {
+          "description": "Flags use of conjunctions such as 'but' and 'and' at the beginning of sentences.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.Fluency": {
+          "description": "Suggests ways to sound more natural and fluent.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.InformalPronounsAcademic": {
+          "description": "Flags use of personal pronouns such as 'I' and 'you' in academic writing.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.MissingSpaces": {
+          "description": "Suggests adding missing spacing after a numeral when writing times.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NounStrings": {
+          "description": "Flags a series of nouns that modify a final noun.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NumbersBeginningSentences": {
+          "description": "Suggests spelling out numbers at the beginning of sentences.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.NumbersZeroThroughTen": {
+          "description": "Suggests spelling out numbers zero through ten.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.OxfordComma": {
+          "description": "Suggests adding the Oxford comma after the second-to-last item in a list of things.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PassiveVoice": {
+          "description": "Flags use of passive voice.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PersonFirstLanguage": {
+          "description": "Suggests using person-first language to refer respectfully to an individual with a disability.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageAgeRelated": {
+          "description": "Suggests alternatives to potentially biased language related to older adults.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageDisabilityRelated": {
+          "description": "Suggests alternatives to potentially ableist language.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageFamilyRelated": {
+          "description": "Suggests alternatives to potentially biased language related to parenting and family systems.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageGenderRelated": {
+          "description": "Suggests alternatives to potentially gender-biased and non-inclusive phrasing.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRights": {
+          "description": "Suggests alternatives to language related to human slavery.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRightsRelated": {
+          "description": "Suggests alternatives to terms with origins in the institution of slavery.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageLgbtqiaRelated": {
+          "description": "Flags LGBTQIA+-related terms that may be seen as biased, outdated, or disrespectful in some contexts.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyBiasedLanguageRaceEthnicityRelated": {
+          "description": "Suggests alternatives to potentially biased language related to race and ethnicity.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PossiblyPoliticallyIncorrectLanguage": {
+          "description": "Suggests alternatives to language that may be considered politically incorrect.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.PrepositionAtTheEndOfSentence": {
+          "description": "Flags use of prepositions such as 'with' and 'in' at the end of sentences.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.PunctuationWithQuotation": {
+          "description": "Suggests placing punctuation before closing quotation marks.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.ReadabilityFillerwords": {
+          "description": "Flags long, complicated sentences that could potentially confuse your reader.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.ReadabilityTransforms": {
+          "description": "Suggests splitting long, complicated sentences that could potentially confuse your reader.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SentenceVariety": {
+          "description": "Flags series of sentences that follow the same pattern.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SpacesSurroundingSlash": {
+          "description": "Suggests removing extra spaces surrounding a slash.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.SplitInfinitive": {
+          "description": "Suggests rewriting split infinitives so that an adverb doesn't come between 'to' and the verb.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.StylisticFragments": {
+          "description": "Suggests completing all incomplete sentences, including stylistic sentence fragments that may be intentional.",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.UnnecessaryEllipses": {
+          "description": "Flags unnecessary use of ellipses (...).",
+          "type": "boolean",
+          "default": false
+        },
+        "grammarly.config.suggestions.Variety": {
+          "description": "Suggests alternatives to words that occur frequently in the same paragraph.",
+          "type": "boolean",
+          "default": true
+        },
+        "grammarly.config.suggestions.Vocabulary": {
+          "description": "Suggests alternatives to bland and overused words such as 'good' and 'nice'.",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  },
+  "license": "MIT",
+  "main": "./dist/extension/index.node.js",
+  "browser": "./dist/extension/index.browser.js",
+  "buildConfig": {
+    "external": [
+      "vscode"
+    ],
+    "useMain": false,
+    "sources": {
+      "src/index.ts": [
+        {
+          "format": "cjs",
+          "file": "dist/extension/index.node.js",
+          "bundle": {
+            "platform": "node",
+            "external": [
+              "vscode"
             ]
           }
         },
-        "grammarly.debug": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable debugging mode"
-        },
-        "grammarly.showExplanation": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show alert explanation on hover"
-        },
-        "grammarly.showExamples": {
-          "type": "boolean",
-          "default": false,
-          "description": "Show alert examples on hover"
-        },
-        "grammarly.hideUnavailablePremiumAlerts": {
-          "type": "boolean",
-          "default": false,
-          "description": "Hide premium alerts when fix is not available"
-        },
-        "grammarly.showDeletedTextInQuickFix": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show replaced text in quick-fix option."
-        },
-        "grammarly.showUsernameInStatusBar": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show signed in user in status bar."
+        {
+          "format": "esm",
+          "file": "dist/extension/index.browser.js",
+          "bundle": {
+            "platform": "browser",
+            "external": [
+              "vscode"
+            ]
+          }
         }
-      }
-    },
-    "commands": [
-      {
-        "command": "grammarly.check",
-        "title": "Check grammar errors",
-        "category": "Grammarly"
-      },
-      {
-        "command": "grammarly.stop",
-        "title": "Stop checking grammar errors",
-        "category": "Grammarly",
-        "enablement": "grammarly:isActive"
-      },
-      {
-        "command": "grammarly.login",
-        "title": "Login to grammarly.com",
-        "category": "Grammarly",
-        "enablement": "!grammarly:isAuthenticated"
-      },
-      {
-        "command": "grammarly.logout",
-        "title": "Logout of grammarly.com",
-        "category": "Grammarly",
-        "enablement": "grammarly:isAuthenticated"
-      },
-      {
-        "command": "grammarly.setGoals",
-        "title": "Set document goals",
-        "category": "Grammarly",
-        "enablement": "grammarly:isActive"
-      }
-    ]
+      ],
+      "src/server.ts": [
+        {
+          "format": "cjs",
+          "file": "dist/server/index.node.js",
+          "bundle": {
+            "platform": "node",
+            "conditions": [
+              "node",
+              "import"
+            ],
+            "external": [
+              "buffer",
+              "bufferutil",
+              "encoding",
+              "node:buffer",
+              "node:crypto",
+              "node:events",
+              "node:fs",
+              "node:http",
+              "node:https",
+              "node:net",
+              "node:path",
+              "node:perf_hooks",
+              "node:process",
+              "node:stream",
+              "node:stream/web",
+              "node:tls",
+              "node:url",
+              "node:util",
+              "node:vm",
+              "node:zlib",
+              "worker_threads",
+              "utf-8-validate"
+            ]
+          }
+        },
+        {
+          "format": "esm",
+          "file": "dist/server/index.browser.js",
+          "bundle": {
+            "platform": "browser"
+          }
+        }
+      ]
+    }
   },
-  "license": "MIT",
-  "main": "./dist/extension/index.js",
+  "files": [
+    "./dist",
+    "./assets"
+  ],
   "scripts": {
-    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}"
+    "build": "node ../scripts/build-extension.mjs",
+    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}",
+    "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN}"
+  },
+  "dependencies": {
+    "grammarly-languageclient": "workspace:*",
+    "grammarly-languageserver": "workspace:*"
   },
   "devDependencies": {
-    "@types/minimatch": "^3.0.3",
-    "@types/vscode": "^1.51.0",
-    "typescript": "^4.0.5",
-    "unofficial-grammarly-api": "workspace:*",
-    "unofficial-grammarly-language-client": "workspace:*",
-    "unofficial-grammarly-language-server": "workspace:*",
-    "vsce": "^1.84.0",
-    "@vue/reactivity": "^3.0.2",
-    "base64url": "^3.0.1",
-    "inversify": "^5.0.1",
-    "minimatch": "^3.0.4",
-    "node-fetch": "^2.6.1",
-    "reflect-metadata": "^0.1.13"
+    "@types/vscode": "^1.66.0"
   }
 }
