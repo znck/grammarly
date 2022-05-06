@@ -7,7 +7,8 @@
     "build": "rollup -c",
     "build:wasm": "node scripts/build-wasm.mjs",
     "watch": "rollup --watch -c",
-    "test": "jest"
+    "test": "jest",
+    "release": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "^2.22.0",

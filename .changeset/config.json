@@ -5,8 +5,7 @@
   "linked": [
     [
       "grammarly-languageclient",
-      "grammarly-languageserver",
-      "grammarly-languageserver-transformers"
+      "grammarly-languageserver"
     ]
   ],
   "access": "public",

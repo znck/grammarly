@@ -1,5 +1,11 @@
 # grammarly
 
+## 0.16.0
+
+### Minor Changes
+
+- 1b8a750: Use Grammarly SDK
+
 ## 0.14.0
 
 ### Minor Changes
