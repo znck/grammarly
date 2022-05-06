@@ -38,5 +38,13 @@
   },
   "lint-staged": {
     "*.{js,ts,json,yml}": "prettier --write"
+  },
+  "pnpm": {
+    "neverBuiltDependencies": [
+      "keytar",
+      "tree-sitter-cli",
+      "tree-sitter-html",
+      "tree-sitter-markdown"
+    ]
   }
 }

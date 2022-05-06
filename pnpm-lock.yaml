@@ -1,5 +1,11 @@
 lockfileVersion: 5.3
 
+neverBuiltDependencies:
+  - keytar
+  - tree-sitter-cli
+  - tree-sitter-html
+  - tree-sitter-markdown
+
 importers:
 
   .:
@@ -3144,7 +3150,6 @@ packages:
 
   /keytar/7.9.0:
     resolution: {integrity: sha512-VPD8mtVtm5JNtA2AErl6Chp06JBfy7diFQ7TQQhdpWOl6MrCRB+eRbvAZUsbGQS9kiMq0coJsy0W0vHpDCkWsQ==}
-    requiresBuild: true
     dependencies:
       node-addon-api: 4.3.0
       prebuild-install: 7.1.0
@@ -4461,19 +4466,16 @@ packages:
   /tree-sitter-cli/0.20.6:
     resolution: {integrity: sha512-tjbAeuGSMhco/EnsThjWkQbDIYMDmdkWsTPsa/NJAW7bjaki9P7oM9TkLxfdlnm4LXd1wR5wVSM2/RTLtZbm6A==}
     hasBin: true
-    requiresBuild: true
     dev: true
 
   /tree-sitter-html/0.19.0:
     resolution: {integrity: sha512-xH6XGSBWzb4oU/aG6gouMRQKsd96iKuy0zboUqo3wcIWrA++q9a7CmQTSeIINiSfOXjT2ZLJciXFDgAh6h04Bw==}
-    requiresBuild: true
     dependencies:
       nan: 2.15.0
     dev: true
 
   /tree-sitter-markdown/0.7.1:
     resolution: {integrity: sha512-hB3sEm1JtfoRUzGvknL9RQrS/LJvbrdI9WfGbU8gE6xMjbbAKHfHrNzh4Oo9JxksfUf6UEMxy91acRajEIOnGQ==}
-    requiresBuild: true
     dependencies:
       nan: 2.15.0
     dev: true
