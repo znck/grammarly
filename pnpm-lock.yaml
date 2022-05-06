@@ -73,16 +73,14 @@ importers:
       inversify: ^6.0.1
       node-fetch: ^3.2.4
       reflect-metadata: ^0.1.13
-      tree-sitter-wasm-prebuilt: ^0.0.3
       vscode-languageserver: ^7.0.0
       vscode-languageserver-textdocument: ^1.0.4
-      web-tree-sitter: ^0.20.5
+      web-tree-sitter: 0.20.5
     dependencies:
       '@grammarly/sdk': 1.7.3
       inversify: 6.0.1
       node-fetch: 3.2.4
       reflect-metadata: 0.1.13
-      tree-sitter-wasm-prebuilt: 0.0.3
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.4
       web-tree-sitter: 0.20.5
@@ -4479,10 +4477,6 @@ packages:
     dependencies:
       nan: 2.15.0
     dev: true
-
-  /tree-sitter-wasm-prebuilt/0.0.3:
-    resolution: {integrity: sha512-asou3mPlm0FqSzXmarzvy9lr4OhokT7shJMfNzmYoLCHHo9xjvWuAtXca0h7b/q6NAREPaC0N6n1VNUzlnO3eA==}
-    dev: false
 
   /trim-newlines/3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
