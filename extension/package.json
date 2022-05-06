@@ -343,8 +343,8 @@
   ],
   "scripts": {
     "build": "node ../scripts/build-extension.mjs",
-    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN}",
-    "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN}"
+    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN} grammarly.vsix",
+    "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN} grammarly.vsix"
   },
   "dependencies": {
     "grammarly-languageclient": "workspace:*",
