@@ -1,6 +1,6 @@
 {
 	"name": "grammarly-languageclient",
-	"version": "0.2.0",
+	"version": "0.0.0",
 	"description": "LSP client implementation for Grammarly",
 	"author": "Rahul Kadyan <hey@znck.me>",
 	"main": "dist/index.cjs.js",
