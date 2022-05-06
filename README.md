@@ -16,8 +16,8 @@ pnpm run build
 1. Add `"onLanguage:<language name>"` to `activationEvents` in [extension/package.json](./extension/package.json)
 2. Add [tree-sitter](https://tree-sitter.github.io/tree-sitter/) grammar
    1. Install tree-sitter grammar package (generally package are named as `tree-sitter-<language name>`)
-   2. Add package to wasm build script: [scripts/build-wasm.mjs](./scripts/build-wasm.mjs)
-3. Add language transformer in [packages/grammarly-languageserver/src/languages/](./packages/grammarly-languageserver/src/languages/) directory
+   2. Add the package to the wasm build script: [scripts/build-wasm.mjs](./scripts/build-wasm.mjs)
+3. Add language transformer in the directory
    1. Create `Language<LanguageName>.ts`
    2. For reference, check [`LanguageHTML.ts`](./packages/grammarly-languageserver/src/languages/LanguageHTML.ts)
 
