@@ -81,16 +81,16 @@ function patch() {
   return {
     id: 'patch',
     resolveId(id, file) {
-      if (id === 'path' && file.includes('/node_modules/minimatch/')) {
-        return `${__dirname}/polyfills/minimatch-path.js`
+      if (id === 'path' && file.includes('node_modules') && file.includes('minimatch')) {
+        return Path.resolve(__dirname, `polyfills/minimatch-path.js`)
       }
 
-      if (['path', 'fs'].includes(id) && file.includes('/node_modules/web-tree-sitter/')) {
-        return `${__dirname}/polyfills/web-tree-sitter-path.js`
+      if (['path', 'fs'].includes(id) && file.includes('node_modules') && file.includes('web-tree-sitter')) {
+        return Path.resolve(__dirname, `polyfills/web-tree-sitter-path.js`)
       }
 
       if (id === 'node-fetch') {
-        return `${__dirname}/polyfills/fetch.js`
+        return Path.resolve(__dirname, `polyfills/fetch.js`)
       }
     },
   }
