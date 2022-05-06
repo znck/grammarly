@@ -1,9 +1,10 @@
 // @ts-nocheck
-import fetch, { Request, Response, Headers } from 'node-fetch'
-
 if (typeof global.fetch === 'undefined') {
-  global.fetch = fetch
-  global.Request = Request
-  global.Response = Response
-  global.Headers = Headers
+  ;(async () => {
+    const { default: fetch, Request, Response, Headers } = await import('node-fetch')
+    global.fetch = fetch
+    global.Request = Request
+    global.Response = Response
+    global.Headers = Headers
+  })()
 }
