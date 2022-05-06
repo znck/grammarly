@@ -1,49 +1,51 @@
 {
   "private": true,
+  "engines": {
+    "node": "^16.13.0"
+  },
   "scripts": {
-    "build": "run-s -l build:*",
-    "build:packages": "rollup -c",
-    "build:extension": "ncc build -o extension/dist/extension extension/src/extension.ts",
-    "build:server": "ncc build -o extension/dist/server extension/src/server.ts",
-    "watch": "run-p -l watch:*",
-    "watch:packages": "rollup -c --watch",
-    "watch:extension": "ncc build -s --watch -o extension/dist/extension extension/src/extension.ts",
-    "watch:server": "ncc build --watch -o extension/dist/server extension/src/server.ts",
-    "test": "jest"
+    "build": "rollup -c",
+    "build:wasm": "node scripts/build-wasm.mjs",
+    "watch": "rollup --watch -c",
+    "test": "jest",
+    "release": "changeset version"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.13.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^10.0.0",
-    "@rollup/plugin-replace": "^2.3.4",
-    "@rollup/plugin-typescript": "^6.1.0",
-    "@types/minimatch": "^3.0.3",
-    "@types/node-fetch": "^2.5.8",
-    "@types/ws": "^7.4.0",
-    "@vercel/ncc": "^0.25.0",
-    "husky": "^4.3.0",
-    "inversify": "^5.0.5",
-    "jest": "^26.6.3",
-    "lint-staged": "^10.1.2",
-    "node-fetch": "^2.6.1",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.0.4",
-    "quill-delta": "^4.2.2",
-    "rollup": "^2.3.4",
-    "rollup-plugin-dts": "^1.4.13",
-    "rollup-plugin-filesize": "^9.0.2",
-    "ts-jest": "^26.4.3",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5",
-    "@emacs-grammarly/unofficial-grammarly-api": "^0.2.2",
-    "vscode-languageclient": "^7.0.0",
-    "vscode-languageserver": "^6.1.1",
-    "vscode-languageserver-textdocument": "^1.0.1"
+    "@changesets/cli": "^2.22.0",
+    "@rollup/plugin-alias": "^3.1.9",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-replace": "^4.0.0",
+    "@rollup/plugin-typescript": "^8.3.2",
+    "@vuedx/monorepo-tools": "^0.2.1",
+    "husky": "^7.0.4",
+    "jest": "^27.0.0",
+    "lint-staged": "^12.4.1",
+    "node-fetch": "^3.2.4",
+    "prettier": "^2.6.2",
+    "rollup": "^2.71.1",
+    "rollup-plugin-copy": "^3.4.0",
+    "semver": "^7.3.7",
+    "tree-sitter-cli": "^0.20.6",
+    "tree-sitter-html": "^0.19.0",
+    "tree-sitter-markdown": "^0.7.1",
+    "ts-jest": "^27.1.4",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4",
+    "vsce": "^2.7.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,ts,json,yml}": "prettier --write"
+  },
+  "pnpm": {
+    "neverBuiltDependencies": [
+      "keytar",
+      "tree-sitter-cli",
+      "tree-sitter-html",
+      "tree-sitter-markdown"
+    ]
   }
 }

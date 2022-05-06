@@ -1,12 +1,6 @@
-# Grammarly for VS Code
+# LanguageServer for Grammarly SDK
 
-This extension brings [Grammarly](https://grammarly.com) to VS Code.
-
-![](./assets/screenshot-md.png)
-
-## How to get help
-
-Have a question, or want to provide feedback? Use [repository discussions](https://github.com/znck/grammarly/discussions) to ask questions, share bugs or feedback, or chat with other users.
+A language server implementation on top of Grammarly's SDK.
 
 ## Support
 

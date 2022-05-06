@@ -4,8 +4,8 @@
   "commit": false,
   "linked": [
     [
-      "unofficial-grammarly-language-client",
-      "unofficial-grammarly-language-server"
+      "grammarly-languageclient",
+      "grammarly-languageserver"
     ]
   ],
   "access": "public",

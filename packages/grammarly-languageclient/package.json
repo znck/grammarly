@@ -1,0 +1,35 @@
+{
+	"name": "grammarly-languageclient",
+	"version": "0.0.0",
+	"description": "LSP client implementation for Grammarly",
+	"author": "Rahul Kadyan <hey@znck.me>",
+	"main": "dist/index.cjs.js",
+	"module": "dist/index.esm.js",
+	"browser": "dist/index.browser.js",
+	"types": "src/index.ts",
+	"publishConfig": {
+		"types": "dist/index.d.ts"
+	},
+	"buildConfig": {
+		"external": [
+			"vscode-languageclient/browser",
+			"vscode-languageclient/node"
+		],
+		"sources": {
+			"src/index.ts": [
+				{
+					"format": "esm",
+					"file": "dist/index.browser.js"
+				}
+			]
+		}
+	},
+	"license": "MIT",
+	"files": [
+		"dist",
+		"bin"
+	],
+	"dependencies": {
+		"vscode-languageclient": "^7.0.0"
+	}
+}
