@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 neverBuiltDependencies:
   - keytar
@@ -38,8 +38,8 @@ importers:
       '@rollup/plugin-commonjs': 22.0.0_rollup@2.71.1
       '@rollup/plugin-node-resolve': 13.2.1_rollup@2.71.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.71.1
-      '@rollup/plugin-typescript': 8.3.2_720a6ef9590eb3341203a9177a2b9e25
-      '@vuedx/monorepo-tools': 0.2.1_rollup@2.71.1+typescript@4.6.4
+      '@rollup/plugin-typescript': 8.3.2_oifg56kzb2ztieqdvelxuk46eu
+      '@vuedx/monorepo-tools': 0.2.1_ucrswzumipog3rfswkcvuves4u
       husky: 7.0.4
       jest: 27.5.1
       lint-staged: 12.4.1
@@ -51,7 +51,7 @@ importers:
       tree-sitter-cli: 0.20.6
       tree-sitter-html: 0.19.0
       tree-sitter-markdown: 0.7.1
-      ts-jest: 27.1.4_jest@27.5.1+typescript@4.6.4
+      ts-jest: 27.1.4_xzu4qh4xh45vmjicsxyoawjwru
       tslib: 2.4.0
       typescript: 4.6.4
       vsce: 2.7.0
@@ -946,7 +946,7 @@ packages:
       rollup: 2.71.1
     dev: true
 
-  /@rollup/plugin-typescript/8.3.2_720a6ef9590eb3341203a9177a2b9e25:
+  /@rollup/plugin-typescript/8.3.2_oifg56kzb2ztieqdvelxuk46eu:
     resolution: {integrity: sha512-MtgyR5LNHZr3GyN0tM7gNO9D0CS+Y+vflS4v/PHmrX17JCkHUYKvQ5jN5o3cz1YKllM3duXUqu3yOHwMPUxhDg==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -1116,7 +1116,7 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@vuedx/monorepo-tools/0.2.1_rollup@2.71.1+typescript@4.6.4:
+  /@vuedx/monorepo-tools/0.2.1_ucrswzumipog3rfswkcvuves4u:
     resolution: {integrity: sha512-FRxCnYGdu+m/O5saOVhxQAn5Jb+LN7ScTan26I1oNlSTs+8AwDgh176aZgZEdejZY5PKPOJBeXvTdb5l70dvOw==}
     peerDependencies:
       rollup: ^2.50.6
@@ -1128,7 +1128,7 @@ packages:
       fast-glob: 3.2.11
       resolve: 1.22.0
       rollup: 2.71.1
-      rollup-plugin-dts: 3.0.2_rollup@2.71.1+typescript@4.6.4
+      rollup-plugin-dts: 3.0.2_ucrswzumipog3rfswkcvuves4u
       topological-sort: 0.3.0
       typescript: 4.6.4
     dev: true
@@ -3974,7 +3974,7 @@ packages:
       is-plain-object: 3.0.1
     dev: true
 
-  /rollup-plugin-dts/3.0.2_rollup@2.71.1+typescript@4.6.4:
+  /rollup-plugin-dts/3.0.2_ucrswzumipog3rfswkcvuves4u:
     resolution: {integrity: sha512-hswlsdWu/x7k5pXzaLP6OvKRKcx8Bzprksz9i9mUe72zvt8LvqAb/AZpzs6FkLgmyRaN8B6rUQOVtzA3yEt9Yw==}
     engines: {node: '>=v12.22.1'}
     peerDependencies:
@@ -4485,7 +4485,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-jest/27.1.4_jest@27.5.1+typescript@4.6.4:
+  /ts-jest/27.1.4_xzu4qh4xh45vmjicsxyoawjwru:
     resolution: {integrity: sha512-qjkZlVPWVctAezwsOD1OPzbZ+k7zA5z3oxII4dGdZo5ggX/PL7kvwTM0pXTr10fAtbiVpJaL3bWd502zAhpgSQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
