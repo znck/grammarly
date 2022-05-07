@@ -4,7 +4,7 @@
     "node": "^16.13.0"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && node scripts/build-web-extension.mjs",
     "build:wasm": "node scripts/build-wasm.mjs",
     "watch": "rollup --watch -c",
     "test": "jest",
@@ -17,7 +17,8 @@
     "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
-    "@vuedx/monorepo-tools": "^0.2.1",
+    "@vuedx/monorepo-tools": "^0.2.2-next-1651055813.0",
+    "esbuild": "^0.14.38",
     "husky": "^7.0.4",
     "jest": "^27.0.0",
     "lint-staged": "^12.4.1",

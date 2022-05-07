@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify'
-import { CodeAction, CodeActionKind, Connection, Disposable, ServerCapabilities } from 'vscode-languageserver/node'
+import type { CodeAction, Connection, Disposable, ServerCapabilities } from 'vscode-languageserver'
 import { CONNECTION, SERVER } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { DiagnosticsService, SuggestionDiagnostic } from './DiagnosticsService'
@@ -26,7 +26,7 @@ export class CodeActionService implements Registerable {
 
   register(): Disposable {
     this.#capabilities.codeActionProvider = {
-      codeActionKinds: [CodeActionKind.QuickFix],
+      codeActionKinds: ['quickfix'],
     }
 
     this.#connection.onCodeAction(async ({ textDocument, context }): Promise<CodeAction[]> => {
@@ -51,7 +51,7 @@ export class CodeActionService implements Registerable {
               const newText = document.toText(edit.content)
               return {
                 title: replacement.label ?? suggestion.title,
-                kind: CodeActionKind.QuickFix,
+                kind: 'quickfix',
                 diagnostics: [diagnostic],
                 isPreferred: index === 0,
                 edit: {

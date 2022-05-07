@@ -4,23 +4,7 @@
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
   "version": "0.2.0",
-  "compounds": [
-    {
-      "name": "Debug Extension",
-      "configurations": ["Run Extension", "Attach to TS Server"]
-    }
-  ],
   "configurations": [
-    {
-      "name": "Attach to TS Server",
-      "type": "node",
-      "request": "attach",
-      "protocol": "inspector",
-      "port": 6009,
-      "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/out/*.js"]
-    },
-
     {
       "name": "Run Extension",
       "type": "extensionHost",
@@ -34,22 +18,25 @@
         "--extensionDevelopmentPath=${workspaceFolder}/extension",
         "${workspaceFolder}/fixtures"
       ],
-      "outFiles": ["${workspaceFolder}/extension/dist/*.js"]
+      "outFiles": ["${workspaceFolder}/extension/dist/*.js"],
+      "sourceMaps": false
     },
     {
-      "name": "Extension Tests",
-      "type": "extensionHost",
+      "name": "Run Web Extension",
+      "type": "pwa-extensionHost",
+      "debugWebWorkerHost": true,
       "request": "launch",
       "runtimeExecutable": "${execPath}",
+      "env": {
+        "DEBUG": "grammarly:*"
+      },
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out-test/runner",
-        "--user-data-dir='${workspaceFolder}/fixtures/user'",
-        "${workspaceFolder}/fixtures/folder"
+        "--extensionDevelopmentPath=${workspaceFolder}/extension",
+        "--extensionDevelopmentKind=web",
+        "${workspaceFolder}/fixtures"
       ],
-      "outFiles": ["${workspaceFolder}/out-test/**/*.js", "${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm: build:test"
+      "outFiles": ["${workspaceFolder}/extension/dist/*.js"]
     }
   ]
 }

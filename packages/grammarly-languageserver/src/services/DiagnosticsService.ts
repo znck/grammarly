@@ -1,6 +1,6 @@
 import { Markup, MarkupChild, Suggestion, SuggestionId } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
-import { Connection, Diagnostic, DiagnosticSeverity, Disposable, Range } from 'vscode-languageserver/node'
+import type { Connection, Diagnostic, DiagnosticSeverity, Disposable, Range } from 'vscode-languageserver'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { DocumentService, GrammarlyDocument } from './DocumentService'
@@ -25,7 +25,7 @@ export class DiagnosticsService implements Registerable {
   public register(): Disposable {
     this.#documents.onDidOpen((document) => this.#setupDiagnostics(document))
     this.#documents.onDidClose((document) => this.#clearDiagnostics(document))
-    return Disposable.create(() => {})
+    return { dispose() {} }
   }
 
   public findSuggestionDiagnostics(document: GrammarlyDocument, range: Range): SuggestionDiagnostic[] {
@@ -46,7 +46,7 @@ export class DiagnosticsService implements Registerable {
   }
 
   #setupDiagnostics(document: GrammarlyDocument) {
-    console.log(document.session.status, document.original.uri)
+    this.#connection.console.log(`${document.session.status} ${document.original.uri}`)
     const diagnostics = new Map<SuggestionId, SuggestionDiagnostic>()
     const sendDiagnostics = (): void => {
       this.#connection.sendDiagnostics({
@@ -69,8 +69,8 @@ export class DiagnosticsService implements Registerable {
       sendDiagnostics()
     })
     document.session.addEventListener('status', (event) => {
-      console.log(event.detail, document.original.uri)
-      this.#connection.sendNotification('$/grammarlyCheckingStatus', {
+      this.#connection.console.log(`${event.detail} ${document.original.uri}`)
+      this.#connection.sendNotification('$/onDocumentStatus', {
         uri: document.original.uri,
         status: event.detail,
       })
@@ -103,7 +103,7 @@ export class DiagnosticsService implements Registerable {
       message: suggestion.title,
       range: document.findOriginalRange(highlight.start, highlight.end),
       source: 'Grammarly',
-      severity: suggestion.type === 'corrective' ? DiagnosticSeverity.Error : DiagnosticSeverity.Information,
+      severity: suggestion.type === 'corrective' ? 1 : 3,
     }
   }
 }

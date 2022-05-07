@@ -25,6 +25,7 @@
     "writing"
   ],
   "activationEvents": [
+    "onCommand:grammarly.check",
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:html"
@@ -258,7 +259,16 @@
           "default": true
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "title": "Check text",
+        "shortTitle": "Check",
+        "category": "Grammarly",
+        "command": "grammarly.check",
+        "icon": "$(pass-filled)"
+      }
+    ]
   },
   "license": "MIT",
   "main": "./dist/extension/index.node.js",
@@ -271,6 +281,10 @@
     "sources": {
       "src/index.ts": [
         {
+          "format": "esm",
+          "file": "dist/extension/index.mjs"
+        },
+        {
           "format": "cjs",
           "file": "dist/extension/index.node.js",
           "bundle": {
@@ -279,19 +293,13 @@
               "vscode"
             ]
           }
-        },
-        {
-          "format": "esm",
-          "file": "dist/extension/index.browser.js",
-          "bundle": {
-            "platform": "browser",
-            "external": [
-              "vscode"
-            ]
-          }
         }
       ],
       "src/server.ts": [
+        {
+          "format": "esm",
+          "file": "dist/server/index.mjs"
+        },
         {
           "format": "cjs",
           "file": "dist/server/index.node.js",
@@ -325,13 +333,6 @@
               "worker_threads",
               "utf-8-validate"
             ]
-          }
-        },
-        {
-          "format": "esm",
-          "file": "dist/server/index.browser.js",
-          "bundle": {
-            "platform": "browser"
           }
         }
       ]
