@@ -14,6 +14,10 @@ interface Disposable {
   dispose(): void
 }
 
+declare module globalThis {
+  var open: (url: string) => any;
+}
+
 export function startLanguageServer(): void {
   const disposables: Disposable[] = []
   const capabilities: any = {}
@@ -31,7 +35,7 @@ export function startLanguageServer(): void {
     if (options?.clientId == null) throw new Error('clientId is required')
     const sdk = await init(options.clientId)
 
-    globalThis.open = (url) => {
+    globalThis.open = (url: string) => {
       connection.sendNotification('$/openOAuthUrl', url)
       return null
     }

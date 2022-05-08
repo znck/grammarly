@@ -347,8 +347,8 @@
     "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN} --packagePath grammarly.vsix"
   },
   "dependencies": {
-    "grammarly-languageclient": "workspace:*",
-    "grammarly-languageserver": "workspace:*"
+    "@emacs-grammarly/grammarly-languageclient": "workspace:*",
+    "@emacs-grammarly/grammarly-languageserver": "workspace:*"
   },
   "devDependencies": {
     "@types/vscode": "^1.66.0"

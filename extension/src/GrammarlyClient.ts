@@ -1,4 +1,4 @@
-import { GrammarlyLanguageClient } from 'grammarly-languageclient'
+import { GrammarlyLanguageClient } from '@emacs-grammarly/grammarly-languageclient'
 import { Disposable, env, ExtensionContext, StatusBarAlignment, Uri, window, workspace } from 'vscode'
 import { Registerable } from './interfaces'
 

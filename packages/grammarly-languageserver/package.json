@@ -33,7 +33,7 @@
   "dependencies": {
     "@grammarly/sdk": "^1.7.3",
     "inversify": "^6.0.1",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^2.6.1",
     "reflect-metadata": "^0.1.13",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4",
