@@ -1,3 +1,3 @@
-import { startLanguageServer } from 'grammarly-languageserver'
+import { startLanguageServer } from '@emacs-grammarly/grammarly-languageserver'
 
 startLanguageServer()
