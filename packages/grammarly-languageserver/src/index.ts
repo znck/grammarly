@@ -32,8 +32,9 @@ export function startLanguageServer(): void {
 
   connection.onInitialize(async (params) => {
     const options = params.initializationOptions as { clientId: string } | undefined
-    if (options?.clientId == null) throw new Error('clientId is required')
-    const sdk = await init(options.clientId)
+    //if (options?.clientId == null) throw new Error('clientId is required')
+    let clientId = 'client_BaDkMgx4X19X9UxxYRCXZo';
+    const sdk = await init(clientId)
 
     globalThis.open = (url: string) => {
       connection.sendNotification('$/openOAuthUrl', url)
@@ -44,7 +45,7 @@ export function startLanguageServer(): void {
     })
 
     container.bind(CLIENT).toConstantValue(params.capabilities)
-    container.bind(CLIENT_INFO).toConstantValue({ ...params.clientInfo, id: options.clientId })
+    container.bind(CLIENT_INFO).toConstantValue({ ...params.clientInfo, id: clientId })
     container.bind(GRAMMARLY_SDK).toConstantValue(sdk)
 
     disposables.push(

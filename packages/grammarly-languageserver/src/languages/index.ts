@@ -18,6 +18,7 @@ export async function createParser(language: LanguageName): Promise<Parser> {
     await Parser.init()
 
     const parser = new Parser()
+
     parser.setLanguage(await Parser.Language.load(getLanguageFile()))
     parsers.set(language, parser)
     parsersPending.delete(language)
