@@ -1,6 +1,11 @@
 import 'reflect-metadata'
 import { Container } from 'inversify'
-import type { createConnection, TextDocuments, TextDocumentsConfiguration } from 'vscode-languageserver'
+import type {
+  createConnection,
+  ServerCapabilities,
+  TextDocuments,
+  TextDocumentsConfiguration,
+} from 'vscode-languageserver'
 import { CLIENT, CLIENT_INFO, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from './constants'
 import { CodeActionService } from './services/CodeActionService'
 import { ConfigurationService } from './services/ConfigurationService'
@@ -28,7 +33,7 @@ export function createLanguageServer({
 }: Options): () => void {
   return () => {
     const disposables: Disposable[] = []
-    const capabilities: any = {}
+    const capabilities: ServerCapabilities = {}
     const container = new Container({
       autoBindInjectable: true,
       defaultScope: 'Singleton',

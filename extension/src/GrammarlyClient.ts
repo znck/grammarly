@@ -1,7 +1,6 @@
 import { GrammarlyLanguageClient } from 'grammarly-languageclient'
 import {
   commands,
-  ConfigurationTarget,
   Disposable,
   DocumentFilter,
   env,

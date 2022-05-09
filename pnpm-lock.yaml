@@ -80,7 +80,7 @@ importers:
 
   packages/grammarly-languageserver:
     specifiers:
-      '@grammarly/sdk': link:../../../../3-editor-sdk/packages/sdk
+      '@grammarly/sdk': ^1.7.3
       domhandler: ^5.0.3
       htmlparser2: ^8.0.1
       inversify: ^6.0.1
@@ -90,7 +90,7 @@ importers:
       vscode-languageserver-textdocument: ^1.0.4
       web-tree-sitter: 0.20.5
     dependencies:
-      '@grammarly/sdk': link:../../../../3-editor-sdk/packages/sdk
+      '@grammarly/sdk': 1.7.3
       htmlparser2: 8.0.1
       inversify: 6.0.1
       reflect-metadata: 0.1.13
@@ -617,7 +617,6 @@ packages:
 
   /@grammarly/sdk/1.7.3:
     resolution: {integrity: sha512-9vzBrbOSmeQbVQ12wWQQqY24Tp0E82QmyPHhRvriCdlQRKBiB5sasRscbXKSo1N4UOGAD8QNtaG7dcLNjTz1tw==}
-    dev: true
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}

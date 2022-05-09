@@ -19,17 +19,23 @@ import { ConfigurationService } from './ConfigurationService'
 
 @injectable()
 export class DocumentService implements Registerable {
+  #config: ConfigurationService
+  #connection: Connection
+  #capabilities: ServerCapabilities
   #documents: TextDocuments<GrammarlyDocument>
   #onDocumentOpenCbs: Array<(document: GrammarlyDocument) => void | Promise<void>> = []
   #onDocumentCloseCbs: Array<(document: GrammarlyDocument) => void | Promise<void>> = []
 
   public constructor(
-    @inject(CONNECTION) private readonly connection: Connection,
-    @inject(SERVER) private readonly capabilities: ServerCapabilities,
+    @inject(CONNECTION) connection: Connection,
+    @inject(SERVER) capabilities: ServerCapabilities,
     @inject(GRAMMARLY_SDK) sdk: SDK,
     @inject(TEXT_DOCUMENTS_FACTORY) createTextDocuments: <T>(config: TextDocumentsConfiguration<T>) => TextDocuments<T>,
     config: ConfigurationService,
   ) {
+    this.#connection = connection
+    this.#capabilities = capabilities
+    this.#config = config
     this.#documents = createTextDocuments({
       create(uri, languageId, version, content) {
         return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () =>
@@ -44,21 +50,21 @@ export class DocumentService implements Registerable {
   }
 
   public register(): Disposable {
-    this.capabilities.textDocumentSync = {
+    this.#capabilities.textDocumentSync = {
       openClose: true,
       change: 2,
     }
 
-    this.#documents.listen(this.connection)
+    this.#documents.listen(this.#connection)
 
-    this.connection.onRequest('$/getDocumentStatus', async ([uri]: [uri: string]) => {
+    this.#connection.onRequest('$/getDocumentStatus', async ([uri]: [uri: string]) => {
       const document = this.#documents.get(uri)
       if (document == null) return null
       await document.isReady()
       return document.session.status
     })
 
-    this.connection.onRequest(
+    this.#connection.onRequest(
       '$/dismissSuggestion',
       async ([options]: [{ uri: string; suggestionId: SuggestionId }]) => {
         const document = this.#documents.get(options.uri)
@@ -67,12 +73,21 @@ export class DocumentService implements Registerable {
       },
     )
 
+    this.#connection.onDidChangeConfiguration(async () => {
+      await Promise.all(
+        this.#documents.all().map(async (document) => {
+          await document.isReady()
+          document.session.setConfig(await this.#config.getDocumentSettings(document.original.uri))
+        }),
+      )
+    })
+
     const disposables = [
       this.#documents.onDidOpen(async ({ document }) => {
-        this.connection.console.log('open ' + document.original.uri)
+        this.#connection.console.log('open ' + document.original.uri)
         await document.isReady()
-        this.connection.console.log('ready ' + document.original.uri)
-        this.connection.sendNotification('$/grammarlyCheckingStatus', {
+        this.#connection.console.log('ready ' + document.original.uri)
+        this.#connection.sendNotification('$/grammarlyCheckingStatus', {
           uri: document.original.uri,
           status: document.session.status,
         })
