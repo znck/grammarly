@@ -1,5 +1,5 @@
 name: CI/CD
-"on":
+'on':
   pull_request:
     branches:
       - main
@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -102,7 +102,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -119,11 +119,11 @@ jobs:
         run: >
           pnpm recursive --filter ./extension run build
 
-          pnpm recursive --filter ./extension run pre-release
+          pnpm recursive --filter ./extension run release
         env:
           RELEASE_CHANNEL: pre-release
           VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
-          # OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
+          OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
       - name: Publish Pre-release Packages
         run: >
           pnpm recursive exec -- pnpm version prerelease --preid=next-$(date
@@ -171,7 +171,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -192,7 +192,7 @@ jobs:
 
         env:
           VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
-          # OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
+          OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
         continue-on-error: true
       - name: Publish Packages
         run: |
