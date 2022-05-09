@@ -59,8 +59,13 @@ importers:
   extension:
     specifiers:
       '@types/vscode': ^1.63.0
+<<<<<<< HEAD
       '@emacs-grammarly/grammarly-languageclient': workspace:*
       '@emacs-grammarly/grammarly-languageserver': workspace:*
+=======
+      grammarly-languageclient: workspace:*
+      grammarly-languageserver: workspace:*
+>>>>>>> 5a049626a13ef9fd91350e223ad7a9bd178cfd82
     dependencies:
       '@emacs-grammarly/grammarly-languageclient': link:../packages/grammarly-languageclient
       '@emacs-grammarly/grammarly-languageserver': link:../packages/grammarly-languageserver
