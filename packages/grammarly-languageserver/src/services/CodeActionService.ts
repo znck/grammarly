@@ -43,12 +43,11 @@ export class CodeActionService implements Registerable {
           )
           .filter((item): item is SuggestionDiagnostic => item != null)
           .flatMap(({ suggestion, diagnostic }) => {
-            const actions = suggestion.replacements.map((replacement, index): CodeAction => {
+            const actions = suggestion.replacements.map((replacement): CodeAction => {
               return {
                 title: suggestion.title + (replacement.label != null ? ` — ${replacement.label}` : ''),
                 kind: 'quickfix',
                 diagnostics: [diagnostic],
-                isPreferred: index === 0,
                 data: {
                   uri: document.original.uri,
                   suggestionId: suggestion.id,
