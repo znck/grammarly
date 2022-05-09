@@ -1,11 +1,13 @@
 import { GrammarlyLanguageClient } from 'grammarly-languageclient'
 import {
   commands,
+  ConfigurationTarget,
   Disposable,
   DocumentFilter,
   env,
   ExtensionContext,
   languages,
+  RelativePattern,
   StatusBarAlignment,
   TextDocument,
   Uri,
@@ -37,11 +39,24 @@ export class GrammarlyClient implements Registerable {
 
   private createClient(): GrammarlyLanguageClient {
     const config = workspace.getConfiguration('grammarly')
-
-    this.selectors = [
-      ...(config.get<string[]>('patterns')?.map((pattern) => ({ scheme: 'file', pattern })) ?? []),
-      ...(config.get<DocumentFilter[]>('selectors')?.filter((item) => Object.keys(item).length > 0) ?? []),
-    ]
+    const folder = workspace.workspaceFolders?.[0]
+    this.selectors = []
+    config.get<string[]>('patterns', []).forEach((pattern) => {
+      this.selectors.push({
+        scheme: 'file',
+        pattern: folder != null ? new RelativePattern(folder, pattern) : pattern,
+      })
+    })
+    config.get<DocumentFilter[]>('selectors', []).forEach((selector) => {
+      if (folder != null && selector.pattern != null) {
+        this.selectors.push({
+          ...selector,
+          pattern: new RelativePattern(folder, String(selector.pattern)),
+        })
+      } else {
+        this.selectors.push(selector)
+      }
+    })
 
     const client = new GrammarlyLanguageClient(
       isNode()
@@ -67,23 +82,28 @@ export class GrammarlyClient implements Registerable {
       },
     )
 
-    client.onReady().then(() => {
-      client.protocol.onOpenOAuthUrl(async (url) => {
-        if (!(await env.openExternal(Uri.parse(url)))) {
-          // TODO: Handle?
-        }
-      })
-    })
-
     return client
   }
 
   register() {
     return Disposable.from(
       window.registerUriHandler({
-        handleUri: (uri) => {
+        handleUri: async (uri) => {
           if (uri.path === '/auth/callback') {
-            this.client.sendNotification('$/handleOAuthUrl', uri.toString())
+            try {
+              await this.client.protocol.handleOAuthCallbackUri(
+                `${uri.scheme}://${uri.authority}${uri.path}?${decodeURIComponent(uri.query)}`,
+              )
+            } catch (error) {
+              await window.showErrorMessage((error as Error).message)
+              return
+            }
+
+            if (await this.client.protocol.isUserAccountConnected()) {
+              await window.showInformationMessage('Account connected.')
+            }
+          } else {
+            throw new Error(`Unexpected URI: ${uri.toString()}`)
           }
         },
       }),
@@ -96,10 +116,55 @@ export class GrammarlyClient implements Registerable {
             detail: document.uri.toString(),
           })
         } else {
-          await window.showInformationMessage(`Will add later.`, {
-            detail: document.uri.toString(),
-          })
+          const action = await window.showInformationMessage(
+            `Grammarly is not enabled for this file. Enable now?`,
+            {
+              modal: true,
+              detail: [
+                `- Scheme: ${document.uri.scheme}`,
+                `- Language: ${document.languageId}`,
+                `- Path: ${workspace.asRelativePath(document.uri)}`,
+              ].join('\n'),
+            },
+
+            'Current file',
+            `All ${document.languageId} files`,
+          )
+
+          if (action != null) {
+            const workspaceConfig = workspace.getConfiguration('grammarly')
+            const workspaceSelectors = workspaceConfig.get<DocumentFilter[]>('selectors', [])
+            const selector: DocumentFilter = {
+              language: document.languageId,
+              scheme: document.uri.scheme,
+              pattern: action === 'Current file' ? workspace.asRelativePath(document.uri) : undefined,
+            }
+            const selectors = [...workspaceSelectors, selector]
+            await workspaceConfig.update('selectors', selectors, false)
+            await this.start()
+          }
         }
+      }),
+      commands.registerCommand('grammarly.dismiss', async (options: any) => {
+        await this.client.protocol.dismissSuggestion(options)
+      }),
+      commands.registerCommand('grammarly.login', async () => {
+        if (env.appHost !== 'desktop') {
+          await window.showErrorMessage('Connected account is not supported in web extension yet.')
+          return
+        }
+
+        const url = await this.client.protocol.getOAuthUrl(
+          Uri.from({ scheme: env.uriScheme, authority: 'znck.grammarly', path: '/auth/callback' }).toString(),
+        )
+
+        if (!(await env.openExternal(Uri.parse(url)))) {
+          await window.showErrorMessage('Failed to open login page.')
+        }
+      }),
+      commands.registerCommand('grammarly.logout', async () => {
+        await this.client.protocol.logout()
+        await window.showInformationMessage('Logged out.')
       }),
       { dispose: () => this.session?.dispose() },
     )
@@ -107,7 +172,7 @@ export class GrammarlyClient implements Registerable {
 
   public async start(): Promise<void> {
     const statusbar = window.createStatusBarItem(StatusBarAlignment.Left, Number.MIN_SAFE_INTEGER)
-    statusbar.text = '$(sync~spin) Starting Grammarly language server'
+    statusbar.text = `$(sync~spin) ${this.session == null ? 'Starting' : 'Restarting'} Grammarly language server`
     statusbar.show()
     try {
       this.session?.dispose()

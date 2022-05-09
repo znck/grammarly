@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { init } from '@grammarly/sdk'
 import { Container } from 'inversify'
 import type { createConnection, TextDocuments, TextDocumentsConfiguration } from 'vscode-languageserver'
 import { CLIENT, CLIENT_INFO, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from './constants'
@@ -8,17 +7,25 @@ import { ConfigurationService } from './services/ConfigurationService'
 import { DiagnosticsService } from './services/DiagnosticsService'
 import { DocumentService } from './services/DocumentService'
 import { HoverService } from './services/HoverService'
+import type { SDK } from '@grammarly/sdk'
 
 interface Disposable {
   dispose(): void
 }
-console.log = console.warn = console.info = console.error
+
 export interface Options {
   getConnection(): ReturnType<typeof createConnection>
   createTextDocuments<T>(config: TextDocumentsConfiguration<T>): TextDocuments<T>
+  init(clientId: string): Promise<SDK>
+  pathEnvironmentForSDK(clientId: string): void
 }
 
-export function createLanguageServer({ getConnection, createTextDocuments }: Options): () => void {
+export function createLanguageServer({
+  getConnection,
+  createTextDocuments,
+  init,
+  pathEnvironmentForSDK,
+}: Options): () => void {
   return () => {
     const disposables: Disposable[] = []
     const capabilities: any = {}
@@ -28,12 +35,25 @@ export function createLanguageServer({ getConnection, createTextDocuments }: Opt
     })
     const connection = getConnection()
 
+    console.log = console.debug = (...args) => {
+      connection.console.log(args.map(toString).join(' '))
+    }
+    console.error = (...args) => {
+      connection.console.error(args.map(toString).join(' '))
+    }
+    console.warn = (...args) => {
+      connection.console.warn(args.map(toString).join(' '))
+    }
+    console.info = (...args) => {
+      connection.console.info(args.map(toString).join(' '))
+    }
     container.bind(CONNECTION).toConstantValue(connection)
     container.bind(SERVER).toConstantValue(capabilities)
 
     connection.onInitialize(async (params) => {
       const options = params.initializationOptions as { clientId: string } | undefined
       if (options?.clientId == null) throw new Error('clientId is required')
+      pathEnvironmentForSDK(options.clientId)
       const sdk = await init(options.clientId)
 
       container.bind(CLIENT).toConstantValue(params.capabilities)
@@ -53,6 +73,29 @@ export function createLanguageServer({ getConnection, createTextDocuments }: Opt
         await sdk.handleOAuthCallback(url)
       })
 
+      connection.onRequest('$/isUserAccountConnected', async () => {
+        return sdk.isUserAccountConnected
+      })
+
+      connection.onRequest('$/getOAuthUrl', async (oauthRedirectUri: string) => {
+        try {
+          return await sdk.getOAuthUrl(oauthRedirectUri)
+        } catch (error) {
+          console.error(error)
+          throw error
+        }
+      })
+
+      connection.onRequest('$/logout', async () => {
+        await sdk.logout()
+      })
+
+      sdk.addEventListener('isUserAccountConnected', () => {
+        connection.sendNotification('$/onUserAccountConnectedChange', {
+          isUserAccountConnected: sdk.isUserAccountConnected,
+        })
+      })
+
       connection.console.log('Initialized!')
 
       return {
@@ -69,5 +112,18 @@ export function createLanguageServer({ getConnection, createTextDocuments }: Opt
 
     connection.listen()
     connection.console.log('Ready!')
+  }
+}
+
+function toString(obj: unknown): string {
+  switch (typeof obj) {
+    case 'string':
+      return obj
+    case 'number':
+    case 'boolean':
+      return JSON.stringify(obj)
+    default:
+      if (obj instanceof Error) return `${obj.message} ${obj.stack}`
+      return JSON.stringify(obj)
   }
 }

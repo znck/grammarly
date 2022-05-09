@@ -1,4 +1,4 @@
-import type { RichText, SDK, Session } from '@grammarly/sdk'
+import type { RichText, SDK, Session, SuggestionId } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
 import type {
   Connection,
@@ -58,6 +58,15 @@ export class DocumentService implements Registerable {
       return document.session.status
     })
 
+    this.connection.onRequest(
+      '$/dismissSuggestion',
+      async ([options]: [{ uri: string; suggestionId: SuggestionId }]) => {
+        const document = this.#documents.get(options.uri)
+        if (document == null) return
+        await document.session.dismissSuggestion({ suggestionId: options.suggestionId })
+      },
+    )
+
     const disposables = [
       this.#documents.onDidOpen(async ({ document }) => {
         this.connection.console.log('open ' + document.original.uri)
@@ -67,7 +76,6 @@ export class DocumentService implements Registerable {
           uri: document.original.uri,
           status: document.session.status,
         })
-        this.connection.sendNotification('$/grammarlyUserType', document.session.userType)
         this.#onDocumentOpenCbs.forEach((cb) => cb(document))
       }),
       this.#documents.onDidClose(({ document }) => {

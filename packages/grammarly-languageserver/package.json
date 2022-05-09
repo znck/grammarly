@@ -26,7 +26,10 @@
     "useMain": false,
     "external": [
       "vscode-languageserver/browser",
-      "vscode-languageserver/node"
+      "vscode-languageserver/node",
+      "node:os",
+      "node:fs",
+      "node:path"
     ],
     "sources": {
       "src/index.ts": [
@@ -60,11 +63,23 @@
   ],
   "dependencies": {
     "@grammarly/sdk": "^1.7.3",
+    "htmlparser2": "^8.0.1",
     "inversify": "^6.0.1",
-    "node-fetch": "^3.2.4",
     "reflect-metadata": "^0.1.13",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4",
     "web-tree-sitter": "0.20.5"
+  },
+  "devDependencies": {
+    "domhandler": "^5.0.3",
+    "node-fetch": "^3.2.4"
+  },
+  "peerDependencies": {
+    "node-fetch": "^2.0.0 | ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-fetch": {
+      "optional": true
+    }
   }
 }

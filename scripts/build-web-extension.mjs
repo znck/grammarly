@@ -2,8 +2,12 @@
 import esbuild from 'esbuild'
 import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import fetch from 'node-fetch'
 
 const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+
+const response = await fetch('http://127.0.0.1:3000/grammarly-sdk.js')
+const contents = await response.text()
 
 await esbuild.build({
   entryPoints: [Path.resolve(__dirname, '../extension/dist/extension/index.mjs')],
@@ -22,6 +26,10 @@ await esbuild.build({
   platform: 'browser',
   format: 'iife',
   outfile: Path.resolve(__dirname, '../extension/dist/server/index.browser.js'),
+  banner: {
+    js: `console.log = console.warn = console.info = console.count = console.group = console.groupEnd = console.groupCollapsed = console.error;`,
+  },
+  footer: { js: ';globalThis.window=globalThis;' + contents + '\n' },
   write: true,
   plugins: [
     {

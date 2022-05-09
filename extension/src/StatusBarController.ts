@@ -15,6 +15,7 @@ export class StatusBarController {
           this.update()
         }
       })
+      grammarly.client.protocol.onUserAccountConnectedChange(() => this.update())
     })
   }
 
@@ -42,22 +43,28 @@ export class StatusBarController {
     const status = await this.getStatus(document)
     this.#current = { uri: document.uri.toString(), status }
     if (status == null && !this.grammarly.matchesDocumentSelector(document)) return this.#statusbar.hide()
-    this.#statusbar.text =
+    const isUser = await this.grammarly.client.protocol.isUserAccountConnected()
+    const accountIcon = isUser ? '$(account)' : ''
+    const statusIcon =
       status == null
         ? '$(sync)'
         : status === 'connecting'
         ? '$(sync~spin)'
         : status === 'error'
-        ? '$(warning)'
+        ? accountIcon + '$(warning)'
         : status === 'idle'
-        ? '$(pass-filled)'
+        ? accountIcon + '$(pass-filled)'
         : '$(loading~spin)'
-    this.#statusbar.color = ''
+    this.#statusbar.text = statusIcon
+    this.#statusbar.color = status === 'error' ? 'red' : ''
     this.#statusbar.accessibilityInformation = {
       label: status ?? '',
       role: status === 'error' ? 'button' : undefined,
     }
-    this.#statusbar.tooltip = `Grammarly is ${status ?? 'not connected'}.`
+
+    this.#statusbar.tooltip = `Your Grammarly account is ${
+      isUser ? '' : 'not '
+    }used for this file. \nConnection status: ${status}`
     this.#statusbar.command = status === 'error' ? 'grammarly.restartServer' : undefined
     this.#statusbar.show()
   }

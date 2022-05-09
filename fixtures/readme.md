@@ -1,6 +1,6 @@
 ## The basics
 
-Mispellings and grammatical errors can effect your credibility. 
+Misspellings and grammatical errors can effect your credibility. 
 The same goes for misused commas, and other types of punctuation .
 Not only will Grammarly underline these issues in red, but it will
 also showed you how to correctly write the sentence.

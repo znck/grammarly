@@ -1,11 +1,15 @@
 import type { BaseLanguageClient } from 'vscode-languageclient'
-import type { SessionStatus } from '@grammarly/sdk'
+import type { SessionStatus, SuggestionId } from '@grammarly/sdk'
 
 export interface Protocol {
   getDocumentStatus(uri: string): Promise<SessionStatus | null>
+  isUserAccountConnected(): Promise<boolean>
+  getOAuthUrl(oauthRedirectUri: string): Promise<string>
+  logout(): Promise<void>
+  dismissSuggestion(params: { uri: string; suggestionId: SuggestionId }): Promise<void>
   handleOAuthCallbackUri(uri: string): void
   onDocumentStatus(fn: (params: { uri: string; status: SessionStatus }) => unknown): void
-  onOpenOAuthUrl(fn: (url: string) => unknown): void
+  onUserAccountConnectedChange(fn: (params: { isUserAccountConnected: boolean }) => unknown): void
 }
 
 export function createProtocol(client: BaseLanguageClient): Protocol {
