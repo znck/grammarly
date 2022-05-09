@@ -8,7 +8,7 @@
   "icon": "assets/logo.png",
   "preview": true,
   "engines": {
-    "vscode": "^1.66.0"
+    "vscode": "^1.63.0"
   },
   "repository": {
     "type": "git",
@@ -343,14 +343,13 @@
   ],
   "scripts": {
     "build": "node ../scripts/build-extension.mjs",
-    "release": "vsce publish -p ${VSCODE_MARKETPLACE_TOKEN} --packagePath grammarly.vsix",
-    "pre-release": "vsce publish --pre-release -p ${VSCODE_MARKETPLACE_TOKEN} --packagePath grammarly.vsix"
+    "release": "node ../scripts/publish-extension.mjs"
   },
   "dependencies": {
     "@emacs-grammarly/grammarly-languageclient": "workspace:*",
     "@emacs-grammarly/grammarly-languageserver": "workspace:*"
   },
   "devDependencies": {
-    "@types/vscode": "^1.66.0"
+    "@types/vscode": "^1.63.0"
   }
 }
