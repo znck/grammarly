@@ -2,7 +2,13 @@
 
 This extension brings [Grammarly](https://grammarly.com) to VS Code.
 
-![](./assets/screenshot-md.png)
+![](./assets/staturbar.png)
+
+The status of the Grammarly text-checking session is displayed on the status bar (bottom right).
+
+| Connecting                          | Checking                          | Done                          | Error                          |
+| ----------------------------------- | --------------------------------- | ----------------------------- | ------------------------------ |
+| ![](./assets/status-connecting.png) | ![](./assets/status-checking.png) | ![](./assets/status-done.png) | ![](./assets/status-error.png) |
 
 ## How to get help
 
