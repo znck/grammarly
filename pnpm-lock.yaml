@@ -58,7 +58,7 @@ importers:
 
   extension:
     specifiers:
-      '@types/vscode': ^1.66.0
+      '@types/vscode': ^1.63.0
       grammarly-languageclient: workspace:*
       grammarly-languageserver: workspace:*
     dependencies:
