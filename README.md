@@ -27,7 +27,7 @@ Have a question, or want to provide feedback? Use [repository discussions](https
 
 ## Older Packages
 
-`unofficial-grammarly-api`, `unofficial-grammarly-language-client` and `unofficial-grammarly-language-server` are deprecated and archided: https://github.com/znck/grammarly/tree/v0
+`unofficial-grammarly-api`, `unofficial-grammarly-language-client` and `unofficial-grammarly-language-server` are deprecated and archived: https://github.com/znck/grammarly/tree/v0
 
 ## Support
 
