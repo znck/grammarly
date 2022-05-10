@@ -21,6 +21,11 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/znck/grammarly",
+		"directory": "packages/grammarly-languageclient"
+	},
 	"buildConfig": {
 		"useMain": false,
 		"external": [
