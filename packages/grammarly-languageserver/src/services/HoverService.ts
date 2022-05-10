@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify'
-import { Connection, Disposable, ServerCapabilities } from 'vscode-languageserver/node'
+import type { Connection, Disposable, ServerCapabilities } from 'vscode-languageserver'
 import { CONNECTION, SERVER } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { DiagnosticsService, toMarkdown } from './DiagnosticsService'
@@ -52,6 +52,6 @@ export class HoverService implements Registerable {
       }
     })
 
-    return Disposable.create(() => {})
+    return { dispose() {} }
   }
 }

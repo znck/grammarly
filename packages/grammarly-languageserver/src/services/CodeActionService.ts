@@ -1,5 +1,6 @@
+import { SuggestionId, SuggestionReplacementId } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
-import { CodeAction, CodeActionKind, Connection, Disposable, ServerCapabilities } from 'vscode-languageserver/node'
+import { CodeAction, Connection, Disposable, ServerCapabilities } from 'vscode-languageserver'
 import { CONNECTION, SERVER } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { DiagnosticsService, SuggestionDiagnostic } from './DiagnosticsService'
@@ -26,7 +27,8 @@ export class CodeActionService implements Registerable {
 
   register(): Disposable {
     this.#capabilities.codeActionProvider = {
-      codeActionKinds: [CodeActionKind.QuickFix],
+      codeActionKinds: ['quickfix'],
+      resolveProvider: true,
     }
 
     this.#connection.onCodeAction(async ({ textDocument, context }): Promise<CodeAction[]> => {
@@ -41,28 +43,66 @@ export class CodeActionService implements Registerable {
           )
           .filter((item): item is SuggestionDiagnostic => item != null)
           .flatMap(({ suggestion, diagnostic }) => {
-            const uri = document.original.uri
-            return suggestion.replacements.map(async (replacement, index): Promise<CodeAction> => {
-              const edit = await document.session.applySuggestion({
-                suggestionId: suggestion.id,
-                replacementId: replacement.id,
-              })
-              const range = document.findOriginalRange(edit.range.start, edit.range.end)
-              const newText = document.toText(edit.content)
+            const actions = suggestion.replacements.map((replacement): CodeAction => {
               return {
-                title: replacement.label ?? suggestion.title,
-                kind: CodeActionKind.QuickFix,
+                title: suggestion.title + (replacement.label != null ? ` — ${replacement.label}` : ''),
+                kind: 'quickfix',
                 diagnostics: [diagnostic],
-                isPreferred: index === 0,
-                edit: {
-                  changes: {
-                    [uri]: [{ range, newText }],
-                  },
+                data: {
+                  uri: document.original.uri,
+                  suggestionId: suggestion.id,
+                  replacementId: replacement.id,
                 },
               }
             })
+
+            const dismiss: CodeAction = {
+              title: `Dismiss — ${suggestion.title}`,
+              kind: 'quickfix',
+              diagnostics: [diagnostic],
+              command: {
+                title: 'Dismiss suggestion',
+                command: 'grammarly.dismiss',
+                arguments: [
+                  {
+                    uri: document.original.uri,
+                    suggestionId: suggestion.id,
+                  },
+                ],
+              },
+            }
+
+            actions.push(dismiss)
+
+            return actions
           }),
       )
+    })
+
+    this.#connection.onCodeActionResolve(async (codeAction) => {
+      if (codeAction.data == null) return codeAction
+      const { uri, suggestionId, replacementId } = codeAction.data as {
+        uri: string
+        suggestionId: SuggestionId
+        replacementId: SuggestionReplacementId
+      }
+      const document = this.#documents.get(uri)
+      if (document == null) return codeAction
+
+      const edit = await document.session.applySuggestion({
+        suggestionId,
+        replacementId,
+      })
+      const range = document.findOriginalRange(edit.range.start, edit.range.end)
+      const newText = document.toText(edit.content)
+
+      codeAction.edit = {
+        changes: {
+          [uri]: [{ range, newText }],
+        },
+      }
+
+      return codeAction
     })
 
     return { dispose() {} }
