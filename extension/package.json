@@ -4,7 +4,7 @@
   "publisher": "znck",
   "displayName": "Grammarly",
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
-  "version": "0.16.0",
+  "version": "0.18.0",
   "icon": "assets/logo.png",
   "preview": true,
   "engines": {
@@ -12,7 +12,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/znck/grammarly"
+    "url": "https://github.com/znck/grammarly",
+    "directory": "extension"
   },
   "categories": [
     "Other"
