@@ -71,16 +71,16 @@ importers:
 
   packages/grammarly-languageclient:
     specifiers:
-      '@grammarly/sdk': ^1.7.3
+      '@grammarly/sdk': ^1.7.4
       vscode-languageclient: ^7.0.0
     dependencies:
       vscode-languageclient: 7.0.0
     devDependencies:
-      '@grammarly/sdk': 1.7.3
+      '@grammarly/sdk': 1.7.4
 
   packages/grammarly-languageserver:
     specifiers:
-      '@grammarly/sdk': ^1.7.3
+      '@grammarly/sdk': ^1.7.4
       domhandler: ^5.0.3
       htmlparser2: ^8.0.1
       inversify: ^6.0.1
@@ -90,7 +90,7 @@ importers:
       vscode-languageserver-textdocument: ^1.0.4
       web-tree-sitter: 0.20.5
     dependencies:
-      '@grammarly/sdk': 1.7.3
+      '@grammarly/sdk': 1.7.4
       htmlparser2: 8.0.1
       inversify: 6.0.1
       reflect-metadata: 0.1.13
@@ -615,8 +615,8 @@ packages:
       prettier: 1.19.1
     dev: true
 
-  /@grammarly/sdk/1.7.3:
-    resolution: {integrity: sha512-9vzBrbOSmeQbVQ12wWQQqY24Tp0E82QmyPHhRvriCdlQRKBiB5sasRscbXKSo1N4UOGAD8QNtaG7dcLNjTz1tw==}
+  /@grammarly/sdk/1.7.4:
+    resolution: {integrity: sha512-sgz5jkTNTKS9ST4svOswTuA5H09h3il1Xp2Yin63BFX9rUFOPDEiCnrenHu9cAxx5FpF0wVKcoNjW09WNZpwJw==}
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}

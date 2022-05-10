@@ -61,6 +61,6 @@
 		"vscode-languageclient": "^7.0.0"
 	},
 	"devDependencies": {
-		"@grammarly/sdk": "^1.7.3"
+		"@grammarly/sdk": "^1.7.4"
 	}
 }

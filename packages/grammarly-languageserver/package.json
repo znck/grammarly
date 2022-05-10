@@ -62,7 +62,7 @@
     "bin"
   ],
   "dependencies": {
-    "@grammarly/sdk": "^1.7.3",
+    "@grammarly/sdk": "^1.7.4",
     "htmlparser2": "^8.0.1",
     "inversify": "^6.0.1",
     "reflect-metadata": "^0.1.13",
