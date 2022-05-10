@@ -6,7 +6,7 @@ import fetch from 'node-fetch'
 
 const __dirname = Path.dirname(fileURLToPath(import.meta.url))
 
-const response = await fetch('http://127.0.0.1:3000/grammarly-sdk.js')
+const response = await fetch('https://js.grammarly.com/grammarly-sdk')
 const contents = await response.text()
 
 await esbuild.build({
