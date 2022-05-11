@@ -20,13 +20,10 @@ export function createProtocol(client: BaseLanguageClient): Protocol {
         return (fn: (...args: unknown[]) => unknown) => client.onNotification(`$/${property}`, fn)
       } else {
         return async (...args: unknown[]): Promise<unknown> => {
-          console.log('Request:', property, ...args)
           try {
             const result = await client.sendRequest(`$/${property}`, args)
-            console.log('Response:', property, result)
             return result
           } catch (error) {
-            console.log('Error:', property, error)
             throw error
           }
         }
