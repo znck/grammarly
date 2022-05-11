@@ -1,6 +1,6 @@
 {
 	"name": "@emacs-grammarly/grammarly-languageclient",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "LSP client implementation for Grammarly",
 	"author": "Rahul Kadyan <hey@znck.me>",
 	"main": "./dist/index.node.cjs",
