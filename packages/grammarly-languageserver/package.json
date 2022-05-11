@@ -69,6 +69,7 @@
   "dependencies": {
     "@grammarly/sdk": "^1.7.4",
     "htmlparser2": "^8.0.1",
+    "idb-keyval": "^6.1.0",
     "inversify": "^6.0.1",
     "reflect-metadata": "^0.1.13",
     "vscode-languageserver": "^7.0.0",
