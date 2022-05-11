@@ -148,15 +148,9 @@ export class GrammarlyClient implements Registerable {
         await this.client.protocol.dismissSuggestion(options)
       }),
       commands.registerCommand('grammarly.login', async () => {
-        if (env.appHost !== 'desktop') {
-          await window.showErrorMessage('Connected account is not supported in web extension yet.')
-          return
-        }
-
-        const url = await this.client.protocol.getOAuthUrl(
-          Uri.from({ scheme: env.uriScheme, authority: 'znck.grammarly', path: '/auth/callback' }).toString(),
-        )
-
+        const uri = await env.asExternalUri(Uri.parse(`${env.uriScheme}://znck.grammarly/auth/callback`))
+        const redirectUri = `${uri.scheme}://${uri.authority}${uri.path}?${uri.query}`
+        const url = await this.client.protocol.getOAuthUrl(redirectUri)
         if (!(await env.openExternal(Uri.parse(url)))) {
           await window.showErrorMessage('Failed to open login page.')
         }
