@@ -1,12 +1,13 @@
 import Parser from 'web-tree-sitter'
-import { LanguageName } from '../interfaces/LanguageName'
 import { html } from './LanguageHTML'
 import { markdown } from './LanguageMarkdown'
 
-const parsers = new Map<LanguageName, Parser>()
-const parsersPending = new Map<LanguageName, Promise<Parser>>()
+export type { SourceMap, Transformer } from './Language'
 
-export async function createParser(language: LanguageName): Promise<Parser> {
+const parsers = new Map<string, Parser>()
+const parsersPending = new Map<string, Promise<Parser>>()
+
+export async function createParser(language: string): Promise<Parser> {
   const previous = parsers.get(language)
   if (previous != null) return previous
   const parser = createParserInner()
@@ -27,6 +28,9 @@ export async function createParser(language: LanguageName): Promise<Parser> {
 
   function getLanguageFile(): string | Uint8Array {
     if (typeof process !== 'undefined' && process.versions?.node != null) {
+      if (process.env.NODE_ENV === 'test') {
+        return require.resolve(`../dist/tree-sitter-${language}.wasm`)
+      }
       return require.resolve(`./tree-sitter-${language}.wasm`)
     }
 

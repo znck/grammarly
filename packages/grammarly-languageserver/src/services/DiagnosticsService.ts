@@ -1,4 +1,4 @@
-import { Markup, MarkupChild, Suggestion, SuggestionId } from '@grammarly/sdk'
+import { Suggestion, SuggestionId } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
 import type { Connection, Diagnostic, DiagnosticSeverity, Disposable, Range } from 'vscode-languageserver'
 import { CONNECTION } from '../constants'
@@ -122,48 +122,4 @@ export class DiagnosticsService implements Registerable {
       severity: suggestion.type === 'corrective' ? 1 : 3,
     }
   }
-}
-
-function toText(markup: Markup): string {
-  function stringify(node: MarkupChild): string {
-    if (typeof node === 'string') return node
-
-    switch (node.type) {
-      case 'ul':
-        return `\n${node.children.map((node) => `- ${stringify(node)}`).join('\n')}\n`
-      default:
-        return node.children.map(stringify).join('')
-    }
-  }
-
-  return markup.map(stringify).join('')
-}
-
-export function toMarkdown(markup: Markup): string {
-  let indent = 0
-  function stringify(node: MarkupChild): string {
-    if (typeof node === 'string') return node
-
-    switch (node.type) {
-      case 'ul':
-        try {
-          indent += 2
-          return `\n${node.children.map(stringify).join('\n')}`
-        } finally {
-          indent -= 2
-        }
-      case 'li':
-        return ' '.repeat(indent - 2) + `- ${node.children.map(stringify).join('')}`
-      case 'del':
-        return ` ~~${node.children.map(stringify).join('')}~~ `
-      case 'em':
-        return `_${node.children.map(stringify).join('')}_`
-      case 'strong':
-        return `**${node.children.map(stringify).join('')}**`
-      default:
-        return node.children.map(stringify).join('')
-    }
-  }
-
-  return markup.map(stringify).join('')
 }

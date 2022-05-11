@@ -383,9 +383,6 @@
           "file": "dist/server/index.node.js",
           "bundle": {
             "platform": "node",
-            "banner": {
-              "js": "console.log = console.warn = console.info = console.count = console.group = console.groupEnd = console.groupCollapsed = console.error;"
-            },
             "conditions": [
               "node",
               "import"

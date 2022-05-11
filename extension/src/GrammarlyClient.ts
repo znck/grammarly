@@ -82,6 +82,9 @@ export class GrammarlyClient implements Registerable {
             return 1
           },
         },
+        markdown: {
+          isTrusted: true,
+        },
       },
     )
 

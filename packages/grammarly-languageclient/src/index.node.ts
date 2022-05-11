@@ -1,4 +1,4 @@
-import { LanguageClient, ServerOptions } from 'vscode-languageclient/node'
+import { LanguageClient, ServerOptions, TransportKind } from 'vscode-languageclient/node'
 import type { GrammarlyLanguageClientOptions } from './GrammarlyLanguageClientOptions'
 import { createProtocol, Protocol } from './protocol'
 
@@ -21,9 +21,10 @@ export class GrammarlyLanguageClient extends LanguageClient {
 
 function getLanguageServerOptions(module: string): ServerOptions {
   return {
-    run: { module },
+    run: { module, transport: TransportKind.ipc },
     debug: {
       module,
+      transport: TransportKind.ipc,
       options: {
         execArgv: ['--nolazy', '--inspect=5512'],
       },

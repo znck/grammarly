@@ -2,8 +2,9 @@ import { inject, injectable } from 'inversify'
 import type { Connection, Disposable, ServerCapabilities } from 'vscode-languageserver'
 import { CONNECTION, SERVER } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
-import { DiagnosticsService, toMarkdown } from './DiagnosticsService'
+import { DiagnosticsService } from './DiagnosticsService'
 import { DocumentService } from './DocumentService'
+import { toMarkdown } from './toMarkdown'
 
 @injectable()
 export class HoverService implements Registerable {
@@ -35,19 +36,21 @@ export class HoverService implements Registerable {
       const diagnostic = diagnostics[0]
       if (diagnostic == null) return null
 
+      const contents = `**${diagnostic.suggestion.title.trim()}**\n\n${toMarkdown(
+        diagnostic.suggestion.description,
+      ).trim()}\n\n\n${
+        diagnostic.suggestion.replacements.length === 1
+          ? `… ${toMarkdown(diagnostic.suggestion.replacements[0].preview).trim()} …`
+          : diagnostic.suggestion.replacements
+              .map((replacement) => `1. … ${toMarkdown(replacement.preview).trim()} …\n`)
+              .join('')
+      }`
+
       return {
         range: diagnostic.diagnostic.range,
         contents: {
           kind: 'markdown',
-          value: `**${diagnostic.suggestion.title.trim()}**\n\n${toMarkdown(
-            diagnostic.suggestion.description,
-          ).trim()}\n\n\n${
-            diagnostic.suggestion.replacements.length === 1
-              ? `…${toMarkdown(diagnostic.suggestion.replacements[0].preview).trim()}…`
-              : diagnostic.suggestion.replacements
-                  .map((replacement) => `1. …${toMarkdown(replacement.preview).trim()}…\n`)
-                  .join('')
-          }`,
+          value: contents,
         },
       }
     })

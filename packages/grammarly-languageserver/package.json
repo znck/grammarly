@@ -68,6 +68,7 @@
   ],
   "dependencies": {
     "@grammarly/sdk": "^1.7.4",
+    "grammarly-richtext-encoder": "workspace:*",
     "htmlparser2": "^8.0.1",
     "idb-keyval": "^6.1.0",
     "inversify": "^6.0.1",
