@@ -3,7 +3,7 @@
     "module": "ESNext",
     "target": "ES2019",
     "moduleResolution": "node",
-    "lib": ["ES2019"],
+    "lib": ["ES2019", "WebWorker"],
 
     "strict": true,
     "sourceMap": true,
@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["src/index.ts"]
+  "include": ["src/"]
 }

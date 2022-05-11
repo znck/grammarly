@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify'
-import { Connection, Disposable } from 'vscode-languageserver/node'
+import type { Connection, Disposable } from 'vscode-languageserver'
 import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { EditorConfig } from '@grammarly/sdk'
@@ -23,9 +23,9 @@ export class ConfigurationService implements Registerable {
   }
 
   public async getDocumentSettings(uri: string): Promise<DocumentConfig> {
-    return {
-      ...(await this.getSettings()),
-      ...(await this.#connection.workspace.getConfiguration({ scopeUri: uri, section: 'grammarly' })),
-    }
+    return Promise.race([
+      this.#connection.workspace.getConfiguration({ scopeUri: uri, section: 'grammarly' }),
+      new Promise((resolve) => setTimeout(resolve, 1000, {})),
+    ])
   }
 }

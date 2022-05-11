@@ -1,16 +1,16 @@
-import type { RichText, SDK, Session } from '@grammarly/sdk'
+import type { RichText, SDK, Session, SuggestionId } from '@grammarly/sdk'
 import { inject, injectable } from 'inversify'
-import type { Range, TextDocumentContentChangeEvent } from 'vscode-languageserver-textdocument'
-import { TextDocument } from 'vscode-languageserver-textdocument'
-import {
+import type {
   Connection,
   Disposable,
   ServerCapabilities,
   TextDocuments,
-  TextDocumentSyncKind,
-} from 'vscode-languageserver/node'
+  TextDocumentsConfiguration,
+} from 'vscode-languageserver'
+import type { Range, TextDocumentContentChangeEvent } from 'vscode-languageserver-textdocument'
+import { TextDocument } from 'vscode-languageserver-textdocument'
 import Parser from 'web-tree-sitter'
-import { CONNECTION, GRAMMARLY_SDK, SERVER } from '../constants'
+import { CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { SourceMap } from '../interfaces/SourceMap'
 import { Transformer } from '../interfaces/Transformer'
@@ -19,17 +19,24 @@ import { ConfigurationService } from './ConfigurationService'
 
 @injectable()
 export class DocumentService implements Registerable {
+  #config: ConfigurationService
+  #connection: Connection
+  #capabilities: ServerCapabilities
   #documents: TextDocuments<GrammarlyDocument>
   #onDocumentOpenCbs: Array<(document: GrammarlyDocument) => void | Promise<void>> = []
   #onDocumentCloseCbs: Array<(document: GrammarlyDocument) => void | Promise<void>> = []
 
   public constructor(
-    @inject(CONNECTION) private readonly connection: Connection,
-    @inject(SERVER) private readonly capabilities: ServerCapabilities,
+    @inject(CONNECTION) connection: Connection,
+    @inject(SERVER) capabilities: ServerCapabilities,
     @inject(GRAMMARLY_SDK) sdk: SDK,
+    @inject(TEXT_DOCUMENTS_FACTORY) createTextDocuments: <T>(config: TextDocumentsConfiguration<T>) => TextDocuments<T>,
     config: ConfigurationService,
   ) {
-    this.#documents = new TextDocuments({
+    this.#connection = connection
+    this.#capabilities = capabilities
+    this.#config = config
+    this.#documents = createTextDocuments({
       create(uri, languageId, version, content) {
         return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () =>
           sdk.withText({ ops: [] }, await config.getDocumentSettings(uri)),
@@ -43,21 +50,47 @@ export class DocumentService implements Registerable {
   }
 
   public register(): Disposable {
-    this.capabilities.textDocumentSync = {
+    this.#capabilities.textDocumentSync = {
       openClose: true,
-      change: TextDocumentSyncKind.Incremental,
+      change: 2,
     }
 
-    this.#documents.listen(this.connection)
+    this.#documents.listen(this.#connection)
+
+    this.#connection.onRequest('$/getDocumentStatus', async ([uri]: [uri: string]) => {
+      const document = this.#documents.get(uri)
+      if (document == null) return null
+      await document.isReady()
+      return document.session.status
+    })
+
+    this.#connection.onRequest(
+      '$/dismissSuggestion',
+      async ([options]: [{ uri: string; suggestionId: SuggestionId }]) => {
+        const document = this.#documents.get(options.uri)
+        if (document == null) return
+        await document.session.dismissSuggestion({ suggestionId: options.suggestionId })
+      },
+    )
+
+    this.#connection.onDidChangeConfiguration(async () => {
+      await Promise.all(
+        this.#documents.all().map(async (document) => {
+          await document.isReady()
+          document.session.setConfig(await this.#config.getDocumentSettings(document.original.uri))
+        }),
+      )
+    })
+
     const disposables = [
       this.#documents.onDidOpen(async ({ document }) => {
-        console.log('open', document.original.uri)
+        this.#connection.console.log('open ' + document.original.uri)
         await document.isReady()
-        this.connection.sendNotification('$/grammarlyCheckingStatus', {
+        this.#connection.console.log('ready ' + document.original.uri)
+        this.#connection.sendNotification('$/grammarlyCheckingStatus', {
           uri: document.original.uri,
           status: document.session.status,
         })
-        this.connection.sendNotification('$/grammarlyUserType', document.session.userType)
         this.#onDocumentOpenCbs.forEach((cb) => cb(document))
       }),
       this.#documents.onDidClose(({ document }) => {
@@ -65,14 +98,20 @@ export class DocumentService implements Registerable {
         this.#onDocumentCloseCbs.forEach((cb) => cb(document))
         document.session.disconnect()
       }),
-      Disposable.create(() => {
-        this.#documents.all().forEach((document) => document.session.disconnect())
-        this.#onDocumentOpenCbs.length = 0
-        this.#onDocumentCloseCbs.length = 0
-      }),
+      {
+        dispose: () => {
+          this.#documents.all().forEach((document) => document.session.disconnect())
+          this.#onDocumentOpenCbs.length = 0
+          this.#onDocumentCloseCbs.length = 0
+        },
+      },
     ]
 
-    return Disposable.create(() => disposables.forEach((disposable) => disposable.dispose()))
+    return {
+      dispose() {
+        disposables.forEach((disposable) => disposable.dispose())
+      },
+    }
   }
 
   public get(uri: string): GrammarlyDocument | undefined {
@@ -105,10 +144,19 @@ export class GrammarlyDocument {
     this.createSession = createSession
   }
 
+  private _isReady: Promise<void> | null = null
+
   public async isReady(): Promise<void> {
-    this.session = await this.createSession()
-    await this.#createTree()
-    this.#sync()
+    if (this._isReady != null) await this._isReady
+    if (this.session != null) return
+    this._isReady = (async () => {
+      this.session = await this.createSession()
+      await this.#createTree()
+      this.#sync()
+      this._isReady = null
+    })()
+
+    await this._isReady
   }
 
   public findOriginalOffset(offset: number): number {

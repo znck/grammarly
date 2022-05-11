@@ -1,3 +1,9 @@
 {
-  
+  "grammarly.selectors": [
+    {
+      "language": "markdown",
+      "scheme": "file",
+      "pattern": "sample.md"
+    }
+  ]
 }

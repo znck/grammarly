@@ -140,5 +140,8 @@ prepareExtensionForPackaging(extensionDir, () => {
   const execArgs = { stdio: [0, 1, 2], cwd: extensionDir }
   const RELEASE_CHANNEL = /** @type {'release'|'pre-release'} */ (process.env['RELEASE_CHANNEL'] ?? 'release')
   const args = RELEASE_CHANNEL === 'pre-release' ? '--pre-release' : ''
-  execSync(`${bin} package --no-dependencies ${args} --out grammarly.vsix`, execArgs)
+  execSync(
+    `${bin} package --no-dependencies --baseImagesUrl "https://github.com/znck/grammarly/raw/HEAD/extension" --baseContentUrl "https://github.com/znck/grammarly/raw/HEAD/extension" ${args} --out grammarly.vsix`,
+    execArgs,
+  )
 })
