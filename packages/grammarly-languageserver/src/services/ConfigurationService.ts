@@ -19,13 +19,19 @@ export class ConfigurationService implements Registerable {
   }
 
   public async getSettings(): Promise<DocumentConfig> {
-    return await this.#connection.workspace.getConfiguration('grammarly')
+    const result: { config?: DocumentConfig } | undefined = await this.#connection.workspace.getConfiguration(
+      'grammarly',
+    )
+
+    return result?.config ?? {}
   }
 
   public async getDocumentSettings(uri: string): Promise<DocumentConfig> {
-    return Promise.race([
+    const result: { config?: DocumentConfig } | undefined = await Promise.race([
       this.#connection.workspace.getConfiguration({ scopeUri: uri, section: 'grammarly' }),
       new Promise((resolve) => setTimeout(resolve, 1000, {})),
     ])
+
+    return result?.config ?? {}
   }
 }

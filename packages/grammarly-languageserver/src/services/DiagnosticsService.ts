@@ -49,7 +49,6 @@ export class DiagnosticsService implements Registerable {
     this.#connection.console.log(`${document.session.status} ${document.original.uri}`)
     const diagnostics = new Map<SuggestionId, SuggestionDiagnostic>()
     const sendDiagnostics = (): void => {
-      this.#connection.console.log(`${diagnostics.size} suggestion(s) in ${document.original.uri}`)
       this.#connection.sendDiagnostics({
         uri: document.original.uri,
         diagnostics: Array.from(diagnostics.values()).map((item) => item.diagnostic),
