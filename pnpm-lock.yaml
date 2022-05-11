@@ -89,7 +89,7 @@ importers:
       htmlparser2: ^8.0.1
       idb-keyval: ^6.1.0
       inversify: ^6.0.1
-      node-fetch: ^2.0.0
+      node-fetch: ^2.6.0
       reflect-metadata: ^0.1.13
       vscode-languageserver: ^7.0.0
       vscode-languageserver-textdocument: ^1.0.4
@@ -99,13 +99,13 @@ importers:
       htmlparser2: 8.0.1
       idb-keyval: 6.1.0
       inversify: 6.0.1
+      node-fetch: 2.6.7
       reflect-metadata: 0.1.13
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.4
       web-tree-sitter: 0.20.5
     devDependencies:
       domhandler: 5.0.3
-      node-fetch: 2.6.7
 
 packages:
 
@@ -4723,7 +4723,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: true
+    dev: false
 
   /node-fetch/3.2.4:
     resolution: {integrity: sha512-WvYJRN7mMyOLurFR2YpysQGuwYrJN+qrrpHjJDuKMcSPdfFccRUla/kng2mz6HWSBxJcqPbvatS6Gb4RhOzCJw==}
@@ -6075,7 +6075,7 @@ packages:
 
   /tr46/0.0.3:
     resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
-    dev: true
+    dev: false
 
   /tr46/2.1.0:
     resolution: {integrity: sha512-15Ih7phfcdP5YxqiB+iDtLoaTz4Nd35+IiAv0kQ5FNKHzXgdWqPoTIqEDDJmXceQt4JZk6lVPT8lnDlPpGDppw==}
@@ -6412,7 +6412,7 @@ packages:
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
-    dev: true
+    dev: false
 
   /webidl-conversions/5.0.0:
     resolution: {integrity: sha512-VlZwKPCkYKxQgeSbH5EyngOmRp7Ww7I9rQLERETtf5ofd9pGeswWiOtogpEO850jziPRarreGxn5QIiTqpb2wA==}
@@ -6439,7 +6439,7 @@ packages:
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
-    dev: true
+    dev: false
 
   /whatwg-url/8.7.0:
     resolution: {integrity: sha512-gAojqb/m9Q8a5IV96E3fHJM70AzCkgt4uXYX2O7EmuyOnLrViCQlsEBmF9UQIu3/aeAIp2U17rtbpZWNntQqdg==}
