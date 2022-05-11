@@ -21,12 +21,20 @@ export class StatusBarController {
 
   public register() {
     this.update()
+
+    let isRestarting = false
     return Disposable.from(
       this.#statusbar,
       workspace.onDidCloseTextDocument(() => this.update()),
       window.onDidChangeActiveTextEditor(() => this.update()),
       commands.registerCommand('grammarly.restartServer', async () => {
-        // TODO: Restart?
+        if (isRestarting) return
+        try {
+          isRestarting = true
+          await this.grammarly.start()
+        } finally {
+          isRestarting = false
+        }
       }),
     )
   }
@@ -62,9 +70,13 @@ export class StatusBarController {
       role: status === 'error' ? 'button' : undefined,
     }
 
-    this.#statusbar.tooltip = `Your Grammarly account is ${
-      isUser ? '' : 'not '
-    }used for this file. \nConnection status: ${status}`
+    this.#statusbar.tooltip = [
+      `Your Grammarly account is ${isUser ? '' : 'not '}used for this file.`,
+      `Connection status: ${status}`,
+      status === 'error' ? `Restart now?` : null,
+    ]
+      .filter(Boolean)
+      .join('\n')
     this.#statusbar.command = status === 'error' ? 'grammarly.restartServer' : undefined
     this.#statusbar.show()
   }

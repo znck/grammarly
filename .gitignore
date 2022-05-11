@@ -2,3 +2,4 @@ node_modules/
 *.vsix
 dist/
 .tmp/
+.vscode-test-web/
