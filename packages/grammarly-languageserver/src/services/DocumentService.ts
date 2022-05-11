@@ -38,9 +38,11 @@ export class DocumentService implements Registerable {
     this.#config = config
     this.#documents = createTextDocuments({
       create(uri, languageId, version, content) {
-        return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () =>
-          sdk.withText({ ops: [] }, await config.getDocumentSettings(uri)),
-        )
+        return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () => {
+          const options = await config.getDocumentSettings(uri)
+          connection.console.log(`create text checking session for "${uri}" with ${JSON.stringify(options, null, 2)} `)
+          return sdk.withText({ ops: [] }, options)
+        })
       },
       update(document, changes, version) {
         document.update(changes, version)
