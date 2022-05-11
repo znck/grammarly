@@ -8,7 +8,7 @@ import {
 } from 'vscode-languageserver/browser'
 import { createLanguageServer } from './createLanguageServer'
 import { DOMParser } from './DOMParser'
-import { VirtualStorage } from './VirtualStorage'
+import { IDBStorage, VirtualStorage } from './VirtualStorage'
 function getConnection() {
   const messageReader = new BrowserMessageReader(self as unknown as Worker)
   const messageWriter = new BrowserMessageWriter(self as unknown as Worker)
@@ -21,8 +21,10 @@ function createTextDocuments<T>(config: TextDocumentsConfiguration<T>): TextDocu
 
 // Polyfill DOMParser as it is not available in worker.
 if (!('DOMParser' in globalThis)) (globalThis as any).DOMParser = DOMParser
-if (!('localStorage' in globalThis)) (globalThis as any).localStorage = new VirtualStorage()
-if (!('sessionStorage' in globalThis)) (globalThis as any).sessionStorage = new VirtualStorage()
+const localStorage = new IDBStorage()
+if (!('localStorage' in globalThis)) (globalThis as any).localStorage = localStorage
+const sessionStorage = new VirtualStorage()
+if (!('sessionStorage' in globalThis)) (globalThis as any).sessionStorage = sessionStorage
 
 export const startLanguageServer = createLanguageServer({
   getConnection,
@@ -31,5 +33,7 @@ export const startLanguageServer = createLanguageServer({
     // @ts-ignore
     return new globalThis.Grammarly.SDK(clientId)
   },
-  pathEnvironmentForSDK() {},
+  async pathEnvironmentForSDK() {
+    await localStorage.load()
+  },
 })

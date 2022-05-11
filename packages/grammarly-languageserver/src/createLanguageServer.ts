@@ -22,7 +22,7 @@ export interface Options {
   getConnection(): ReturnType<typeof createConnection>
   createTextDocuments<T>(config: TextDocumentsConfiguration<T>): TextDocuments<T>
   init(clientId: string): Promise<SDK>
-  pathEnvironmentForSDK(clientId: string): void
+  pathEnvironmentForSDK(clientId: string): void | Promise<void>
 }
 
 export function createLanguageServer({
@@ -58,7 +58,7 @@ export function createLanguageServer({
     connection.onInitialize(async (params) => {
       const options = params.initializationOptions as { clientId: string } | undefined
       if (options?.clientId == null) throw new Error('clientId is required')
-      pathEnvironmentForSDK(options.clientId)
+      await pathEnvironmentForSDK(options.clientId)
       const sdk = await init(options.clientId)
 
       container.bind(CLIENT).toConstantValue(params.capabilities)
