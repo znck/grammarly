@@ -1,5 +1,11 @@
 # grammarly
 
+## 0.18.1
+
+### Patch Changes
+
+- c735bc8: Use config from workspace configuration (correctly)
+
 ## 0.18.0
 
 - a30aa93: Support for connected Grammarly account

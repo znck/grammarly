@@ -1,6 +1,6 @@
 {
   "name": "grammarly-languageserver",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "LSP server implementation for Grammarly",
   "author": "Rahul Kadyan <hey@znck.me>",
   "bin": "./bin/server.js",
