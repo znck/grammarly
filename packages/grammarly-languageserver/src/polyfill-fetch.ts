@@ -8,11 +8,11 @@ if (typeof global !== 'undefined' && typeof global.fetch === 'undefined') {
     global.Headers = Headers
   })()
 
-  function getNodeFetch(): any {
+  async function getNodeFetch(): any {
     try {
-      return require('node-fetch')
+      return await import('node-fetch')
     } catch {
-      return import('node-fetch')
+      return require('node-fetch')
     }
   }
 }
