@@ -11,6 +11,7 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.22.0
+      '@netlify/functions': ^1.0.0
       '@rollup/plugin-alias': ^3.1.9
       '@rollup/plugin-commonjs': ^22.0.0
       '@rollup/plugin-node-resolve': ^13.2.1
@@ -36,6 +37,7 @@ importers:
       vsce: ^2.7.0
     devDependencies:
       '@changesets/cli': 2.22.0
+      '@netlify/functions': 1.0.0
       '@rollup/plugin-alias': 3.1.9_rollup@2.71.1
       '@rollup/plugin-commonjs': 22.0.0_rollup@2.71.1
       '@rollup/plugin-node-resolve': 13.2.1_rollup@2.71.1
@@ -896,6 +898,13 @@ packages:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
+    dev: true
+
+  /@netlify/functions/1.0.0:
+    resolution: {integrity: sha512-7fnJv3vr8uyyyOYPChwoec6MjzsCw1CoRUO2DhQ1BD6bOyJRlD4DUaOOGlMILB2LCT8P24p5LexEGx8AJb7xdA==}
+    engines: {node: '>=8.3.0'}
+    dependencies:
+      is-promise: 4.0.0
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:
@@ -3543,6 +3552,10 @@ packages:
 
   /is-potential-custom-element-name/1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
+    dev: true
+
+  /is-promise/4.0.0:
+    resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
     dev: true
 
   /is-reference/1.2.1:

@@ -9,10 +9,11 @@
     "watch": "rollup --watch -c",
     "test": "jest",
     "release": "changeset version",
-    "open-in-browser": "vscode-test-web --browser none --extensionDevelopmentPath=./extension ./fixtures"
+    "open-in-browser": "vscode-test-web --host 127.0.0.1 --browser firefox --extensionDevelopmentPath=./extension ./fixtures"
   },
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
+    "@netlify/functions": "^1.0.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",

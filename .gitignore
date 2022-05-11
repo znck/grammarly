@@ -3,3 +3,6 @@ node_modules/
 dist/
 .tmp/
 .vscode-test-web/
+
+# Local Netlify folder
+.netlify
