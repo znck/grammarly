@@ -26,9 +26,6 @@ await esbuild.build({
   platform: 'browser',
   format: 'iife',
   outfile: Path.resolve(__dirname, '../extension/dist/server/index.browser.js'),
-  banner: {
-    js: `console.log = console.warn = console.info = console.count = console.group = console.groupEnd = console.groupCollapsed = console.error;`,
-  },
   footer: { js: ';globalThis.window=globalThis;' + contents + '\n' },
   write: true,
   plugins: [

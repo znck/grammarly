@@ -27,7 +27,10 @@ export default [
           }),
         )
       }
-      if (info.packageJson.name === 'grammarly-languageserver') {
+      if (
+        info.packageJson.name === 'grammarly-languageserver' ||
+        info.packageJson.name === 'grammarly-richtext-encoder'
+      ) {
         options.plugins.push(wasm(options.output[0].file))
       }
 

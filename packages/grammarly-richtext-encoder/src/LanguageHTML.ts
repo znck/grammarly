@@ -1,4 +1,5 @@
-import { createTransformer } from './Langauge'
+import { RichTextAttributes } from '@grammarly/sdk'
+import { createTransformer } from './Language'
 
 const IGNORED_NODES = new Set([
   "'",
@@ -55,12 +56,24 @@ export const html = createTransformer({
         return {}
     }
   },
-  stringify(content, attributes) {
-    if (attributes.bold) return `<b>${content}</b>`
-    if (attributes.italic) return `<i>${content}</i>`
-    if (attributes.code) return `<code>${content}</code>`
-    if (attributes.linebreak) return `<br />`
-    return content
+  stringify(node, content) {
+    if (node.type === '#text') {
+      if (typeof node.op === 'string') return node.op
+      return '\n'
+    }
+
+    return toHTML(content, node.value)
+
+    function toHTML(text: string, attributes: RichTextAttributes): string {
+      if (attributes.bold) return `<b>${text}</b>`
+      if (attributes.italic) return `<i>${text}</i>`
+      if (attributes.code) return `<code>${text}</code>`
+      if (attributes.linebreak) return `<br />`
+      if (attributes.link) return `<a href=${JSON.stringify(attributes.link)}>${text}</a>`
+      if (attributes.header) return `<h${attributes.header}>${content}</h${attributes.header}>`
+
+      return text
+    }
   },
   processNode(node, insert) {
     if (node.type === 'text') {

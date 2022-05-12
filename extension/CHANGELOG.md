@@ -2,8 +2,6 @@
 
 ## 0.18.1
 
-### Patch Changes
-
 - c735bc8: Use config from workspace configuration (correctly)
 
 ## 0.18.0
