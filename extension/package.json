@@ -77,6 +77,11 @@
           "scope": "window",
           "order": 1
         },
+        "grammarly.startTextCheckInPausedState": {
+          "type": "boolean",
+          "description": "Start text checking session in paused state",
+          "default": false
+        },
         "grammarly.config.documentDialect": {
           "markdownDescription": "Specific variety of English being written. See [this article](https://support.grammarly.com/hc/en-us/articles/115000089992-Select-between-British-English-American-English-Canadian-English-and-Australian-English) for differences.",
           "enum": [
@@ -304,19 +309,42 @@
         "title": "Check text",
         "category": "Grammarly",
         "command": "grammarly.check",
-        "icon": "$(pass-filled)"
+        "icon": "$(pass-filled)",
+        "enablement": "!grammarly.isActive"
       },
       {
         "title": "Log in / Connect your account",
         "category": "Grammarly",
         "command": "grammarly.login",
-        "icon": "$(log-in)"
+        "icon": "$(log-in)",
+        "enablement": "!grammarly.isRunning || !grammarly.isUserAccountConnected"
       },
       {
         "title": "Log out",
         "category": "Grammarly",
         "command": "grammarly.logout",
-        "icon": "$(log-out)"
+        "icon": "$(log-out)",
+        "enablement": "grammarly.isUserAccountConnected"
+      },
+      {
+        "title": "Restart language server",
+        "category": "Grammarly",
+        "command": "grammarly.restartServer",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "title": "Pause text check",
+        "category": "Grammarly",
+        "command": "grammarly.pauseCheck",
+        "icon": "$(debug-pause)",
+        "enablement": "grammarly.isActive && !grammarly.isPaused"
+      },
+      {
+        "title": "Resume text check",
+        "category": "Grammarly",
+        "command": "grammarly.resumeCheck",
+        "icon": "$(debug-start)",
+        "enablement": "grammarly.isActive && grammarly.isPaused"
       }
     ]
   },

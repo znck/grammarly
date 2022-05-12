@@ -2,8 +2,9 @@ import type { BaseLanguageClient } from 'vscode-languageclient'
 import type { SessionStatus, SuggestionId } from '@grammarly/sdk'
 
 export interface Protocol {
-  pause(): Promise<void>
-  getDocumentStatus(uri: string): Promise<SessionStatus | null>
+  pause(uri: string): Promise<void>
+  resume(uri: string): Promise<void>
+  getDocumentStatus(uri: string): Promise<SessionStatus | 'paused' | null>
   isUserAccountConnected(): Promise<boolean>
   getOAuthUrl(oauthRedirectUri: string): Promise<string>
   logout(): Promise<void>
