@@ -68,7 +68,9 @@ export class GrammarlyClient implements Registerable {
             selector.language != null || selector.pattern != null || selector.scheme != null ? (selector as any) : null,
           )
           .filter(<T>(value: T | null): value is T => value != null),
-
+        initializationOptions: {
+          startTextCheckInPausedState: config.get<boolean>('startTextCheckInPausedState'),
+        },
         revealOutputChannelOn: 3,
         progressOnInitialization: true,
         errorHandler: {
@@ -179,6 +181,7 @@ export class GrammarlyClient implements Registerable {
       this.client = this.createClient()
       this.session = this.client.start()
       await this.client.onReady()
+      await commands.executeCommand('setContext', 'grammarly.isRunning', true)
       this.isReady = true
       this.callbacks.forEach((fn) => {
         try {
@@ -188,6 +191,7 @@ export class GrammarlyClient implements Registerable {
         }
       })
     } catch (error) {
+      await commands.executeCommand('setContext', 'grammarly.isRunning', false)
       await window.showErrorMessage(`The extension couldn't be started. See the output channel for details.`)
     } finally {
       statusbar.dispose()

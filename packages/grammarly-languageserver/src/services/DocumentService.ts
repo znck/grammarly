@@ -10,7 +10,8 @@ import type {
 import type { Range, TextDocumentContentChangeEvent } from 'vscode-languageserver-textdocument'
 import { TextDocument } from 'vscode-languageserver-textdocument'
 import Parser from 'web-tree-sitter'
-import { CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from '../constants'
+import { CLIENT_INITIALIZATION_OPTIONS, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from '../constants'
+import { InitializationOptions } from '../interfaces/InitializationOptions'
 import { Registerable } from '../interfaces/Registerable'
 import { SourceMap } from '../interfaces/SourceMap'
 import { Transformer } from '../interfaces/Transformer'
@@ -31,6 +32,7 @@ export class DocumentService implements Registerable {
     @inject(SERVER) capabilities: ServerCapabilities,
     @inject(GRAMMARLY_SDK) sdk: SDK,
     @inject(TEXT_DOCUMENTS_FACTORY) createTextDocuments: <T>(config: TextDocumentsConfiguration<T>) => TextDocuments<T>,
+    @inject(CLIENT_INITIALIZATION_OPTIONS) options: InitializationOptions,
     config: ConfigurationService,
   ) {
     this.#connection = connection
@@ -38,11 +40,13 @@ export class DocumentService implements Registerable {
     this.#config = config
     this.#documents = createTextDocuments({
       create(uri, languageId, version, content) {
-        return new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () => {
+        const document = new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () => {
           const options = await config.getDocumentSettings(uri)
           connection.console.log(`create text checking session for "${uri}" with ${JSON.stringify(options, null, 2)} `)
           return sdk.withText({ ops: [] }, options)
         })
+        if (options.startTextCheckInPausedState === true) document.pause()
+        return document
       },
       update(document, changes, version) {
         document.update(changes, version)
@@ -62,6 +66,7 @@ export class DocumentService implements Registerable {
     this.#connection.onRequest('$/getDocumentStatus', async ([uri]: [uri: string]) => {
       const document = this.#documents.get(uri)
       if (document == null) return null
+      if (document.isPaused) return 'paused'
       await document.isReady()
       return document.session.status
     })
@@ -147,6 +152,20 @@ export class GrammarlyDocument {
   }
 
   private _isReady: Promise<void> | null = null
+  private _isPaused = false
+
+  get isPaused(): boolean {
+    return this._isPaused
+  }
+
+  public pause(): void {
+    this._isPaused = true
+  }
+
+  public resume(): void {
+    this._isPaused = false
+    this.#sync()
+  }
 
   public async isReady(): Promise<void> {
     if (this._isReady != null) await this._isReady
@@ -230,6 +249,7 @@ export class GrammarlyDocument {
   }
 
   #sync(): void {
+    if (this._isPaused) return
     if (this.#context != null) {
       const [text, map] = this.#context.transformer.encode(this.#context.tree)
       this.session.setText(text)
