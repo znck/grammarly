@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`markdown encode 1`] = `
+  Heading 1
+  \\n {"header":1}
+  Heading 2
+  \\n {"header":2}
+  Heading 5
+  \\n {"header":3}
+  Heading 4
+  \\n {"header":4}
+  Heading 5
+  \\n {"header":5}
+  Heading 6
+  \\n {"header":5}
+  Heading 1
+  \\n {"header":1}
+  Heading 2
+  \\n {"header":2}
+  Inline text can be 
+  bold {"bold":true}
+  , 
+  italic {"italic":true}
+  , 
+  strikethrough
+  , or 
+  code {"code":true}
+  .
+  \\n
+  Links: 
+  link1 {"link":""}
+   
+  link2 {"link":"#href"}
+  \\n
+  Unordered List
+  \\n {"list":"bullet","indent":1}
+  A
+  \\n {"list":"bullet","indent":1}
+  A.1
+  \\n {"list":"bullet","indent":2}
+  A.2
+  \\n {"list":"bullet","indent":2}
+  B
+  \\n {"list":"bullet","indent":1}
+  B.1
+  \\n {"list":"bullet","indent":2}
+  B.2
+  \\n {"list":"bullet","indent":2}
+  Some 
+  inline
+   html
+  \\n
+  First Term
+   
+  This is the definition of the first term.
+  \\n
+  Second Term
+   
+  This is one definition of the second term.
+   
+  This is another definition of the second term.
+  \\n
+`;

@@ -13,9 +13,7 @@ import Parser from 'web-tree-sitter'
 import { CLIENT_INITIALIZATION_OPTIONS, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from '../constants'
 import { InitializationOptions } from '../interfaces/InitializationOptions'
 import { Registerable } from '../interfaces/Registerable'
-import { SourceMap } from '../interfaces/SourceMap'
-import { Transformer } from '../interfaces/Transformer'
-import { createParser, transformers } from '../languages'
+import { createParser, transformers, SourceMap, Transformer } from 'grammarly-richtext-encoder'
 import { ConfigurationService } from './ConfigurationService'
 
 @injectable()
@@ -183,12 +181,10 @@ export class GrammarlyDocument {
   public findOriginalOffset(offset: number): number {
     if (this.#context == null) return offset
     const map = this.#context.sourcemap
-    const index = binarySearchLowerBound(0, map.length - 1, (index) => map[index][1] <= offset)
+    const index = binarySearchLowerBound(0, map.length - 1, (index) => map[index][1] < offset)
     const node = map[index]
     if (node == null) return 0
-    const original = node[0] + (offset - node[1])
-
-    return original
+    return node[0] + Math.max(0, offset - node[1])
   }
 
   public findOriginalRange(start: number, end: number): Range {

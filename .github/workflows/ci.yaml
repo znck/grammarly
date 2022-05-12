@@ -10,7 +10,7 @@ name: CI/CD
       - v*
 concurrency:
   group: build-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build
@@ -73,10 +73,50 @@ jobs:
               args: [--frozen-lockfile]
       - name: Build
         run: pnpm run build
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache node packages
+        uses: actions/cache@v2
+        env:
+          cache-name: pnpm-modules
+        with:
+          key: >-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{
+            hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.2.5
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+      - name: Download build artefact
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artefact
+          path: .
+      - run: pnpm test
   pre-release:
     name: Pre-release
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
     concurrency:
       group: pre-release
       cancel-in-progress: true
@@ -146,7 +186,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
     if: startsWith(github.event.ref, 'refs/tags/v')
     concurrency:
       group: release

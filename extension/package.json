@@ -4,7 +4,7 @@
   "publisher": "znck",
   "displayName": "Grammarly",
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
-  "version": "0.18.1",
+  "version": "0.20.0",
   "icon": "assets/logo.png",
   "preview": true,
   "engines": {
@@ -383,9 +383,6 @@
           "file": "dist/server/index.node.js",
           "bundle": {
             "platform": "node",
-            "banner": {
-              "js": "console.log = console.warn = console.info = console.count = console.group = console.groupEnd = console.groupCollapsed = console.error;"
-            },
             "conditions": [
               "node",
               "import"

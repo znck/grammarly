@@ -1,5 +1,5 @@
 import type { RichTextAttributes } from '@grammarly/sdk'
-import { createTransformer } from './Langauge'
+import { createTransformer } from './Language'
 
 const IGNORED_NODES = new Set([
   'atx_h1_marker',
@@ -10,7 +10,6 @@ const IGNORED_NODES = new Set([
   'atx_h6_marker',
   'block_quote',
   'code_fence_content',
-  'code_span',
   'fenced_code_block',
   'html_atrribute',
   'html_attribute_key',
@@ -29,7 +28,7 @@ const IGNORED_NODES = new Set([
   'list_marker',
   'setext_h1_underline',
   'setext_h2_underline',
-  'setext_heading',
+
   'table_cell',
   'table_column_alignment',
   'table_data_row',
@@ -41,6 +40,7 @@ const IGNORED_NODES = new Set([
 const OTHER_NODES = new Set([
   'backslash_escape',
   'character_reference',
+  'code_span',
   'email_autolink',
   'emphasis',
   'hard_line_break',
@@ -64,6 +64,7 @@ const OTHER_NODES = new Set([
 const BLOCK_NODES = new Set([
   'document',
   'atx_heading',
+  'setext_heading',
   'task_list_item',
   'html_block',
   'image_description',
@@ -81,7 +82,7 @@ export const markdown = createTransformer({
   shouldIgnoreSubtree(node) {
     return IGNORED_NODES.has(node.type)
   },
-  getAttributesFor(node) {
+  getAttributesFor(node, attributes) {
     switch (node.type) {
       case 'strong_emphasis':
         return { bold: true }
@@ -95,17 +96,47 @@ export const markdown = createTransformer({
           return { header: parseInt(node.firstChild.type.substring(5, 6), 10) as 1 | 2 | 3 | 4 | 5 | 6 }
         }
         return {}
+      case 'setext_heading':
+        if (node.lastNamedChild != null) {
+          // setext_h[1-2]_underline
+          return {
+            header: parseInt(node.lastNamedChild.type.substring('setext_h'.length, 'setext_h'.length + 1), 10) as 1 | 2,
+          }
+        }
+        return {}
+      case 'link':
+        if (node.lastNamedChild?.type === 'link_destination') {
+          return {
+            link: node.lastNamedChild.firstNamedChild?.text ?? '',
+          }
+        }
+        return { link: '' }
+
+      case 'tight_list':
+        return {
+          list: /[0-9]/.test(node.firstNamedChild?.firstNamedChild?.text ?? '') ? 'number' : 'bullet',
+          indent: attributes.indent != null ? attributes.indent + 1 : 1,
+        }
 
       default:
         return {}
     }
   },
-  stringify(content, attributes) {
-    return toMarkdown(content, attributes)
+  stringify(node, content) {
+    if (node.type === '#text') {
+      if (typeof node.op.insert === 'string') return node.op.insert
+      return '\n'
+    }
+
+    return toMarkdown(content, node.value)
   },
   processNode(node, insert) {
     if (node.type === 'text') {
-      insert(node.text, node)
+      if (node.parent?.parent?.type === 'atx_heading') {
+        insert(node.text.slice(1), node, 1)
+      } else if (node.parent?.type === 'paragraph' && node.text.startsWith(': ')) {
+        insert(node.text.slice(2), node, 2) // #255 - Definition Lists
+      } else insert(node.text, node)
     } else if (node.type === 'line_break' || node.type === 'hard_line_break') {
       insert('\n', node)
     } else if (node.type === 'soft_line_break') {
@@ -120,5 +151,9 @@ function toMarkdown(text: string, attributes?: RichTextAttributes): string {
   if (attributes.italic) return `_${text}_`
   if (attributes.code) return '`' + text + '`'
   if (attributes.link) return `[${text}](${attributes.link})`
+  if (attributes.list && attributes.indent != null)
+    return `${'  '.repeat(attributes.indent - 1)}${attributes.list === 'number' ? '1. ' : '- '}${text}\n`
+  if (attributes.header) return '#'.repeat(attributes.header) + ' ' + text + '\n'
+  if (attributes['code-block']) return '```\n' + text + '\n```\n'
   return text
 }

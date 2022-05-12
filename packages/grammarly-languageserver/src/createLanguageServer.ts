@@ -49,18 +49,6 @@ export function createLanguageServer({
     })
     const connection = getConnection()
 
-    console.log = console.debug = (...args) => {
-      connection.console.log(args.map(toString).join(' '))
-    }
-    console.error = (...args) => {
-      connection.console.error(args.map(toString).join(' '))
-    }
-    console.warn = (...args) => {
-      connection.console.warn(args.map(toString).join(' '))
-    }
-    console.info = (...args) => {
-      connection.console.info(args.map(toString).join(' '))
-    }
     container.bind(CONNECTION).toConstantValue(connection)
     container.bind(SERVER).toConstantValue(capabilities)
 

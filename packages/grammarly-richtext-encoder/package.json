@@ -1,0 +1,38 @@
+{
+  "name": "grammarly-richtext-encoder",
+  "version": "0.0.0",
+  "description": "Transform progamming languages to Grammarly's richtext format",
+  "author": "Rahul Kadyan <hey@znck.me>",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/znck/grammarly",
+    "directory": "packages/grammarly-richtext-encoder"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "web-tree-sitter": "0.20.5"
+  },
+  "devDependencies": {
+    "@grammarly/sdk": "^1.7.4",
+    "@types/jest": "^27.5.0",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
