@@ -16,15 +16,13 @@ import {
 import { Registerable } from './interfaces'
 
 export class GrammarlyClient implements Registerable {
-  public client: GrammarlyLanguageClient
+  public client!: GrammarlyLanguageClient
   private session?: Disposable
   private callbacks = new Set<() => unknown>()
   private isReady = false
   private selectors: DocumentFilter[] = []
 
-  constructor(private readonly context: ExtensionContext) {
-    this.client = this.createClient()
-  }
+  constructor(private readonly context: ExtensionContext) {}
 
   public onReady(fn: () => unknown): Disposable {
     this.callbacks.add(fn)
@@ -64,11 +62,17 @@ export class GrammarlyClient implements Registerable {
       {
         id: 'client_BaDkMgx4X19X9UxxYRCXZo',
         name: 'Grammarly',
+        outputChannel: window.createOutputChannel('Grammarly'),
         documentSelector: this.selectors
           .map((selector) =>
             selector.language != null || selector.pattern != null || selector.scheme != null ? (selector as any) : null,
           )
           .filter(<T>(value: T | null): value is T => value != null),
+        initializationOptions: {
+          startTextCheckInPausedState: config.get<boolean>('startTextCheckInPausedState'),
+        },
+        revealOutputChannelOn: 3,
+        progressOnInitialization: true,
         errorHandler: {
           error(error) {
             window.showErrorMessage(error.message)
@@ -90,9 +94,7 @@ export class GrammarlyClient implements Registerable {
         handleUri: async (uri) => {
           if (uri.path === '/auth/callback') {
             try {
-              await this.client.protocol.handleOAuthCallbackUri(
-                `${uri.scheme}://${uri.authority}${uri.path}?${decodeURIComponent(uri.query)}`,
-              )
+              await this.client.protocol.handleOAuthCallbackUri(uri.toString(true))
             } catch (error) {
               await window.showErrorMessage((error as Error).message)
               return
@@ -148,16 +150,17 @@ export class GrammarlyClient implements Registerable {
         await this.client.protocol.dismissSuggestion(options)
       }),
       commands.registerCommand('grammarly.login', async () => {
-        if (env.appHost !== 'desktop') {
-          await window.showErrorMessage('Connected account is not supported in web extension yet.')
-          return
-        }
+        const internalRedirectUri = Uri.parse(`${env.uriScheme}://znck.grammarly/auth/callback`, true)
+        const externalRedirectUri = await env.asExternalUri(internalRedirectUri)
 
-        const url = await this.client.protocol.getOAuthUrl(
-          Uri.from({ scheme: env.uriScheme, authority: 'znck.grammarly', path: '/auth/callback' }).toString(),
-        )
+        const isExternalURLDifferent = internalRedirectUri.toString(true) === externalRedirectUri.toString(true)
+        const redirectUri = isExternalURLDifferent
+          ? internalRedirectUri.toString(true)
+          : 'https://vscode-extension-grammarly.netlify.app/.netlify/functions/redirect'
+        const url = new URL(await this.client.protocol.getOAuthUrl(redirectUri))
+        url.searchParams.set('state', toBase64URL(externalRedirectUri.toString(true)))
 
-        if (!(await env.openExternal(Uri.parse(url)))) {
+        if (!(await env.openExternal(Uri.parse(url.toString(), true)))) {
           await window.showErrorMessage('Failed to open login page.')
         }
       }),
@@ -178,6 +181,7 @@ export class GrammarlyClient implements Registerable {
       this.client = this.createClient()
       this.session = this.client.start()
       await this.client.onReady()
+      await commands.executeCommand('setContext', 'grammarly.isRunning', true)
       this.isReady = true
       this.callbacks.forEach((fn) => {
         try {
@@ -186,6 +190,9 @@ export class GrammarlyClient implements Registerable {
           console.error(error)
         }
       })
+    } catch (error) {
+      await commands.executeCommand('setContext', 'grammarly.isRunning', false)
+      await window.showErrorMessage(`The extension couldn't be started. See the output channel for details.`)
     } finally {
       statusbar.dispose()
     }
@@ -194,4 +201,9 @@ export class GrammarlyClient implements Registerable {
 
 function isNode(): boolean {
   return typeof process !== 'undefined' && process.versions?.node != null
+}
+
+function toBase64URL(text: string): string {
+  if (typeof Buffer !== 'undefined') return Buffer.from(text, 'utf-8').toString('base64url')
+  return btoa(text).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
 }

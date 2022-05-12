@@ -5,3 +5,8 @@ dist/
 
 .log
 *.log
+
+.vscode-test-web/
+
+# Local Netlify folder
+.netlify

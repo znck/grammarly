@@ -1,5 +1,5 @@
 name: CI/CD
-'on':
+"on":
   pull_request:
     branches:
       - main
@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -80,6 +80,7 @@ jobs:
     concurrency:
       group: pre-release
       cancel-in-progress: true
+    environment: Pre Release
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
@@ -102,7 +103,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
@@ -171,7 +172,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Setup PNPM
         uses: pnpm/action-setup@v2.0.1
         with:

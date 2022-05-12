@@ -6,13 +6,22 @@ import type {
   TextDocuments,
   TextDocumentsConfiguration,
 } from 'vscode-languageserver'
-import { CLIENT, CLIENT_INFO, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from './constants'
+import {
+  CLIENT,
+  CLIENT_INFO,
+  CLIENT_INITIALIZATION_OPTIONS,
+  CONNECTION,
+  GRAMMARLY_SDK,
+  SERVER,
+  TEXT_DOCUMENTS_FACTORY,
+} from './constants'
 import { CodeActionService } from './services/CodeActionService'
 import { ConfigurationService } from './services/ConfigurationService'
 import { DiagnosticsService } from './services/DiagnosticsService'
 import { DocumentService } from './services/DocumentService'
 import { HoverService } from './services/HoverService'
 import type { SDK } from '@grammarly/sdk'
+import { InitializationOptions } from './interfaces/InitializationOptions'
 
 interface Disposable {
   dispose(): void
@@ -22,7 +31,7 @@ export interface Options {
   getConnection(): ReturnType<typeof createConnection>
   createTextDocuments<T>(config: TextDocumentsConfiguration<T>): TextDocuments<T>
   init(clientId: string): Promise<SDK>
-  pathEnvironmentForSDK(clientId: string): void
+  pathEnvironmentForSDK(clientId: string): void | Promise<void>
 }
 
 export function createLanguageServer({
@@ -56,13 +65,14 @@ export function createLanguageServer({
     container.bind(SERVER).toConstantValue(capabilities)
 
     connection.onInitialize(async (params) => {
-      const options = params.initializationOptions as { clientId: string } | undefined
+      const options = params.initializationOptions as InitializationOptions | undefined
       if (options?.clientId == null) throw new Error('clientId is required')
-      pathEnvironmentForSDK(options.clientId)
+      await pathEnvironmentForSDK(options.clientId)
       const sdk = await init(options.clientId)
 
       container.bind(CLIENT).toConstantValue(params.capabilities)
       container.bind(CLIENT_INFO).toConstantValue({ ...params.clientInfo, id: options.clientId })
+      container.bind(CLIENT_INITIALIZATION_OPTIONS).toConstantValue(options)
       container.bind(GRAMMARLY_SDK).toConstantValue(sdk)
       container.bind(TEXT_DOCUMENTS_FACTORY).toConstantValue(createTextDocuments)
 

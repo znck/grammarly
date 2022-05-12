@@ -8,15 +8,18 @@
     "build:wasm": "node scripts/build-wasm.mjs",
     "watch": "rollup --watch -c",
     "test": "jest",
-    "release": "changeset version"
+    "release": "changeset version",
+    "open-in-browser": "vscode-test-web --host 127.0.0.1 --browser firefox --extensionDevelopmentPath=./extension ./fixtures"
   },
   "devDependencies": {
     "@changesets/cli": "^2.22.0",
+    "@netlify/functions": "^1.0.0",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.2.1",
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
+    "@vscode/test-web": "^0.0.24",
     "@vuedx/monorepo-tools": "^0.2.2-next-1651055813.0",
     "esbuild": "^0.14.38",
     "husky": "^7.0.4",

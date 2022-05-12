@@ -25,6 +25,18 @@ export class DiagnosticsService implements Registerable {
   public register(): Disposable {
     this.#documents.onDidOpen((document) => this.#setupDiagnostics(document))
     this.#documents.onDidClose((document) => this.#clearDiagnostics(document))
+    this.#connection.onRequest('$/pause', ([uri]: [uri: string]) => {
+      const document = this.#documents.get(uri)
+      if (document == null) return
+      document.pause()
+      this.#sendDiagnostics(document)
+    })
+    this.#connection.onRequest('$/resume', ([uri]: [uri: string]) => {
+      const document = this.#documents.get(uri)
+      if (document == null) return
+      document.resume()
+      this.#sendDiagnostics(document)
+    })
     return { dispose() {} }
   }
 
@@ -48,12 +60,7 @@ export class DiagnosticsService implements Registerable {
   #setupDiagnostics(document: GrammarlyDocument) {
     this.#connection.console.log(`${document.session.status} ${document.original.uri}`)
     const diagnostics = new Map<SuggestionId, SuggestionDiagnostic>()
-    const sendDiagnostics = (): void => {
-      this.#connection.sendDiagnostics({
-        uri: document.original.uri,
-        diagnostics: Array.from(diagnostics.values()).map((item) => item.diagnostic),
-      })
-    }
+    const sendDiagnostics = (): void => this.#sendDiagnostics(document)
 
     this.#diagnostics.set(document.original.uri, diagnostics)
     document.session.addEventListener('suggestions', (event) => {
@@ -84,6 +91,15 @@ export class DiagnosticsService implements Registerable {
           sendDiagnostics()
           break
       }
+    })
+  }
+
+  #sendDiagnostics(document: GrammarlyDocument) {
+    const diagnostics = this.#diagnostics.get(document.original.uri) ?? new Map()
+
+    this.#connection.sendDiagnostics({
+      uri: document.original.uri,
+      diagnostics: document.isPaused ? [] : Array.from(diagnostics.values()).map((item) => item.diagnostic),
     })
   }
 
