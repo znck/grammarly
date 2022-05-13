@@ -50,7 +50,34 @@
           ],
           "required": true,
           "scope": "window",
-          "order": 0
+          "order": 0,
+          "markdownDeprecationMessage": "Use [Files: Include](#grammarly.files.include#)"
+        },
+        "grammarly.files.include": {
+          "type": "array",
+          "markdownDescription": "Configure [glob patterns](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) for including files and folders.",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/readme.md",
+            "**/README.md",
+            "**/*.txt"
+          ],
+          "required": true,
+          "scope": "window",
+          "order": 1
+        },
+        "grammarly.files.exclude": {
+          "type": "array",
+          "markdownDescription": "Configure [glob patterns](https://code.visualstudio.com/docs/editor/codebasics#_advanced-search-options) for excluding files and folders.",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "required": true,
+          "scope": "window",
+          "order": 2
         },
         "grammarly.selectors": {
           "type": "array",
@@ -75,7 +102,7 @@
           "default": [],
           "required": true,
           "scope": "window",
-          "order": 1
+          "order": 99
         },
         "grammarly.startTextCheckInPausedState": {
           "type": "boolean",
