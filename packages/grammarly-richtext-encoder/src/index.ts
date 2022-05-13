@@ -27,10 +27,14 @@ export async function createParser(language: string): Promise<Parser> {
   }
 
   function getLanguageFile(): string | Uint8Array {
+    // @ts-ignore - Ignore if process does not exist.
     if (typeof process !== 'undefined' && process.versions?.node != null) {
+      // @ts-ignore
       if (process.env.NODE_ENV === 'test') {
+        // @ts-ignore
         return require.resolve(`../dist/tree-sitter-${language}.wasm`)
       }
+      // @ts-ignore
       return require.resolve(`./tree-sitter-${language}.wasm`)
     }
 
