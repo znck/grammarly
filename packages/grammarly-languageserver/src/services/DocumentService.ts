@@ -13,7 +13,7 @@ import Parser from 'web-tree-sitter'
 import { CLIENT_INITIALIZATION_OPTIONS, CONNECTION, GRAMMARLY_SDK, SERVER, TEXT_DOCUMENTS_FACTORY } from '../constants'
 import { InitializationOptions } from '../interfaces/InitializationOptions'
 import { Registerable } from '../interfaces/Registerable'
-import { createParser, transformers, SourceMap, Transformer } from 'grammarly-richtext-encoder'
+import { createParser, transformers, SourceMap, Transformer } from '@emacs-grammarly/grammarly-richtext-encoder'
 import { ConfigurationService } from './ConfigurationService'
 
 @injectable()

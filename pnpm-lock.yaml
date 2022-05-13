@@ -84,9 +84,9 @@ importers:
 
   packages/grammarly-languageserver:
     specifiers:
+      '@emacs-grammarly/grammarly-richtext-encoder': ^0.0.1
       '@grammarly/sdk': ^1.7.4
       domhandler: ^5.0.3
-      grammarly-richtext-encoder: workspace:*
       htmlparser2: ^8.0.1
       idb-keyval: ^6.1.0
       inversify: ^6.0.1
@@ -96,8 +96,8 @@ importers:
       vscode-languageserver-textdocument: ^1.0.4
       web-tree-sitter: 0.20.5
     dependencies:
+      '@emacs-grammarly/grammarly-richtext-encoder': link:../grammarly-richtext-encoder
       '@grammarly/sdk': 1.7.4
-      grammarly-richtext-encoder: link:../grammarly-richtext-encoder
       htmlparser2: 8.0.1
       idb-keyval: 6.1.0
       inversify: 6.0.1

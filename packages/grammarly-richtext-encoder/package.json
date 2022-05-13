@@ -1,6 +1,6 @@
 {
-  "name": "grammarly-richtext-encoder",
-  "version": "0.0.0",
+  "name": "@emacs-grammarly/grammarly-richtext-encoder",
+  "version": "0.0.1",
   "description": "Transform progamming languages to Grammarly's richtext format",
   "author": "Rahul Kadyan <hey@znck.me>",
   "main": "./dist/index.cjs",
