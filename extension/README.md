@@ -2,14 +2,56 @@
 
 This extension brings [Grammarly](https://grammarly.com) to VS Code.
 
-![](./assets/staturbar.png)
+## Getting Started
 
-The status of the Grammarly text-checking session is displayed on the status bar (bottom right).
+You need to configure which files should be checked with Grammarly.
+
+- Set `grammarly.files.include` or **Grammarly > Files > Include** to the allowed list of files.
+- Run `grammarly.check` or **Grammarly: Check text** command
+
+Default configuration:
+
+```json
+{
+  "grammarly.files.include": ["**/README.md", "**/readme.md", "**/*.txt"]
+}
+```
+
+You may use `grammarly.files.exclude` to ignore specific files.
+
+## Grammarly account or premium
+
+Run `grammarly.login` or **Grammarly: Login / Connect your account** command to connect your Grammarly account.
+Run `grammarly.logout` or **Grammarly: Log out** to disconnect your account.
+
+## Configuration
+
+Configure dialect, document domain, and which check to include in settings.
+
+![](./assets/screenshot-config.png)
+
+## Supported Languages
+
+- plaintext
+- markdown (work in progress) — [CommonMark](https://commonmark.org/)
+- html (work in progress)
+
+## Troubleshooting
+
+The status of the Grammarly text-checking session is displayed on the status bar (bottom right). Clicking on the status bar icon would pause/resume text checking session.
+
+![](./assets/staturbar.png)
 
 | Session           | Connecting                          | Checking                          | Done                               | Paused                          | Error                          |
 | ----------------- | ----------------------------------- | --------------------------------- | ---------------------------------- | ------------------------------- | ------------------------------ |
 | Anonymous         | ![](./assets/status-connecting.png) | ![](./assets/status-checking.png) | ![](./assets/status-done.png)      | ![](./assets/status-paused.png) | ![](./assets/status-error.png) |
 | Grammarly Account | ![](./assets/status-connecting.png) | ![](./assets/status-checking.png) | ![](./assets/status-connected.png) | ![](./assets/status-paused.png) | ![](./assets/status-error.png) |
+
+Check output panel for logs.
+
+![](./assets/screenshot-output-panel.png)
+
+Run `grammarly.restart` or **Grammarly: Restart language server** to restart the text checking service.
 
 ## How to get help
 

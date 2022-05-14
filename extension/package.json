@@ -340,7 +340,7 @@
         "enablement": "!grammarly.isActive"
       },
       {
-        "title": "Log in / Connect your account",
+        "title": "Login / Connect your account",
         "category": "Grammarly",
         "command": "grammarly.login",
         "icon": "$(log-in)",
