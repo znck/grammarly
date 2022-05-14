@@ -84,7 +84,7 @@ importers:
 
   packages/grammarly-languageserver:
     specifiers:
-      '@emacs-grammarly/grammarly-richtext-encoder': ^0.0.2
+      '@emacs-grammarly/grammarly-richtext-encoder': ^0.0.3
       '@grammarly/sdk': ^1.7.4
       domhandler: ^5.0.3
       htmlparser2: ^8.0.1
