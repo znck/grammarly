@@ -31,7 +31,12 @@ export class GrammarlyClient implements Registerable {
   }
 
   public matchesDocumentSelector(document: TextDocument): boolean {
-    return languages.match(this.selectors, document) > 0
+    const selector: DocumentFilter[] = workspace
+      .getConfiguration('grammarly')
+      .get<string[]>('files.exclude', [])
+      .map((pattern) => ({ pattern }))
+
+    return languages.match(this.selectors, document) > 0 && languages.match(selector, document) <= 0
   }
 
   private createClient(): GrammarlyLanguageClient {
@@ -43,6 +48,9 @@ export class GrammarlyClient implements Registerable {
         scheme: 'file',
         pattern: folder != null ? new RelativePattern(folder, pattern) : pattern,
       })
+    })
+    config.get<string[]>('files.include', []).forEach((pattern) => {
+      this.selectors.push({ pattern })
     })
     config.get<DocumentFilter[]>('selectors', []).forEach((selector) => {
       if (folder != null && selector.pattern != null) {
@@ -84,6 +92,19 @@ export class GrammarlyClient implements Registerable {
         },
         markdown: {
           isTrusted: true,
+          // @ts-ignore
+          supportHtml: true,
+        },
+        middleware: {
+          didOpen: (document, next) => {
+            if (this.matchesDocumentSelector(document)) next(document)
+          },
+          didChange: (event, next) => {
+            if (this.matchesDocumentSelector(event.document)) next(event)
+          },
+          didSave: (document, next) => {
+            if (this.matchesDocumentSelector(document)) next(document)
+          },
         },
       },
     )
@@ -93,6 +114,15 @@ export class GrammarlyClient implements Registerable {
 
   register() {
     return Disposable.from(
+      workspace.onDidChangeConfiguration(async (event) => {
+        if (
+          event.affectsConfiguration('grammarly.patterns') ||
+          event.affectsConfiguration('grammarly.files') ||
+          event.affectsConfiguration('grammarly.selectors')
+        ) {
+          await this.start()
+        }
+      }),
       window.registerUriHandler({
         handleUri: async (uri) => {
           if (uri.path === '/auth/callback') {
@@ -115,10 +145,16 @@ export class GrammarlyClient implements Registerable {
         const document = window.activeTextEditor?.document
         if (document == null) return console.log('No active document')
         const status = await this.client.protocol.getDocumentStatus(document.uri.toString())
+        const excluded: DocumentFilter[] = workspace
+          .getConfiguration('grammarly')
+          .get<string[]>('files.exclude', [])
+          .map((pattern) => ({ pattern }))
         if (this.matchesDocumentSelector(document) && status != null) {
-          await window.showInformationMessage(`Grammarly is already enabled for this file.`, {
-            detail: document.uri.toString(),
-          })
+          await window.showInformationMessage(`Grammarly is already enabled for this file.`)
+        } else if (languages.match(excluded, document) > 0) {
+          await window.showInformationMessage(
+            `This file is explicitly excluded using Grammarly > Files > Exclude setting.`,
+          )
         } else {
           const action = await window.showInformationMessage(
             `Grammarly is not enabled for this file. Enable now?`,
