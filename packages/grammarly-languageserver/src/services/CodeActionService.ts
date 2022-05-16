@@ -93,7 +93,7 @@ export class CodeActionService implements Registerable {
         suggestionId,
         replacementId,
       })
-      console.log(JSON.stringify(edit, null, 2))
+      this.#connection.console.log(JSON.stringify(edit, null, 2))
       const range = document.findOriginalRange(edit.range.start, edit.range.end)
       const newText = document.toText(edit.content)
 
