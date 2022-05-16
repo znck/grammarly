@@ -99,7 +99,7 @@ export class DocumentService implements Registerable {
         this.#onDocumentOpenCbs.forEach((cb) => cb(document))
       }),
       this.#documents.onDidClose(({ document }) => {
-        console.log('close', document.original.uri)
+        this.#connection.console.log('close ' + document.original.uri)
         this.#onDocumentCloseCbs.forEach((cb) => cb(document))
         document.session.disconnect()
       }),
