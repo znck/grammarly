@@ -1,4 +1,4 @@
-#!/usr/local/env node
+#!/usr/bin/env node
 
 const server = require('../dist/index.node.cjs')
 
