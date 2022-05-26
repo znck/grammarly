@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.1
+
+- c2a3108: Update dependencies
+
 ## 0.22.0
 
 - ce4c6cb: Add **Files > Include** and **Files > Exclude** setting

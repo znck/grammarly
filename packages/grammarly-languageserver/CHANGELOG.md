@@ -1,5 +1,11 @@
 # grammarly-languageserver
 
+## 0.0.4
+
+### Patch Changes
+
+- c2a3108: Fix the grammarly-languageserver executable's shebang
+
 ## 0.0.3
 
 ### Patch Changes
