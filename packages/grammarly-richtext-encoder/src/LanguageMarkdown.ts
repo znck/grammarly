@@ -132,9 +132,13 @@ export const markdown = createTransformer({
   },
   processNode(node, insert) {
     if (node.type === 'text') {
-      if (node.parent?.parent?.type === 'atx_heading') {
+      if (node.parent?.parent?.type === 'atx_heading' && node.parent.firstChild?.equals(node)) {
         insert(node.text.slice(1), node, 1)
-      } else if (node.parent?.type === 'paragraph' && node.text.startsWith(': ')) {
+      } else if (
+        node.parent?.type === 'paragraph' &&
+        node.text.startsWith(': ') &&
+        node.parent.firstChild?.equals(node)
+      ) {
         insert(node.text.slice(2), node, 2) // #255 - Definition Lists
       } else insert(node.text, node)
     } else if (node.type === 'line_break' || node.type === 'hard_line_break') {

@@ -35,6 +35,7 @@ export function createTransformer(options: {
     }
 
     function insert(text: string, node?: Parser.SyntaxNode, skip: number = 0): void {
+      if (text === '') return
       richtext.ops.push({
         insert: text,
         attributes: text === '\n' ? pickBlockAttributes(attributes) : pickInlineAttributes(attributes),
