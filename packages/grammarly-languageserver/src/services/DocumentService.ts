@@ -41,7 +41,15 @@ export class DocumentService implements Registerable {
         const document = new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () => {
           const options = await config.getDocumentSettings(uri)
           connection.console.log(`create text checking session for "${uri}" with ${JSON.stringify(options, null, 2)} `)
-          return sdk.withText({ ops: [] }, options)
+          return sdk.withText(
+            { ops: [] },
+            {
+              ...options,
+              onPluginError: (error) => {
+                connection.console.error('Error: ' + error.message)
+              },
+            },
+          )
         })
         if (options.startTextCheckInPausedState === true) document.pause()
         return document
@@ -57,6 +65,9 @@ export class DocumentService implements Registerable {
     this.#capabilities.textDocumentSync = {
       openClose: true,
       change: 2,
+    }
+    this.#capabilities.executeCommandProvider = {
+      commands: ['grammarly.dismiss'],
     }
 
     this.#documents.listen(this.#connection)
@@ -77,6 +88,15 @@ export class DocumentService implements Registerable {
         await document.session.dismissSuggestion({ suggestionId: options.suggestionId })
       },
     )
+
+    this.#connection.onExecuteCommand(async (event) => {
+      if (event.command === 'grammarly.dismiss' && event.arguments != null) {
+        const [options] = event.arguments as [{ uri: string; suggestionId: SuggestionId }]
+        const document = this.#documents.get(options.uri)
+        if (document == null) return
+        await document.session.dismissSuggestion({ suggestionId: options.suggestionId })
+      }
+    })
 
     this.#connection.onDidChangeConfiguration(async () => {
       await Promise.all(

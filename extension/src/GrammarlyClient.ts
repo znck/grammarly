@@ -185,9 +185,6 @@ export class GrammarlyClient implements Registerable {
           }
         }
       }),
-      commands.registerCommand('grammarly.dismiss', async (options: any) => {
-        await this.client.protocol.dismissSuggestion(options)
-      }),
       commands.registerCommand('grammarly.login', async () => {
         const internalRedirectUri = Uri.parse(`${env.uriScheme}://znck.grammarly/auth/callback`, true)
         const externalRedirectUri = await env.asExternalUri(internalRedirectUri)

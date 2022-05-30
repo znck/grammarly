@@ -117,16 +117,3 @@ export function createLanguageServer({
     connection.console.log('Ready!')
   }
 }
-
-function toString(obj: unknown): string {
-  switch (typeof obj) {
-    case 'string':
-      return obj
-    case 'number':
-    case 'boolean':
-      return JSON.stringify(obj)
-    default:
-      if (obj instanceof Error) return `${obj.message} ${obj.stack}`
-      return JSON.stringify(obj)
-  }
-}
