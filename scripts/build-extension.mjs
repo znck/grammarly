@@ -5,6 +5,7 @@ import FS from 'node:fs'
 import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import semver from 'semver'
+import "./extra-certs.mjs";
 
 /**
  * @param {string} itemName
