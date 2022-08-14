@@ -235,6 +235,11 @@ jobs:
           VSCODE_MARKETPLACE_TOKEN: ${{ secrets.VSCE_TOKEN }}
           OVSX_REGISTRY_TOKEN: ${{ secrets.OVSX_REGISTRY_TOKEN }}
         continue-on-error: true
+      - name: Publish to Open VSX Registry
+        run: |
+          pnpm recursive --filter ./extension run build
+          yes | npx ovsx publish ./extension/grammarly.vsix -p ${{ secrets.OPEN_VSX_TOKEN }}
+        continue-on-error: true
       - name: Publish Packages
         run: |
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
