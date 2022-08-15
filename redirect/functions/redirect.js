@@ -1,5 +1,5 @@
 // @ts-check
-const schemes = new Set(['vscode', 'vscode-insiders', 'vscodium'])
+const schemes = new Set(['vscode', 'vscode-insiders', 'vscodium', 'gitpod-code'])
 const validQueryParams = new Set(['vscode-reqid', 'vscode-scheme', 'vscode-authority', 'vscode-path', 'windowId'])
 
 /**
