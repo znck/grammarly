@@ -67,7 +67,7 @@
     "bin"
   ],
   "dependencies": {
-    "@grammarly/sdk": "^1.7.4",
+    "@grammarly/sdk": "^1.10.1",
     "grammarly-richtext-encoder": "workspace:*",
     "htmlparser2": "^8.0.1",
     "idb-keyval": "^6.1.0",

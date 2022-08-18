@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 neverBuiltDependencies:
   - keytar
@@ -42,10 +42,10 @@ importers:
       '@rollup/plugin-commonjs': 22.0.0_rollup@2.71.1
       '@rollup/plugin-node-resolve': 13.2.1_rollup@2.71.1
       '@rollup/plugin-replace': 4.0.0_rollup@2.71.1
-      '@rollup/plugin-typescript': 8.3.2_720a6ef9590eb3341203a9177a2b9e25
+      '@rollup/plugin-typescript': 8.3.2_oifg56kzb2ztieqdvelxuk46eu
       '@types/jest': 27.5.0
       '@vscode/test-web': 0.0.24
-      '@vuedx/monorepo-tools': 0.2.2-next-1651055813.0_rollup@2.71.1+typescript@4.6.4
+      '@vuedx/monorepo-tools': 0.2.2-next-1651055813.0_ucrswzumipog3rfswkcvuves4u
       esbuild: 0.14.38
       husky: 7.0.4
       jest: 27.5.1
@@ -75,16 +75,16 @@ importers:
 
   packages/grammarly-languageclient:
     specifiers:
-      '@grammarly/sdk': ^1.7.4
+      '@grammarly/sdk': ^1.10.1
       vscode-languageclient: ^7.0.0
     dependencies:
       vscode-languageclient: 7.0.0
     devDependencies:
-      '@grammarly/sdk': 1.7.4
+      '@grammarly/sdk': 1.10.1
 
   packages/grammarly-languageserver:
     specifiers:
-      '@grammarly/sdk': ^1.7.4
+      '@grammarly/sdk': ^1.10.1
       domhandler: ^5.0.3
       grammarly-richtext-encoder: workspace:*
       htmlparser2: ^8.0.1
@@ -96,7 +96,7 @@ importers:
       vscode-languageserver-textdocument: ^1.0.4
       web-tree-sitter: 0.20.5
     dependencies:
-      '@grammarly/sdk': 1.7.4
+      '@grammarly/sdk': 1.10.1
       grammarly-richtext-encoder: link:../grammarly-richtext-encoder
       htmlparser2: 8.0.1
       idb-keyval: 6.1.0
@@ -111,7 +111,7 @@ importers:
 
   packages/grammarly-richtext-encoder:
     specifiers:
-      '@grammarly/sdk': ^1.7.4
+      '@grammarly/sdk': ^1.10.1
       '@types/jest': ^27.5.0
       jest: ^28.1.0
       ts-jest: ^28.0.2
@@ -119,10 +119,10 @@ importers:
     dependencies:
       web-tree-sitter: 0.20.5
     devDependencies:
-      '@grammarly/sdk': 1.7.4
+      '@grammarly/sdk': 1.10.1
       '@types/jest': 27.5.0
       jest: 28.1.0
-      ts-jest: 28.0.2_572f5494b613c4a635e3e9455bd5a3d7
+      ts-jest: 28.0.2_2wgldbdkrxysvykkicyn7iybea
 
 packages:
 
@@ -289,6 +289,8 @@ packages:
     resolution: {integrity: sha512-n2Q6i+fnJqzOaq2VkdXxy2TCPCWQZHiCo0XqmrCvDWcZQKRyZzYi4Z0yxlBuN0w+r2ZHmre+Q087DSrw3pbJDQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.10
     dev: true
 
   /@babel/plugin-syntax-async-generators/7.8.4_@babel+core@7.17.10:
@@ -638,8 +640,8 @@ packages:
       prettier: 1.19.1
     dev: true
 
-  /@grammarly/sdk/1.7.4:
-    resolution: {integrity: sha512-sgz5jkTNTKS9ST4svOswTuA5H09h3il1Xp2Yin63BFX9rUFOPDEiCnrenHu9cAxx5FpF0wVKcoNjW09WNZpwJw==}
+  /@grammarly/sdk/1.10.1:
+    resolution: {integrity: sha512-l/V+VAsLztieo39mcPPvGWSX2tEBqUSppGlIVlmUHKoWm+vaL4s0VDjpSkZcEfOmYfebPHgT/g8Sg6RPA4wl6g==}
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -1218,7 +1220,7 @@ packages:
       rollup: 2.71.1
     dev: true
 
-  /@rollup/plugin-typescript/8.3.2_720a6ef9590eb3341203a9177a2b9e25:
+  /@rollup/plugin-typescript/8.3.2_oifg56kzb2ztieqdvelxuk46eu:
     resolution: {integrity: sha512-MtgyR5LNHZr3GyN0tM7gNO9D0CS+Y+vflS4v/PHmrX17JCkHUYKvQ5jN5o3cz1YKllM3duXUqu3yOHwMPUxhDg==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -1448,7 +1450,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@vuedx/monorepo-tools/0.2.2-next-1651055813.0_rollup@2.71.1+typescript@4.6.4:
+  /@vuedx/monorepo-tools/0.2.2-next-1651055813.0_ucrswzumipog3rfswkcvuves4u:
     resolution: {integrity: sha512-urSZEEJnx/4M2gyO3PnbwG4wWPFQ4Z8mlUwmjgsrww7W3+sVmmU+Tz0h6NuNKnvCL7aPfP+B60eFD3AyHowKkA==}
     peerDependencies:
       rollup: ^2.50.6
@@ -1460,7 +1462,7 @@ packages:
       builtins: 4.1.0
       crypto-browserify: 3.12.0
       esbuild: 0.14.38
-      esbuild-plugin-node-polyfills: 1.0.2_1c5ff3af0465600489bbd352bd5631fe
+      esbuild-plugin-node-polyfills: 1.0.2_drp7hlyemvqajcn32njl2vrr7y
       events: 3.3.0
       fast-glob: 3.2.11
       https-browserify: 1.0.0
@@ -1469,7 +1471,7 @@ packages:
       process: 0.11.10
       resolve: 1.22.0
       rollup: 2.71.1
-      rollup-plugin-dts: 3.0.2_rollup@2.71.1+typescript@4.6.4
+      rollup-plugin-dts: 3.0.2_ucrswzumipog3rfswkcvuves4u
       stream-browserify: 3.0.0
       stream-http: 3.2.0
       topological-sort: 0.3.0
@@ -2381,12 +2383,22 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
     dev: true
 
   /debug/3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.2
     dev: true
@@ -2928,7 +2940,7 @@ packages:
     dev: true
     optional: true
 
-  /esbuild-plugin-node-polyfills/1.0.2_1c5ff3af0465600489bbd352bd5631fe:
+  /esbuild-plugin-node-polyfills/1.0.2_drp7hlyemvqajcn32njl2vrr7y:
     resolution: {integrity: sha512-sPdj8kfA63g+8muQEU3j6k++WR8gyuzamC9xHDg8Isveks0EFIq2UTooYCuI07KS+DYbf1A1qicJEAIP0SIefg==}
     peerDependencies:
       browserify-zlib: ^0.2.0
@@ -5031,6 +5043,8 @@ packages:
     resolution: {integrity: sha1-CAUuDODYOdPEMXi5CluzQkvvH5k=}
     dependencies:
       morgan: 1.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /koa-mount/4.0.0:
@@ -5422,6 +5436,8 @@ packages:
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /ms/2.0.0:
@@ -6245,7 +6261,7 @@ packages:
       is-plain-object: 3.0.1
     dev: true
 
-  /rollup-plugin-dts/3.0.2_rollup@2.71.1+typescript@4.6.4:
+  /rollup-plugin-dts/3.0.2_ucrswzumipog3rfswkcvuves4u:
     resolution: {integrity: sha512-hswlsdWu/x7k5pXzaLP6OvKRKcx8Bzprksz9i9mUe72zvt8LvqAb/AZpzs6FkLgmyRaN8B6rUQOVtzA3yEt9Yw==}
     engines: {node: '>=v12.22.1'}
     peerDependencies:
@@ -6876,7 +6892,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-jest/28.0.2_572f5494b613c4a635e3e9455bd5a3d7:
+  /ts-jest/28.0.2_2wgldbdkrxysvykkicyn7iybea:
     resolution: {integrity: sha512-IOZMb3D0gx6IHO9ywPgiQxJ3Zl4ECylEFwoVpENB55aTn5sdO0Ptyx/7noNBxAaUff708RqQL4XBNxxOVjY0vQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
@@ -6899,7 +6915,6 @@ packages:
     dependencies:
       '@types/jest': 27.5.0
       bs-logger: 0.2.6
-      esbuild: 0.14.38
       fast-json-stable-stringify: 2.1.0
       jest: 28.1.0
       jest-util: 28.1.0
@@ -6907,7 +6922,6 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.3.7
-      typescript: 4.6.4
       yargs-parser: 20.2.9
     dev: true
 
