@@ -1,0 +1,20 @@
+name: Deploy Redirect App
+"on":
+  workflow_dispatch:
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    name: Deploy to Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy
+        env:
+          NETLIFY_SITE_ID: 3a6212c2-e042-41b8-b282-f43f7b05a197
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+        run: npx -y netlify-cli deploy --prod
+        working-directory: redirect
+
