@@ -10,20 +10,44 @@ export type SuggestionDiagnostic = {
   suggestion: Suggestion
 }
 
+const diagnosticSeverityMap = new Map<string, DiagnosticSeverity>([
+  ['error', 1],
+  ['warning', 2],
+  ['information', 3],
+  ['hint', 4],
+])
+
 @injectable()
 export class DiagnosticsService implements Registerable {
   #connection: Connection
   #documents: DocumentService
   #diagnostics: Map<string, Map<SuggestionId, SuggestionDiagnostic>>
-
+  #severity?: DiagnosticSeverity
   public constructor(@inject(CONNECTION) connection: Connection, documents: DocumentService) {
     this.#connection = connection
     this.#documents = documents
     this.#diagnostics = new Map()
   }
 
+  private _getSeverity: Promise<void> | null = null
+
+  public async getSeverity(): Promise<void> {
+    if (this._getSeverity != null) await this._getSeverity
+    this._getSeverity = (async () => {
+      const severity: string[] = await this.#connection.workspace.getConfiguration([
+        { section: 'grammarly.diagnostics.severity' },
+      ])
+      this.#severity = diagnosticSeverityMap.get(severity[0])
+    })()
+
+    await this._getSeverity
+  }
+
   public register(): Disposable {
-    this.#documents.onDidOpen((document) => this.#setupDiagnostics(document))
+    this.#documents.onDidOpen(async (document) => {
+      await this.getSeverity()
+      this.#setupDiagnostics(document)
+    })
     this.#documents.onDidClose((document) => this.#clearDiagnostics(document))
     this.#connection.onRequest('$/pause', ([uri]: [uri: string]) => {
       const document = this.#documents.get(uri)
@@ -36,6 +60,9 @@ export class DiagnosticsService implements Registerable {
       if (document == null) return
       document.resume()
       this.#sendDiagnostics(document)
+    })
+    this.#connection.onDidChangeConfiguration(async () => {
+      await this.getSeverity()
     })
     return { dispose() {} }
   }
@@ -119,7 +146,7 @@ export class DiagnosticsService implements Registerable {
       message: suggestion.title,
       range: document.findOriginalRange(highlight.start, highlight.end),
       source: 'Grammarly',
-      severity: suggestion.type === 'corrective' ? 1 : 3,
+      severity: this.#severity ?? (suggestion.type === 'corrective' ? 1 : 3),
     }
   }
 }

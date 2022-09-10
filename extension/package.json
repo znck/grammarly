@@ -109,6 +109,17 @@
           "description": "Start text checking session in paused state",
           "default": false
         },
+        "grammarly.diagnostics.severity": {
+          "markdownDescription": "Severity of Grammarly messages",
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
+          "default": "error",
+          "scope": "language-overridable"
+        },
         "grammarly.config.documentDialect": {
           "markdownDescription": "Specific variety of English being written. See [this article](https://support.grammarly.com/hc/en-us/articles/115000089992-Select-between-British-English-American-English-Canadian-English-and-Australian-English) for differences.",
           "enum": [
