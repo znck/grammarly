@@ -35,6 +35,10 @@ Configure dialect, document domain, and which check to include in settings.
 - plaintext
 - markdown (work in progress) — [CommonMark](https://commonmark.org/)
 - html (work in progress)
+- Many more you can enable by opening Grammarly > Files > Include in settings:
+
+![image](https://user-images.githubusercontent.com/120114860/208191020-702c5053-7a97-469e-bde1-bdada021ed90.png)
+
 
 ## Troubleshooting
 
