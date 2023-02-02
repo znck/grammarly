@@ -25,7 +25,7 @@ exports.handler = async function (event, _context) {
   const url = new URL(Buffer.from(state, 'base64url').toString())
   const scheme = url.protocol.slice(0, -1)
   if (
-    url.host === 'https://github.dev' &&
+    url.origin === 'https://github.dev' &&
     url.pathname === '/extension-auth-callback'
   ) {
     validQueryParams = new Set(['state'])
