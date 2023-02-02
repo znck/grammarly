@@ -125,9 +125,11 @@ export class GrammarlyClient implements Registerable {
       }),
       window.registerUriHandler({
         handleUri: async (uri) => {
-          if (uri.path === '/auth/callback') {
+          const url = new URL(uri.toString(true))
+          if (url.path === '/auth/callback') {
             try {
-              await this.client.protocol.handleOAuthCallbackUri(uri.toString(true))
+              url.searchParams.delete('state') // added by github.dev
+              await this.client.protocol.handleOAuthCallbackUri(url.toString())
             } catch (error) {
               await window.showErrorMessage((error as Error).message)
               return
@@ -137,7 +139,7 @@ export class GrammarlyClient implements Registerable {
               await window.showInformationMessage('Account connected.')
             }
           } else {
-            throw new Error(`Unexpected URI: ${uri.toString()}`)
+            throw new Error(`Unexpected URI: ${url.toString()}`)
           }
         },
       }),
