@@ -4,7 +4,7 @@ import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { EditorConfig } from '@grammarly/sdk'
 
-type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestions'>
+type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestionCategories'>
 
 @injectable()
 export class ConfigurationService implements Registerable {
