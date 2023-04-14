@@ -3,6 +3,7 @@ import esbuild from 'esbuild'
 import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import fetch from 'node-fetch'
+import "./extra-certs.mjs";
 
 const __dirname = Path.dirname(fileURLToPath(import.meta.url))
 
