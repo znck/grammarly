@@ -20,6 +20,7 @@
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@types/jest": "^27.5.0",
+    "@types/node": "^18.15.11",
     "@vscode/test-web": "^0.0.24",
     "@vuedx/monorepo-tools": "^0.2.2-next-1651055813.0",
     "esbuild": "^0.14.38",

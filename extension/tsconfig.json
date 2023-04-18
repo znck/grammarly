@@ -4,7 +4,7 @@
     "target": "ES2019",
     "moduleResolution": "node",
 
-    "lib": ["ES2019"],
+    "lib": ["ES2019", "dom"],
     "sourceMap": true,
     "strict": true,
     "experimentalDecorators": true,

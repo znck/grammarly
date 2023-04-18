@@ -45,9 +45,6 @@ export class DocumentService implements Registerable {
             { ops: [] },
             {
               ...options,
-              onPluginError: (error) => {
-                connection.console.error('Error: ' + error.message)
-              },
             },
           )
         })
