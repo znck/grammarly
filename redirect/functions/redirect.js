@@ -39,10 +39,10 @@ exports.handler = async function (event, _context) {
     validate(scheme, url.host, url.pathname)
   }
 
-  url.searchParams.set('code', code)
   url.searchParams.forEach((_, key) => {
     if (!validQueryParams.has(key)) url.searchParams.delete(key)
   })
+  url.searchParams.set('code', code)
 
   return getResponse(url.toString())
 }
