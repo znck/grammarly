@@ -103,7 +103,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
+          version: 8.1.1
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -147,7 +147,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
+          version: 8.1.1
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -216,7 +216,7 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
+          version: 8.1.1
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
