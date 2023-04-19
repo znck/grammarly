@@ -1,8 +1,10 @@
 {
   "private": true,
   "engines": {
-    "node": "^16.13.0"
+    "node": "^16.20.0",
+    "pnpm": "^8.1.1"
   },
+  "packageManager": "pnpm@8.1.1",
   "scripts": {
     "build": "rollup -c && node scripts/build-web-extension.mjs",
     "build:wasm": "node scripts/build-wasm.mjs",
