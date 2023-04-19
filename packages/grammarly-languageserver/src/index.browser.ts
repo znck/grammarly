@@ -34,7 +34,7 @@ export const startLanguageServer = createLanguageServer({
     return new globalThis.Grammarly.SDK(clientId)
   },
   async pathEnvironmentForSDK() {
-    if (globalThis.localStorage === localStorage) {
+    if ((globalThis as any).localStorage === localStorage) {
       await localStorage.load()
     }
   },

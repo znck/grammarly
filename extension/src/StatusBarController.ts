@@ -20,7 +20,7 @@ export class StatusBarController {
   }
 
   public register() {
-    this.update()
+    this.grammarly.onReady(() => this.update())
 
     let isRestarting = false
     return Disposable.from(

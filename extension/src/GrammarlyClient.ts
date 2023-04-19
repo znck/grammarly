@@ -126,7 +126,7 @@ export class GrammarlyClient implements Registerable {
       window.registerUriHandler({
         handleUri: async (uri) => {
           const url = new URL(uri.toString(true))
-          if (url.path === '/auth/callback') {
+          if (url.pathname === '/auth/callback') {
             try {
               url.searchParams.delete('state') // added by github.dev
               await this.client.protocol.handleOAuthCallbackUri(url.toString())

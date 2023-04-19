@@ -4,7 +4,7 @@ import { CONNECTION } from '../constants'
 import { Registerable } from '../interfaces/Registerable'
 import { EditorConfig } from '@grammarly/sdk'
 
-type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestions'>
+type DocumentConfig = Pick<EditorConfig, 'documentDialect' | 'documentDomain' | 'suggestionCategories'>
 
 @injectable()
 export class ConfigurationService implements Registerable {
@@ -32,6 +32,25 @@ export class ConfigurationService implements Registerable {
       new Promise((resolve) => setTimeout(resolve, 1000, {})),
     ])
 
-    return result?.config ?? {}
+    const options: DocumentConfig = {
+      documentDialect: 'american',
+      ...result?.config,
+    }
+
+    if ((options as any).suggestions != null) {
+      options.suggestionCategories = { ...options.suggestionCategories }
+
+      for (const [key, value] of Object.entries((options as any).suggestions)) {
+        if (value == null) continue // ignore default values.
+
+        const property = (key.slice(0, 1).toLocaleLowerCase() +
+          key.slice(1)) as unknown as keyof Required<DocumentConfig>['suggestionCategories']
+        options.suggestionCategories[property] ??= value ? 'on' : 'off'
+      }
+
+      delete (options as any).suggestions
+    }
+
+    return options
   }
 }
