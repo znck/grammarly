@@ -457,6 +457,7 @@
     "grammarly-languageserver": "workspace:*"
   },
   "devDependencies": {
-    "@types/vscode": "^1.63.0"
+    "@types/vscode": "^1.63.0",
+    "@types/node": "^16.0.0"
   }
 }

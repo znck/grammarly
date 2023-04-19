@@ -27,7 +27,7 @@
     "web-tree-sitter": "0.20.5"
   },
   "devDependencies": {
-    "@grammarly/sdk": "^1.10.1",
+    "@grammarly/sdk": "^2.3.17",
     "@types/jest": "^27.5.0",
     "jest": "^28.1.0",
     "ts-jest": "^28.0.2"

@@ -53,8 +53,12 @@ export function createLanguageServer({
     container.bind(SERVER).toConstantValue(capabilities)
 
     connection.onInitialize(async (params) => {
+      connection.console.log('Initializing...')
       const options = params.initializationOptions as InitializationOptions | undefined
-      if (options?.clientId == null) throw new Error('clientId is required')
+      if (options?.clientId == null) {
+        connection.console.error('Error: clientId is required')
+        throw new Error('clientId is required')
+      }
       await pathEnvironmentForSDK(options.clientId)
       const sdk = await init(options.clientId)
 
@@ -99,14 +103,16 @@ export function createLanguageServer({
         })
       })
 
-      connection.console.log('Initialized!')
-
       return {
         serverInfo: {
           name: 'Grammarly',
         },
         capabilities,
       }
+    })
+
+    connection.onInitialized(() => {
+      connection.console.log('Initialized!')
     })
 
     connection.onExit(() => {
