@@ -4,4 +4,4 @@
 'grammarly-richtext-encoder': patch
 ---
 
-Update Grammarly SDK to v1.10.1
+Update Grammarly SDK to v2.3.17

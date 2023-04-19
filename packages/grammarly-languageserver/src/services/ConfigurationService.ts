@@ -37,11 +37,17 @@ export class ConfigurationService implements Registerable {
       ...result?.config,
     }
 
-    if ((options as any).suggestions) {
-      options.suggestionCategories = {
-        ...(options as any).suggestions,
-        ...options.suggestionCategories,
+    if ((options as any).suggestions != null) {
+      options.suggestionCategories = { ...options.suggestionCategories }
+
+      for (const [key, value] of Object.entries((options as any).suggestions)) {
+        if (value == null) continue // ignore default values.
+
+        const property = (key.slice(0, 1).toLocaleLowerCase() +
+          key.slice(1)) as unknown as keyof Required<DocumentConfig>['suggestionCategories']
+        options.suggestionCategories[property] ??= value ? 'on' : 'off'
       }
+
       delete (options as any).suggestions
     }
 
