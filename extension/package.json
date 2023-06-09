@@ -29,6 +29,7 @@
     "onCommand:grammarly.check",
     "onCommand:grammarly.login",
     "onCommand:grammarly.logout",
+    "onCommand:grammarly.dictionary",
     "onLanguage:plaintext",
     "onLanguage:markdown",
     "onLanguage:html"
@@ -772,6 +773,13 @@
         "command": "grammarly.logout",
         "icon": "$(log-out)",
         "enablement": "grammarly.isUserAccountConnected"
+      },
+      {
+        "title": "Open Dictionary",
+        "category": "Grammarly",
+        "command": "grammarly.dictionary",
+        "icon": "$(book)",
+        "enablement": "!grammarly.isRunning || !grammarly.isUserAccountConnected"
       },
       {
         "title": "Restart language server",
