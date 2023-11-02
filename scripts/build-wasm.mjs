@@ -17,5 +17,5 @@ for (const language in packageNameByLanguage) {
   execSync(`$(pnpm bin)/tree-sitter build-wasm ${resolve(rootDir, `node_modules/${packageName}`)}`, {
     stdio: 'inherit',
   })
-  execSync(`mv ${packageName}.wasm tree-sitter/tree-sitter-${language}.wasm`, { stdio: 'inherit' })
+  execSync(`mv ${packageName}.wasm parsers/tree-sitter-${language}.wasm`, { stdio: 'inherit' })
 }

@@ -16,19 +16,36 @@ export async function createParser(language: string): Promise<Parser> {
   return await parser
 
   async function createParserInner() {
-    await Parser.init()
+    if (isNodeJS()) {
+      const fetch = globalThis.fetch
+      try {
+        // @ts-ignore
+        globalThis.fetch = null
+        await Parser.init()
+      } catch (e) {
+        console.log('Error in TreeSitter parser:', e)
+        throw e
+      } finally {
+        globalThis.fetch = fetch
+      }
+    } else {
+      await Parser.init()
+    }
 
-    const parser = new Parser()
-    parser.setLanguage(await Parser.Language.load(getLanguageFile()))
-    parsers.set(language, parser)
-    parsersPending.delete(language)
-
-    return parser
+    try {
+      const parser = new Parser()
+      parser.setLanguage(await Parser.Language.load(getLanguageFile()))
+      parsers.set(language, parser)
+      parsersPending.delete(language)
+      return parser
+    } catch (e) {
+      console.log(`Error in TreeSitter ${language} parser:`, e)
+      throw e
+    }
   }
 
   function getLanguageFile(): string | Uint8Array {
-    // @ts-ignore - Ignore if process does not exist.
-    if (typeof process !== 'undefined' && process.versions?.node != null) {
+    if (isNodeJS()) {
       // @ts-ignore
       if (process.env.NODE_ENV === 'test') {
         // @ts-ignore
@@ -40,6 +57,11 @@ export async function createParser(language: string): Promise<Parser> {
 
     return `tree-sitter-${language}.wasm`
   }
+}
+
+function isNodeJS(): boolean {
+  // @ts-ignore - Ignore if process does not exist.
+  return typeof process !== 'undefined' && process.versions?.node != null
 }
 
 export const transformers = { html, markdown } as const
