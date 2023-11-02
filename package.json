@@ -1,8 +1,8 @@
 {
   "private": true,
+  "packageManager": "pnpm@8.10.2",
   "engines": {
-    "node": "^18.18.2",
-    "pnpm": "^8.8.0"
+    "node": "^18.18.2"
   },
   "scripts": {
     "build": "rollup -c && node scripts/build-web-extension.mjs",
