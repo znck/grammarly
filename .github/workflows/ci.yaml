@@ -46,7 +46,7 @@ jobs:
       - name: Build
         run: pnpm run build
       - name: Upload build artefact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artefact
           retention-days: 30
