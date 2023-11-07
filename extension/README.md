@@ -23,6 +23,7 @@ You may use `grammarly.files.exclude` to ignore specific files.
 
 Run `grammarly.login` or **Grammarly: Login / Connect your account** command to connect your Grammarly account.
 Run `grammarly.logout` or **Grammarly: Log out** to disconnect your account.
+Run `grammarly.dictionary` or **Grammarly: Open Dictionary** to open grammarly.com to your personal dictionary.
 
 ## Configuration
 

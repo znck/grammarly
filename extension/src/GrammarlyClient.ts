@@ -206,6 +206,13 @@ export class GrammarlyClient implements Registerable {
         await this.client.protocol.logout()
         await window.showInformationMessage('Logged out.')
       }),
+      commands.registerCommand('grammarly.dictionary', async () => {
+        const dictionaryExternalURL = 'https://account.grammarly.com/customize';
+
+        if (!(await env.openExternal(dictionaryExternalURL))) {
+          await window.showErrorMessage('Failed to open dictionary.')
+        }
+      }),
       { dispose: () => this.session?.dispose() },
     )
   }
