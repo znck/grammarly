@@ -3,7 +3,7 @@
   "name": "grammarly",
   "publisher": "znck",
   "displayName": "Grammarly",
-  "description": "A grammar checking for Visual Studio Code using Grammarly.",
+  "description": "A grammar checking extension for Visual Studio Code using Grammarly.",
   "version": "0.24.0",
   "icon": "assets/logo.png",
   "preview": true,
