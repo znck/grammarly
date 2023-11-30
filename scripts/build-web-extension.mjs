@@ -1,12 +1,24 @@
 // @ts-check
 import esbuild from 'esbuild'
+import fetch from 'node-fetch'
+import FS from 'node:fs'
 import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import fetch from 'node-fetch'
 
 const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const {
+  dependencies: { '@grammarly/sdk': sdkTargetVersion },
+} = JSON.parse(FS.readFileSync(Path.resolve(__dirname, '../packages/grammarly-languageserver/package.json'), 'utf-8'))
 
-const response = await fetch('https://js.grammarly.com/grammarly-sdk')
+const controller = new AbortController()
+const timeout = setTimeout(() => controller.abort(), 5000)
+const version = String(sdkTargetVersion).replace(/^.*?(\d+\.\d+).*?$/, (_, match) => match)
+
+const response = await fetch('https://js.grammarly.com/grammarly-sdk@' + version, {
+  signal: controller.signal,
+  redirect: 'follow',
+})
+clearTimeout(timeout)
 const contents = await response.text()
 
 await esbuild.build({

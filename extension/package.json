@@ -4,7 +4,7 @@
   "publisher": "znck",
   "displayName": "Grammarly",
   "description": "A grammar checking for Visual Studio Code using Grammarly.",
-  "version": "0.22.1",
+  "version": "0.24.0",
   "icon": "assets/logo.png",
   "preview": true,
   "engines": {
@@ -149,185 +149,605 @@
           "default": "general",
           "scope": "language-overridable"
         },
+        "grammarly.config.suggestionCategories.conjugationAtStartOfSentence": {
+          "description": "Flags use of conjunctions such as \"but\" and \"and\" at the beginning of sentences.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.fluency": {
+          "description": "Suggests ways to sound more natural and fluent.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.informalPronounsAcademic": {
+          "description": "Flags use of personal pronouns such as \"I\" and \"you\" in academic writing.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.missingSpaces": {
+          "description": "Suggests adding missing spacing after a numeral when writing times.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.nounStrings": {
+          "description": "Flags a series of nouns that modify a final noun.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.numbersBeginningSentences": {
+          "description": "Suggests spelling out numbers at the beginning of sentences.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.numbersZeroThroughTen": {
+          "description": "Suggests spelling out numbers zero through ten.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.oxfordComma": {
+          "description": "Suggests adding the Oxford comma after the second-to-last item in a list of things.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.passiveVoice": {
+          "description": "Flags use of passive voice.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.personFirstLanguage": {
+          "description": "Suggests using person-first language to refer respectfully to an individual with a disability.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageAgeRelated": {
+          "description": "Suggests alternatives to potentially biased language related to older adults.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageDisabilityRelated": {
+          "description": "Suggests alternatives to potentially ableist language.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageFamilyRelated": {
+          "description": "Suggests alternatives to potentially biased language related to parenting and family systems.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageGenderRelated": {
+          "description": "Suggests alternatives to potentially gender-biased and non-inclusive phrasing.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageHumanRights": {
+          "description": "Suggests alternatives to language related to human slavery.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageHumanRightsRelated": {
+          "description": "Suggests alternatives to terms with origins in the institution of slavery.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageLGBTQIARelated": {
+          "description": "Flags LGBTQIA+-related terms that may be seen as biased, outdated, or disrespectful in some contexts.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyBiasedLanguageRaceEthnicityRelated": {
+          "description": "Suggests alternatives to potentially biased language related to race and ethnicity.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.possiblyPoliticallyIncorrectLanguage": {
+          "description": "Suggests alternatives to language that may be considered politically incorrect.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.prepositionAtTheEndOfSentence": {
+          "description": "Flags use of prepositions such as \"with\" and \"in\" at the end of sentences.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.punctuationWithQuotation": {
+          "description": "Suggests placing punctuation before closing quotation marks.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.readabilityFillerWords": {
+          "description": "Flags long, complicated sentences that could potentially confuse your reader.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.readabilityTransforms": {
+          "description": "Suggests splitting long, complicated sentences that could potentially confuse your reader.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.sentenceVariety": {
+          "description": "Flags series of sentences that follow the same pattern.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.spacesSurroundingSlash": {
+          "description": "Suggests removing extra spaces surrounding a slash.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.splitInfinitive": {
+          "description": "Suggests rewriting split infinitives so that an adverb doesn't come between \"to\" and the verb.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.stylisticFragments": {
+          "description": "Suggests completing all incomplete sentences, including stylistic sentence fragments that may be intentional.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.unnecessaryEllipses": {
+          "description": "Flags unnecessary use of ellipses (...).",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.variety": {
+          "description": "Suggests alternatives to words that occur frequently in the same paragraph.",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
+        "grammarly.config.suggestionCategories.vocabulary": {
+          "description": "Suggests alternatives to bland and overused words such as \"good\" and \"nice\".",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on",
+          "scope": "language-overridable"
+        },
         "grammarly.config.suggestions.ConjunctionAtStartOfSentence": {
           "description": "Flags use of conjunctions such as 'but' and 'and' at the beginning of sentences.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.conjunctionAtStartOfSentence` instead."
         },
         "grammarly.config.suggestions.Fluency": {
           "description": "Suggests ways to sound more natural and fluent.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.fluency` instead."
         },
         "grammarly.config.suggestions.InformalPronounsAcademic": {
           "description": "Flags use of personal pronouns such as 'I' and 'you' in academic writing.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.informalPronounsAcademic` instead."
         },
         "grammarly.config.suggestions.MissingSpaces": {
           "description": "Suggests adding missing spacing after a numeral when writing times.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.missingSpaces` instead."
         },
         "grammarly.config.suggestions.NounStrings": {
           "description": "Flags a series of nouns that modify a final noun.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.nounStrings` instead."
         },
         "grammarly.config.suggestions.NumbersBeginningSentences": {
           "description": "Suggests spelling out numbers at the beginning of sentences.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.numbersBeginningSentences` instead."
         },
         "grammarly.config.suggestions.NumbersZeroThroughTen": {
           "description": "Suggests spelling out numbers zero through ten.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.numbersZeroThroughTen` instead."
         },
         "grammarly.config.suggestions.OxfordComma": {
           "description": "Suggests adding the Oxford comma after the second-to-last item in a list of things.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.oxfordComma` instead."
         },
         "grammarly.config.suggestions.PassiveVoice": {
           "description": "Flags use of passive voice.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.passiveVoice` instead."
         },
         "grammarly.config.suggestions.PersonFirstLanguage": {
           "description": "Suggests using person-first language to refer respectfully to an individual with a disability.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.personFirstLanguage` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageAgeRelated": {
           "description": "Suggests alternatives to potentially biased language related to older adults.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageAgeRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageDisabilityRelated": {
           "description": "Suggests alternatives to potentially ableist language.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageDisabilityRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageFamilyRelated": {
           "description": "Suggests alternatives to potentially biased language related to parenting and family systems.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageFamilyRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageGenderRelated": {
           "description": "Suggests alternatives to potentially gender-biased and non-inclusive phrasing.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageGenderRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRights": {
           "description": "Suggests alternatives to language related to human slavery.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageHumanRights` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageHumanRightsRelated": {
           "description": "Suggests alternatives to terms with origins in the institution of slavery.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageHumanRightsRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageLgbtqiaRelated": {
           "description": "Flags LGBTQIA+-related terms that may be seen as biased, outdated, or disrespectful in some contexts.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageLgbtqiaRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyBiasedLanguageRaceEthnicityRelated": {
           "description": "Suggests alternatives to potentially biased language related to race and ethnicity.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyBiasedLanguageRaceEthnicityRelated` instead."
         },
         "grammarly.config.suggestions.PossiblyPoliticallyIncorrectLanguage": {
           "description": "Suggests alternatives to language that may be considered politically incorrect.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.possiblyPoliticallyIncorrectLanguage` instead."
         },
         "grammarly.config.suggestions.PrepositionAtTheEndOfSentence": {
           "description": "Flags use of prepositions such as 'with' and 'in' at the end of sentences.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.prepositionAtTheEndOfSentence` instead."
         },
         "grammarly.config.suggestions.PunctuationWithQuotation": {
           "description": "Suggests placing punctuation before closing quotation marks.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.punctuationWithQuotation` instead."
         },
         "grammarly.config.suggestions.ReadabilityFillerwords": {
           "description": "Flags long, complicated sentences that could potentially confuse your reader.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.readabilityFillerwords` instead."
         },
         "grammarly.config.suggestions.ReadabilityTransforms": {
           "description": "Suggests splitting long, complicated sentences that could potentially confuse your reader.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.readabilityTransforms` instead."
         },
         "grammarly.config.suggestions.SentenceVariety": {
           "description": "Flags series of sentences that follow the same pattern.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.sentenceVariety` instead."
         },
         "grammarly.config.suggestions.SpacesSurroundingSlash": {
           "description": "Suggests removing extra spaces surrounding a slash.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.spacesSurroundingSlash` instead."
         },
         "grammarly.config.suggestions.SplitInfinitive": {
           "description": "Suggests rewriting split infinitives so that an adverb doesn't come between 'to' and the verb.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.splitInfinitive` instead."
         },
         "grammarly.config.suggestions.StylisticFragments": {
           "description": "Suggests completing all incomplete sentences, including stylistic sentence fragments that may be intentional.",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.stylisticFragments` instead."
         },
         "grammarly.config.suggestions.UnnecessaryEllipses": {
           "description": "Flags unnecessary use of ellipses (...).",
-          "type": "boolean",
-          "default": false,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.unnecessaryEllipses` instead."
         },
         "grammarly.config.suggestions.Variety": {
           "description": "Suggests alternatives to words that occur frequently in the same paragraph.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.variety` instead."
         },
         "grammarly.config.suggestions.Vocabulary": {
           "description": "Suggests alternatives to bland and overused words such as 'good' and 'nice'.",
-          "type": "boolean",
-          "default": true,
-          "scope": "language-overridable"
+          "enum": [
+            true,
+            false,
+            null
+          ],
+          "default": null,
+          "scope": "language-overridable",
+          "deprecationMessage": "Use `grammarly.config.suggestionCategories.vocabulary` instead."
         }
       }
     },
@@ -457,6 +877,7 @@
     "grammarly-languageserver": "workspace:*"
   },
   "devDependencies": {
-    "@types/vscode": "^1.63.0"
+    "@types/vscode": "^1.63.0",
+    "@types/node": "^16.0.0"
   }
 }

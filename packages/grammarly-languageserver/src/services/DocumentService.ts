@@ -40,18 +40,29 @@ export class DocumentService implements Registerable {
       create(uri, languageId, version, content) {
         const document = new GrammarlyDocument(TextDocument.create(uri, languageId, version, content), async () => {
           const options = await config.getDocumentSettings(uri)
+          if (options.documentDialect === 'auto-text') options.documentDialect = 'american'
           connection.console.log(`create text checking session for "${uri}" with ${JSON.stringify(options, null, 2)} `)
-          return sdk.withText(
-            { ops: [] },
-            {
-              ...options,
-              onPluginError: (error) => {
-                connection.console.error('Error: ' + error.message)
-              },
-            },
-          )
+
+          try {
+            const session = sdk.withText({ ops: [] }, options)
+            session.setConfig(options)
+            session.addEventListener('error', (error) => {
+              connection.console.error('[Error in Grammarly SDK]: ' + error.detail.message)
+            })
+
+            connection.console.log(`text checking session for "${uri}" is ready`)
+
+            return session
+          } catch (error) {
+            connection.console.error(
+              '[Error in Grammarly SDK]: ' + (error as Error).message + ' ' + (error as Error).stack,
+            )
+            throw error
+          }
         })
+
         if (options.startTextCheckInPausedState === true) document.pause()
+
         return document
       },
       update(document, changes, version) {

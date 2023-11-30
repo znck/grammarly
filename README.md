@@ -20,7 +20,7 @@ pnpm test
    2. Add the package to the wasm build script: [scripts/build-wasm.mjs](./scripts/build-wasm.mjs)
 3. Add language transformer in the directory
    1. Create `Language<LanguageName>.ts`
-   2. For reference, check [`LanguageHTML.ts`](./packages/grammarly-languageserver/src/languages/LanguageHTML.ts)
+   2. For reference, check [`LanguageHTML.ts`](./packages/grammarly-richtext-encoder/src/LanguageHTML.ts)
 
 ## Using this LSP with Neovim
 After running the `pnpm install`, `pnpm run build`, and `pnpm test` commands the LSP is ready to be used with Neovim.  Add this setup to your Neovim config (replacing the path to the `grammarly-languageserver` with your build):

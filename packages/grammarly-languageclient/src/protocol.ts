@@ -23,6 +23,7 @@ export function createProtocol(client: BaseLanguageClient): Protocol {
       } else {
         return async (...args: unknown[]): Promise<unknown> => {
           try {
+            await client.onReady()
             const result = await client.sendRequest(`$/${property}`, args)
             return result
           } catch (error) {

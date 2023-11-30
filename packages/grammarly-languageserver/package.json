@@ -67,7 +67,7 @@
     "bin"
   ],
   "dependencies": {
-    "@grammarly/sdk": "^1.7.4",
+    "@grammarly/sdk": "^2.3.17",
     "grammarly-richtext-encoder": "workspace:*",
     "htmlparser2": "^8.0.1",
     "idb-keyval": "^6.1.0",
@@ -76,7 +76,7 @@
     "reflect-metadata": "^0.1.13",
     "vscode-languageserver": "^7.0.0",
     "vscode-languageserver-textdocument": "^1.0.4",
-    "web-tree-sitter": "0.20.5"
+    "web-tree-sitter": "^0.20.8"
   },
   "devDependencies": {
     "domhandler": "^5.0.3"

@@ -1,5 +1,5 @@
 name: CI/CD
-"on":
+'on':
   pull_request:
     branches:
       - main
@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: pnpm-modules
         with:
@@ -34,20 +34,19 @@ jobs:
             ~/.pnpm-store
             ${{ github.workspace }}/.pnpm
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
       - name: Build
         run: pnpm run build
       - name: Upload build artefact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artefact
           retention-days: 30
@@ -59,15 +58,14 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -80,9 +78,9 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: pnpm-modules
         with:
@@ -97,13 +95,12 @@ jobs:
             ~/.pnpm-store
             ${{ github.workspace }}/.pnpm
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -124,9 +121,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: pnpm-modules
         with:
@@ -141,13 +138,12 @@ jobs:
             ~/.pnpm-store
             ${{ github.workspace }}/.pnpm
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -193,9 +189,9 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache node packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: pnpm-modules
         with:
@@ -210,13 +206,12 @@ jobs:
             ~/.pnpm-store
             ${{ github.workspace }}/.pnpm
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: 18
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 6.2.5
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]

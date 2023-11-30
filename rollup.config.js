@@ -43,7 +43,7 @@ function wasm(file) {
   return copy({
     targets: [
       {
-        src: Path.resolve(__dirname, 'tree-sitter/tree-sitter-{html,markdown}.wasm'),
+        src: Path.resolve(__dirname, 'parsers/tree-sitter-{html,markdown}.wasm'),
         dest: Path.dirname(file),
       },
     ],

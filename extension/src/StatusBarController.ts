@@ -20,7 +20,7 @@ export class StatusBarController {
   }
 
   public register() {
-    this.update()
+    this.grammarly.onReady(() => this.update())
 
     let isRestarting = false
     return Disposable.from(
@@ -39,6 +39,7 @@ export class StatusBarController {
       commands.registerCommand('grammarly.pauseCheck', async (uri?: Uri) => {
         const id = uri ?? window.activeTextEditor?.document.uri
         if (id == null) return
+        
         await this.grammarly.client.protocol.pause(id.toString())
         await this.update()
       }),
