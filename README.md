@@ -9,6 +9,7 @@ This project uses [pnpm](https://pnpm.io).
 ```sh
 pnpm install
 pnpm run build
+pnpm test
 ```
 
 ## Adding support for new language
@@ -20,6 +21,19 @@ pnpm run build
 3. Add language transformer in the directory
    1. Create `Language<LanguageName>.ts`
    2. For reference, check [`LanguageHTML.ts`](./packages/grammarly-richtext-encoder/src/LanguageHTML.ts)
+
+## Using this LSP with Neovim
+After running the `pnpm install`, `pnpm run build`, and `pnpm test` commands the LSP is ready to be used with Neovim.  Add this setup to your Neovim config (replacing the path to the `grammarly-languageserver` with your build):
+
+```lua
+require'lspconfig'.grammarly.setup({
+    cmd = { "/home/droscigno/GitHub/grammarly/extension/node_modules/.bin/grammarly-languageserver", "--stdio" },
+    filetypes = { "markdown", "text" },
+    init_options = {
+        clientId = 'client_BaDkMgx4X19X9UxxYRCXZo',
+    },
+})
+```
 
 ## How to get help
 
