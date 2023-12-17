@@ -5,6 +5,7 @@ let schemes = new Set([
   'vscodium',
   'gitpod-code',
   'code-oss',
+  'cursor'
 ])
 let validQueryParams = new Set([
   'vscode-reqid',
